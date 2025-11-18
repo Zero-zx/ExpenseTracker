@@ -1,3 +1,5 @@
+package deps
+
 object DependenciesVersions {
 
     const val KOTLIN = "2.0.21"
@@ -9,4 +11,6 @@ object DependenciesVersions {
     const val MATERIAL = "1.10.0"
     const val ACTIVITY = "1.8.0"
     const val CONSTRAINT_LAYOUT = "2.1.4"
+    const val HILT = "2.57.1"
+    const val ROOM = "2.8.3"
 }
