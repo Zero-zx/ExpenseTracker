@@ -15,7 +15,7 @@ plugins {
 android {
     namespace = BuildConfig.APP_ID
     compileSdk {
-        version = release(BuildConfig.COMPILE_SDK_VERSION)
+        version = release(36)
     }
 
     defaultConfig {
@@ -47,6 +47,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":data"))
     androidx()
     hilt()
     room()

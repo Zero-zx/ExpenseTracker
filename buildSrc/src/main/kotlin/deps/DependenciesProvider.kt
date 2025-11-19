@@ -6,7 +6,7 @@ import org.gradle.kotlin.dsl.project
 fun DependencyHandler.room() {
     implementation(Dependencies.roomKtx)
     implementation(Dependencies.roomRuntime)
-//    kapt(Dependencies.roomCompiler)
+    add("ksp", Dependencies.roomCompiler)
 }
 
 
