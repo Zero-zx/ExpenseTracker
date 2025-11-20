@@ -3,8 +3,7 @@ import deps.hilt
 import deps.room
 
 plugins {
-//    id(build.BuildPlugins.ANDROID_LIBRARY)
-    id("com.android.library")
+    id(build.BuildPlugins.ANDROID_LIBRARY)
     id(build.BuildPlugins.KOTLIN_ANDROID)
     id(build.BuildPlugins.KSP)
     id(build.BuildPlugins.HILT)
@@ -45,10 +44,10 @@ android {
 dependencies {
     androidx()
     hilt()
-//    room()
-    implementation("androidx.room:room-runtime:2.8.3")
-    implementation("androidx.room:room-ktx:2.8.3")
-    ksp("androidx.room:room-compiler:2.8.3")
+    room()
+//    implementation("androidx.room:room-runtime:2.8.3")
+//    implementation("androidx.room:room-ktx:2.8.3")
+//    ksp("androidx.room:room-compiler:2.8.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

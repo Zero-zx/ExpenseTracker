@@ -4,6 +4,6 @@ import androidx.room.Query
 
 @Dao
 interface AccountDao {
-    @Query("SELECT * FROM account WHERE username = :username")
+    @Query("SELECT * FROM tb_account WHERE username = :username")
     fun getAccountByUsername(username: String): Account?
 }
