@@ -45,10 +45,9 @@ dependencies {
     androidx()
     hilt()
     room()
-//    implementation("androidx.room:room-runtime:2.8.3")
-//    implementation("androidx.room:room-ktx:2.8.3")
-//    ksp("androidx.room:room-compiler:2.8.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(project(":feature:transaction"))
 }
