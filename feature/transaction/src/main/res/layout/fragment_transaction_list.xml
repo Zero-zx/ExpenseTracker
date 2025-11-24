@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -28,8 +27,8 @@
         android:clipToPadding="false"
         android:padding="16dp"
         android:visibility="gone"
-        tools:listitem="@layout/item_transaction"
-        tools:itemCount="6"/>
+        tools:itemCount="6"
+        tools:listitem="@layout/item_transaction" />
 
     <!-- Empty State -->
     <LinearLayout
@@ -69,8 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Error loading transactions"
-            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-            />
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
         <TextView
             android:id="@+id/textViewError"
@@ -95,6 +93,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:contentDescription="Add Transaction"/>
+        android:contentDescription="Add Transaction" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
