@@ -37,6 +37,11 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -48,6 +53,9 @@ android {
 
 dependencies {
     implementation(project(":data"))
+    implementation(project(":feature:transaction"))
+    implementation(libs.androidx.navigation.fragment)
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
     androidx()
     hilt()
     room()

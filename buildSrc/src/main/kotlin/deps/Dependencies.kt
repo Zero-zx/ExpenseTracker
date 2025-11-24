@@ -7,6 +7,7 @@ object Dependencies {
     const val ANDROIDX_ESPRESSO_CORE =
         "androidx.test.espresso:espresso-core:${DependenciesVersions.ESPRESSO_CORE}"
     const val ANDROIDX_APPCOMPAT = "androidx.appcompat:appcompat:${DependenciesVersions.APPCOMPAT}"
+    const val ANDROIDX_RECYCLERVIEW = "androidx.recyclerview:recyclerview:${DependenciesVersions.RECYCLERVIEW}"
     const val MATERIAL = "com.google.android.material:material:${DependenciesVersions.MATERIAL}"
     const val ANDROIDX_ACTIVITY = "androidx.activity:activity:${DependenciesVersions.ACTIVITY}"
     const val ANDROIDX_CONSTRAINT_LAYOUT =

@@ -13,4 +13,5 @@ object DependenciesVersions {
     const val CONSTRAINT_LAYOUT = "2.1.4"
     const val HILT = "2.57.1"
     const val ROOM = "2.8.3"
+    const val RECYCLERVIEW = "1.3.2"
 }

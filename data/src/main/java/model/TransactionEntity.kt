@@ -1,3 +1,5 @@
+package model
+
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -8,7 +10,14 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = AccountEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("accountId"),
+            childColumns = arrayOf("account_id"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = CategoryEntity::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("category_id"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
         )]
@@ -20,16 +29,16 @@ data class TransactionEntity(
     val type: String,
     @ColumnInfo(name = "amount")
     val amount: Double,
-    @ColumnInfo(name = "createAt")
+    @ColumnInfo(name = "create_at")
     val createAt: Long,
     @ColumnInfo(name = "description")
     val description: String,
-    @ColumnInfo(name = "categoryId")
+    @ColumnInfo(name = "category_id")
     val categoryId: Long,
-    @ColumnInfo(name = "accountId")
+    @ColumnInfo(name = "account_id")
     val accountId: Long,
-    @ColumnInfo(name = "eventId")
+    @ColumnInfo(name = "event_id")
     val eventId: Long,
-    @ColumnInfo(name = "partnerId")
+    @ColumnInfo(name = "partner_id")
     val partnerId: Long
 )

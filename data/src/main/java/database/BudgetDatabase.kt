@@ -1,12 +1,24 @@
+package database
+
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import dao.AccountDao
+import dao.TransactionDao
+import model.AccountEntity
+import model.CategoryEntity
+import model.TransactionEntity
 
-@Database(entities = [TransactionEntity::class, AccountEntity::class], version = 1)
+@Database(
+    entities = [TransactionEntity::class, AccountEntity::class, CategoryEntity::class],
+    exportSchema = true,
+    version = 1
+)
 abstract class BudgetDatabase : RoomDatabase() {
-    abstract fun transactionDao() : TransactionDao
-    abstract fun accountDao() : AccountDao
+    abstract fun transactionDao(): TransactionDao
+    abstract fun accountDao(): AccountDao
+
     companion object {
         @Volatile
         private var INSTANCE: BudgetDatabase? = null

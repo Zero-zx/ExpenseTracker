@@ -20,6 +20,7 @@ fun DependencyHandler.androidx() {
     implementation(Dependencies.ANDROIDX_JUNIT)
     implementation(Dependencies.ANDROIDX_ESPRESSO_CORE)
     implementation(Dependencies.ANDROIDX_APPCOMPAT)
+    implementation(Dependencies.ANDROIDX_RECYCLERVIEW)
     implementation(Dependencies.MATERIAL)
     implementation(Dependencies.ANDROIDX_ACTIVITY)
     implementation(Dependencies.ANDROIDX_CONSTRAINT_LAYOUT)
