@@ -9,5 +9,9 @@
         android:name="presentation.list.TransactionListFragment" />
     <fragment
         android:id="@+id/transactionAddFragment"
-        android:name="presentation.add.TransactionAddFragment" />
+        android:name="presentation.add.TransactionAddFragment" >
+        <action
+            android:id="@+id/action_transactionAddFragment_to_transactionListFragment"
+            app:destination="@id/transactionListFragment" />
+    </fragment>
 </navigation>

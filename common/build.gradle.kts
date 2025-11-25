@@ -37,6 +37,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.fragment)
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
     androidx()
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -52,7 +52,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":data"))
+    implementation(project(":common"))
     implementation(project(":feature:transaction"))
     implementation(libs.androidx.navigation.fragment)
     implementation("androidx.navigation:navigation-ui-ktx:2.9.6")

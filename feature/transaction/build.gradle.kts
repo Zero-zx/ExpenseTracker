@@ -45,10 +45,13 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.common.ktx)
+    implementation(libs.androidx.navigation.fragment)
     androidx()
     hilt()
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
     implementation("androidx.fragment:fragment-ktx:1.8.0")
+    implementation("androidx.cardview:cardview:1.0.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
