@@ -1,6 +1,5 @@
 package presentation.add
 
-import android.accounts.Account
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import data.model.Category
 import data.model.CategoryType
 import kotlinx.coroutines.launch
+import presentation.AddTransactionUiState
+import presentation.CategoryUiState
 
 
 @AndroidEntryPoint
@@ -74,20 +75,19 @@ class TransactionAddFragment : Fragment() {
         }
 
         binding.buttonSubmit.setOnClickListener {
+            val selectedCategory = viewModel.transactionState.value.selectedCategory
+            if (selectedCategory == null) {
+                Toast.makeText(
+                    context,
+                    "Please select a category",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+            
             viewModel.addTransaction(
-                amount = binding.editTextAmount.text.toString().toDouble(),
-                description = "Description",
-                category = Category(
-                    id = 1,
-                    parentId = null,
-                    title = "Category",
-                    icon = CategoryIcon.SALARY.iconRes,
-                    type = CategoryType.IN
-                ),
-                account = Account(
-                    "Account",
-                    "AccountType"
-                )
+                amount = binding.editTextAmount.text.toString().toDoubleOrNull() ?: 0.0,
+                description = binding.editTextAmount.text?.toString()
             )
         }
     }
@@ -96,19 +96,21 @@ class TransactionAddFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.categoryState.collect { state ->
-                    when {
-                        state.categories != null -> {
+                    when (state) {
+                        is CategoryUiState.Loading -> {
+                            // Show loading indicator if needed
+                        }
+                        is CategoryUiState.Success -> {
                             showCategories(state.categories.take(8))
                         }
-
-                        state.error != null -> {
+                        is CategoryUiState.Error -> {
                             Toast.makeText(
                                 context,
-                                "Error loading categories: ${state.error}",
+                                "Error loading categories: ${state.message}",
                                 Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            ).show()
                         }
+                        else -> {}
                     }
                 }
             }
@@ -118,20 +120,25 @@ class TransactionAddFragment : Fragment() {
     private fun observeAddTransactionSate() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.transactionSate.collect { state ->
-                    when {
-                        state.transactionId != null -> {
+                viewModel.transactionState.collect { state ->
+                    when (state) {
+                        is AddTransactionUiState.Initial -> {
+                            // Initial state, no action needed
+                        }
+                        is AddTransactionUiState.Loading -> {
+                            // Show loading indicator if needed
+                        }
+                        is AddTransactionUiState.Success -> {
                             Toast.makeText(
                                 context,
                                 "Transaction added successfully",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-
-                        state.error != null -> {
+                        is AddTransactionUiState.Error -> {
                             Toast.makeText(
                                 context,
-                                "Error adding transaction: ${state.error}",
+                                "Error adding transaction: ${state.message}",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

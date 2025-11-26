@@ -1,7 +1,5 @@
 package presentation.add
 
-import android.accounts.Account
-import android.app.usage.UsageEvents
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,11 +24,11 @@ class AddTransactionViewModel @Inject constructor(
     private val getCategoriesUseCase: GetCategoriesUseCase
 ) : ViewModel() {
 
-    private val _categoryState = MutableStateFlow(CategoryUiState())
+    private val _categoryState = MutableStateFlow<CategoryUiState>(CategoryUiState.Loading)
     val categoryState = _categoryState.asStateFlow()
 
-    private val _transactionSate = MutableStateFlow(AddTransactionUiState())
-    val transactionSate = _transactionSate.asStateFlow()
+    private val _transactionState = MutableStateFlow<AddTransactionUiState>(AddTransactionUiState.Initial())
+    val transactionState = _transactionState.asStateFlow()
 
     init {
         loadCategories()
@@ -39,41 +37,49 @@ class AddTransactionViewModel @Inject constructor(
     fun loadCategories() {
         viewModelScope.launch {
             getCategoriesUseCase()
-                .onStart { _categoryState.value = CategoryUiState(isLoading = true) }
-                .catch {
-                    _categoryState.value = CategoryUiState(error = it.message)
+                .onStart { _categoryState.value = CategoryUiState.Loading }
+                .catch { exception ->
+                    _categoryState.value = CategoryUiState.Error(
+                        exception.message ?: "Unknown error occurred"
+                    )
                 }
                 .collect { categories ->
-                    _categoryState.value = CategoryUiState(categories = categories)
+                    _categoryState.value = CategoryUiState.Success(categories)
                 }
         }
     }
 
     fun addTransaction(
         amount: Double,
-        description: String?,
-        category: Category,
-        account: Account,
-        event: UsageEvents.Event? = null,
-        partner: Nothing? = null
+        description: String?
     ) {
         viewModelScope.launch {
-            _transactionSate.value = _transactionSate.value.copy(isLoading = true)
+            val selectedCategory = _transactionState.value.selectedCategory ?: return@launch
+
+            _transactionState.value = AddTransactionUiState.Loading(selectedCategory)
             try {
                 val id = addTransactionUseCase(
                     amount = amount,
-                    category = _transactionSate.value.selectedCategory ?: return@launch,
+                    category = selectedCategory,
                     description = description
                 )
-                _transactionSate.value = _transactionSate.value.copy(transactionId = id)
+                _transactionState.value = AddTransactionUiState.Success(
+                    transactionId = id,
+                    selectedCategory = selectedCategory
+                )
             } catch (e: Exception) {
-                _transactionSate.value = _transactionSate.value.copy(error = e.message)
+                _transactionState.value = AddTransactionUiState.Error(
+                    message = e.message ?: "Unknown error occurred",
+                    selectedCategory = selectedCategory
+                )
             }
         }
     }
 
     fun selectCategory(category: Category) {
-        _transactionSate.update { it.copy(selectedCategory = category) }
+        _transactionState.update { currentState ->
+            currentState.withSelectedCategory(category)
+        }
     }
 
     fun onHistoryClick() {
@@ -81,6 +87,7 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun resetTransactionState() {
-        _transactionSate.value = AddTransactionUiState()
+        val selectedCategory = _transactionState.value.selectedCategory
+        _transactionState.value = AddTransactionUiState.Initial(selectedCategory)
     }
 }

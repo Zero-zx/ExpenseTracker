@@ -14,6 +14,7 @@ import com.example.transaction.databinding.FragmentTransactionListBinding
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.Transaction
 import kotlinx.coroutines.launch
+import presentation.TransactionListUiState
 
 @AndroidEntryPoint
 class TransactionListFragment : Fragment() {
