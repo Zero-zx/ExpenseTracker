@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -56,6 +58,7 @@ class TransactionAddFragment : Fragment() {
         setupRecyclerView()
         observeUiState()
         setUpListeners()
+        setupFragmentResultListener()
     }
 
     private fun setupRecyclerView() {
@@ -74,6 +77,11 @@ class TransactionAddFragment : Fragment() {
             viewModel.onHistoryClick()
         }
 
+        // Click listener for category selection area
+        binding.layoutCategorySelection.setOnClickListener {
+            viewModel.onMoreCategory()
+        }
+
         binding.buttonSubmit.setOnClickListener {
             val selectedCategory = viewModel.transactionState.value.selectedCategory
             if (selectedCategory == null) {
@@ -89,6 +97,32 @@ class TransactionAddFragment : Fragment() {
                 amount = binding.editTextAmount.text.toString().toDoubleOrNull() ?: 0.0,
                 description = binding.editTextAmount.text?.toString()
             )
+        }
+    }
+
+    private fun setupFragmentResultListener() {
+        setFragmentResultListener(CategorySelectFragment.REQUEST_KEY) { _, bundle ->
+            val categoryId = bundle.getLong(CategorySelectFragment.RESULT_KEY, -1L)
+            if (categoryId != -1L) {
+                // Find category from current state
+                val currentState = viewModel.categoryState.value
+                if (currentState is CategoryUiState.Success) {
+                    val category = currentState.categories.find { it.id == categoryId }
+                    category?.let {
+                        viewModel.selectCategory(it)
+                        updateCategoryUI(it)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateCategoryUI(category: Category) {
+        binding.apply {
+            // Update icon
+            iconCategory.imageIcon.setImageResource(category.icon)
+            // Update category name
+            textViewCategory.text = category.title
         }
     }
 
@@ -121,6 +155,11 @@ class TransactionAddFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.transactionState.collect { state ->
+                    // Update UI when category is selected
+                    state.selectedCategory?.let { category ->
+                        updateCategoryUI(category)
+                    }
+                    
                     when (state) {
                         is AddTransactionUiState.Initial -> {
                             // Initial state, no action needed

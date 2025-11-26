@@ -8,4 +8,5 @@ interface Navigator {
     fun navigateUp(): Boolean
     fun popBackStack(): Boolean
     fun navigateToTransaction()
+    fun navigateToMoreCategory()
 }

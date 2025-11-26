@@ -38,4 +38,8 @@ class NavigatorImpl @Inject constructor() : Navigator {
     override fun navigateToTransaction() {
         navController?.navigate(com.example.expensetracker.R.id.transactionListFragment)
     }
+
+    override fun navigateToMoreCategory() {
+        navController?.navigate(com.example.expensetracker.R.id.categorySelectFragment)
+    }
 }

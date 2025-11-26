@@ -2,6 +2,7 @@ package presentation.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.transaction.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import data.model.Category
 import domain.usecase.AddTransactionUseCase
@@ -84,6 +85,10 @@ class AddTransactionViewModel @Inject constructor(
 
     fun onHistoryClick() {
         navigator.navigateToTransaction()
+    }
+
+    fun onMoreCategory() {
+        navigator.navigateToMoreCategory()
     }
 
     fun resetTransactionState() {

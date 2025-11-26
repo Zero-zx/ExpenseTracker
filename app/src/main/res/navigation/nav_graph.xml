@@ -13,5 +13,11 @@
         <action
             android:id="@+id/action_transactionAddFragment_to_transactionListFragment"
             app:destination="@id/transactionListFragment" />
+        <action
+            android:id="@+id/action_transactionAddFragment_to_categorySelectFragment"
+            app:destination="@id/categorySelectFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/categorySelectFragment"
+        android:name="presentation.add.CategorySelectFragment" />
 </navigation>
