@@ -1,7 +1,8 @@
 package com.example.expensetracker.di
 
-import dagger.Binds
+import com.example.expensetracker.navigation.NavigatorImpl
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import navigation.Navigator
@@ -9,11 +10,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class NavigationModule {
+object NavigationModule {
 
-    @Binds
+    @Provides
     @Singleton
-    abstract fun bindNavigator(
-        navigatorImpl: NavigatorImpl
-    ): Navigator
+    fun provideAppNavigator(): Navigator {
+        return NavigatorImpl()
+    }
 }

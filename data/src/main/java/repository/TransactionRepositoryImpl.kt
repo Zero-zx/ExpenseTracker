@@ -9,7 +9,7 @@ import mapper.toDomain
 import mapper.toEntity
 import javax.inject.Inject
 
-class TransactionRepositoryImpl @Inject internal constructor(
+internal class TransactionRepositoryImpl @Inject constructor(
     private val transactionDao: TransactionDao
 ) : TransactionRepository {
     override fun getAllTransactionByAccount(accountId: Long): Flow<List<Transaction>> {

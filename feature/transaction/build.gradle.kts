@@ -45,8 +45,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.navigation.common.ktx)
-    implementation(libs.androidx.navigation.fragment)
     androidx()
     hilt()
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")

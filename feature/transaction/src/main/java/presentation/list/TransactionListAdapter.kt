@@ -3,10 +3,13 @@ package presentation.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.R
 import com.example.transaction.databinding.ItemTransactionBinding
+import data.model.CategoryType
 import data.model.Transaction
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -49,8 +52,8 @@ class TransactionListAdapter(
         fun bind(transaction: Transaction) {
             binding.apply {
                 // Category
-//                textViewCategory.text = transaction.category.title
-//                textViewCategoryIcon.text = transaction.category.icon
+                textViewCategory.text = transaction.category.title
+                textViewCategoryIcon.setImageResource(transaction.category.icon)
 
                 // Description
                 if (!transaction.description.isNullOrEmpty()) {
@@ -80,18 +83,15 @@ class TransactionListAdapter(
 //                }
 //
 //                // Amount and Type
-//                val (sign, colorRes) = when (transaction.type) {
-//                    TransactionType.IN -> "+" to R.color.income_green
-//                    TransactionType.OUT -> "-" to R.color.expense_red
-//                    TransactionType.LEND -> "→" to R.color.lend_blue
-//                    TransactionType.LOAN -> "←" to R.color.loan_orange
-//                }
+                val sign = when (transaction.category.type) {
+                    CategoryType.IN -> "+"
+                    CategoryType.OUT -> "-"
+                    CategoryType.LEND -> "→"
+                    CategoryType.LOAN -> "←"
+                }
 //
-//                val color = ContextCompat.getColor(binding.root.context, colorRes)
-//                textViewAmount.text = "$sign${currencyFormatter.format(transaction.amount)}"
-//                textViewAmount.setTextColor(color)
-//                textViewType.text = transaction.type.name
-//                textViewType.setTextColor(color)
+                textViewAmount.text = "$sign${currencyFormatter.format(transaction.amount)}"
+                textViewType.text = transaction.category.type.toString()
             }
         }
     }

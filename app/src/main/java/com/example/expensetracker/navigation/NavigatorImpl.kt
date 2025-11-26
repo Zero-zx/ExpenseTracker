@@ -1,4 +1,4 @@
-package com.example.expensetracker.di
+package com.example.expensetracker.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -13,7 +13,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     private var navController: NavController? = null
 
-    override fun setNavController(navController: NavController) {
+    fun setNavController(navController: NavController) {
         this.navController = navController
     }
 
@@ -33,5 +33,9 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun popBackStack(): Boolean {
         return navController?.popBackStack() ?: false
+    }
+
+    override fun navigateToTransaction() {
+        navController?.navigate(com.example.expensetracker.R.id.transactionListFragment)
     }
 }

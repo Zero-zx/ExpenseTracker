@@ -3,16 +3,16 @@
     <!-- Modern Warm Pastel Sky Blue Palette -->
 
     <!-- My App Primary Palette - Soft Sky Blue -->
-    <color name="my_app_primary">#FF87CEEB</color>
+    <color name="my_app_primary">#EFECE3</color>
     <color name="my_app_primary_dark">#FF5BA3D0</color>
-    <color name="my_app_primary_variant">#FF6BA5E7</color>
+    <color name="my_app_primary_variant">#8FABD4</color>
 
     <!-- My App Secondary Palette - Warm Peach/Coral accent -->
     <color name="my_app_secondary">#FFFFB8A6</color>
     <color name="my_app_secondary_variant">#FFFFA08C</color>
 
     <!-- App Background & Surfaces - Soft warm whites -->
-    <color name="my_app_background">#FFFFFBF7</color>
+    <color name="my_app_background">#EFECE3</color>
     <color name="my_app_surface">#FFFFFFFF</color>
 
     <!-- Text & Icon Colors -->

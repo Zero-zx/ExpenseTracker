@@ -2,8 +2,8 @@ package domain.usecase
 
 import data.model.Transaction
 import domain.repository.TransactionRepository
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 class GetTransactionsByDateRangeUseCase @Inject constructor(
     private val transactionRepository: TransactionRepository

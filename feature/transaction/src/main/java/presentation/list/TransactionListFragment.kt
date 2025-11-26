@@ -12,8 +12,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.transaction.databinding.FragmentTransactionListBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import data.model.Transaction
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TransactionListFragment : Fragment() {

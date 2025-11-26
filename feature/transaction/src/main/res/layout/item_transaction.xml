@@ -15,13 +15,12 @@
         android:padding="16dp">
 
         <!-- Left Side: Category Icon -->
-        <TextView
+        <ImageView
             android:id="@+id/textViewCategoryIcon"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:gravity="center"
-            android:textSize="24sp"
-            tools:text="🍕" />
+            android:textSize="24sp"/>
 
         <!-- Middle: Transaction Info -->
         <LinearLayout

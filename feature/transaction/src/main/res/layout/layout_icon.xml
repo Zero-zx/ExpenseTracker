@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="24dp"
     android:layout_height="24dp"
-    app:cardBackgroundColor="@color/my_app_primary_variant"
+    app:cardBackgroundColor="@color/my_app_primary"
     app:cardCornerRadius="4dp">
 
     <ImageView
+        android:id="@+id/image_icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="4dp"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/icon_food" />
 </androidx.cardview.widget.CardView>

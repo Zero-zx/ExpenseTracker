@@ -18,7 +18,7 @@ class AddTransactionUseCase @Inject constructor(
             createAt = System.currentTimeMillis(),
             category = category,
             description = description,
-            accountId = 0,
+            accountId = 1,
             eventId = 0,
             partnerId = 0
         )

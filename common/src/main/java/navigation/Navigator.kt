@@ -7,5 +7,5 @@ interface Navigator {
     fun navigateTo(destination: NavigationDestination, navOptions: NavOptions? = null)
     fun navigateUp(): Boolean
     fun popBackStack(): Boolean
-    fun setNavController(navController: NavController)
+    fun navigateToTransaction()
 }
