@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.App" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+    <style name="Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/my_app_background</item>
         <!-- Original AppCompat attributes. -->
         <item name="colorPrimary">@color/my_app_primary</item>
@@ -25,11 +26,15 @@
         <item name="colorErrorContainer">@color/my_app_error_container</item>
         <item name="colorOnErrorContainer">@color/my_app_on_error_container</item>
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.Material3.DisplayLarge</item>
-        <item name="textAppearanceDisplayMedium">@style/TextAppearance.Material3.DisplayMedium</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.Material3.DisplayMedium
+        </item>
         <item name="textAppearanceDisplaySmall">@style/TextAppearance.Material3.DisplaySmall</item>
-        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Material3.HeadlineLarge</item>
-        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Material3.HeadlineMedium</item>
-        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Material3.HeadlineSmall</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Material3.HeadlineLarge
+        </item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Material3.HeadlineMedium
+        </item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Material3.HeadlineSmall
+        </item>
         <item name="textAppearanceTitleLarge">@style/TextAppearance.Material3.TitleLarge</item>
         <item name="textAppearanceTitleMedium">@style/TextAppearance.Material3.TitleMedium</item>
         <item name="textAppearanceTitleSmall">@style/TextAppearance.Material3.TitleSmall</item>
@@ -39,10 +44,16 @@
         <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
         <item name="textAppearanceLabelMedium">@style/TextAppearance.Material3.LabelMedium</item>
         <item name="textAppearanceLabelSmall">@style/TextAppearance.Material3.LabelSmall</item>
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Material3.SmallComponent</item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Material3.MediumComponent</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Material3.LargeComponent</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Material3.SmallComponent
+        </item>
+        <item name="shapeAppearanceMediumComponent">
+            @style/ShapeAppearance.Material3.MediumComponent
+        </item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Material3.LargeComponent
+        </item>
         <item name="textInputStyle">@style/Widget.App.ExposedDropdownMenu</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="materialSwitchStyle">@style/Widget.App.Switch</item>
     </style>
 
     <style name="Widget.App.ExposedDropdownMenu" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
@@ -59,21 +70,41 @@
         <item name="colorError">@color/shrine_red</item>
         <item name="textAppearanceBodyLarge">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.App.BodySmall</item>
-        <item name="autoCompleteTextViewStyle">@style/Widget.Material3.AutoCompleteTextView.OutlinedBox</item>
+        <item name="autoCompleteTextViewStyle">
+            @style/Widget.Material3.AutoCompleteTextView.OutlinedBox
+        </item>
     </style>
 
     <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
-<!--        <item name="fontFamily">@font/rubik</item>-->
-<!--        <item name="android:fontFamily">@font/rubik</item>-->
+        <!--        <item name="fontFamily">@font/rubik</item>-->
+        <!--        <item name="android:fontFamily">@font/rubik</item>-->
     </style>
 
     <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
-<!--        <item name="fontFamily">@font/rubik</item>-->
-<!--        <item name="android:fontFamily">@font/rubik</item>-->
+        <!--        <item name="fontFamily">@font/rubik</item>-->
+        <!--        <item name="android:fontFamily">@font/rubik</item>-->
     </style>
 
     <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="colorSurface">@color/my_app_surface</item>
+        <item name="colorOnSurfaceVariant">@color/my_app_on_surface_variant</item>
+    </style>
+
+    <style name="Widget.App.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Switch" parent="">
+        <item name="colorPrimary">@color/my_app_on_surface</item>
+        <item name="colorSurfaceVariant">@color/my_app_on_surface_variant</item>
     </style>
 </resources>

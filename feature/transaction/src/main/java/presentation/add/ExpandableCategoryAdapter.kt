@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemCategoryChildBinding
 import com.example.transaction.databinding.ItemCategoryParentBinding
 import data.model.Category
+import helpers.standardize
 
 class ExpandableCategoryAdapter(
     private val onCategoryClick: (Category) -> Unit
@@ -27,6 +28,7 @@ class ExpandableCategoryAdapter(
                 )
                 ParentCategoryViewHolder(binding)
             }
+
             VIEW_TYPE_CHILD -> {
                 val binding = ItemCategoryChildBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -35,6 +37,7 @@ class ExpandableCategoryAdapter(
                 )
                 ChildCategoryViewHolder(binding)
             }
+
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -47,6 +50,7 @@ class ExpandableCategoryAdapter(
                     toggleExpansion(item.category.id)
                 }
             }
+
             is ChildCategoryViewHolder -> {
                 holder.bind(item.category)
             }
@@ -79,7 +83,7 @@ class ExpandableCategoryAdapter(
     private fun buildCategoryItems(categories: List<Category>): List<CategoryItem> {
         val parentCategories = categories.filter { it.parentId == null }
         val result = mutableListOf<CategoryItem>()
-        
+
         parentCategories.forEach { parent ->
             result.add(CategoryItem(parent, isParent = true))
             // Only add children if parent is expanded
@@ -115,9 +119,7 @@ class ExpandableCategoryAdapter(
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val item = getItem(position)
-                    if (item.isParent) {
-                        toggleExpansion(item.category.id)
-                    }
+                    onCategoryClick(item.category)
                 }
             }
         }
@@ -126,15 +128,20 @@ class ExpandableCategoryAdapter(
             binding.apply {
                 // Set icon
                 iconCategory.imageIcon.setImageResource(category.icon)
-                
+
                 // Set category name
-                textViewCategoryName.text = category.title
-                
+                textViewCategoryName.text = category.title.standardize()
+
                 // Set chevron rotation
-                iconChevron.rotation = if (isExpanded) 180f else 0f
-                
+                iconChevron.setOnClickListener {
+                    onToggle()
+                    it.rotation = if (isExpanded) 180f else 0f
+                }
+
+
                 // Hide nested RecyclerView (we're using flat list instead)
                 recyclerViewChildCategories.visibility = ViewGroup.GONE
+
             }
         }
 
@@ -160,15 +167,15 @@ class ExpandableCategoryAdapter(
         override fun bind(category: Category) {
             binding.apply {
                 iconCategory.imageIcon.setImageResource(category.icon)
-                textViewCategoryName.text = category.title
+                textViewCategoryName.text = category.title.standardize()
             }
         }
     }
 
     private class CategoryDiffCallback : DiffUtil.ItemCallback<CategoryItem>() {
         override fun areItemsTheSame(oldItem: CategoryItem, newItem: CategoryItem): Boolean {
-            return oldItem.category.id == newItem.category.id && 
-                   oldItem.isParent == newItem.isParent
+            return oldItem.category.id == newItem.category.id &&
+                    oldItem.isParent == newItem.isParent
         }
 
         override fun areContentsTheSame(oldItem: CategoryItem, newItem: CategoryItem): Boolean {

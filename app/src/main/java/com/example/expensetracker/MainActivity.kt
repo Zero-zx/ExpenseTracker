@@ -3,6 +3,7 @@ package com.example.expensetracker
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.expensetracker.databinding.ActivityMainBinding
 import com.example.expensetracker.navigation.NavigatorImpl
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +34,8 @@ class MainActivity : AppCompatActivity() {
 
         // Set NavController to Navigator
         (navigator as NavigatorImpl).setNavController(navController)
-//
+        binding.bottomNavigationView.setupWithNavController(navController)
+
 //        // Setup ActionBar with NavController
 //        setupActionBarWithNavController(navController)
     }

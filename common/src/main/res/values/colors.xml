@@ -5,20 +5,20 @@
     <!-- My App Primary Palette - Soft Sky Blue -->
     <color name="my_app_primary">#EFECE3</color>
     <color name="my_app_primary_dark">#FF5BA3D0</color>
-    <color name="my_app_primary_variant">#8FABD4</color>
+    <color name="my_app_primary_variant">#B7CEF4</color>
 
     <!-- My App Secondary Palette - Warm Peach/Coral accent -->
     <color name="my_app_secondary">#FFFFB8A6</color>
     <color name="my_app_secondary_variant">#FFFFA08C</color>
 
     <!-- App Background & Surfaces - Soft warm whites -->
-    <color name="my_app_background">#EFECE3</color>
+    <color name="my_app_background">#AEDEFC</color>
     <color name="my_app_surface">#FFFFFFFF</color>
 
     <!-- Text & Icon Colors -->
-    <color name="my_app_on_primary">#FFFFFFFF</color>
+    <color name="my_app_on_primary">#F875AA</color>
     <color name="my_app_on_secondary">#FF5D4037</color>
-    <color name="my_app_on_background">#FF3E2723</color>
+    <color name="my_app_on_background">#FDEDED</color>
     <color name="my_app_on_surface">#FF424242</color>
 
     <!-- Error Colors - Soft warm red -->
@@ -44,8 +44,8 @@
     <color name="my_app_on_tertiary_container">#FF4A2C5E</color>
 
     <!-- Surface Variants - Soft neutrals -->
-    <color name="my_app_surface_variant">#FFF5F0ED</color>
-    <color name="my_app_on_surface_variant">#FF6D5D57</color>
+    <color name="my_app_surface_variant">#EDFFF0</color>
+    <color name="my_app_on_surface_variant">#EDFFF0</color>
 
     <!-- Inverse Surface - Warm dark -->
     <color name="my_app_inverse_surface">#FF3E3935</color>

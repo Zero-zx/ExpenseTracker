@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemCategoryBinding
 import data.model.Category
+import helpers.standardize
 
 
 class CategoryAdapter(
@@ -47,6 +48,8 @@ class CategoryAdapter(
         fun bind(category: Category, isSelected: Boolean) {
             binding.apply {
                 itemView.isSelected = isSelected
+                textCategory.text = category.title.standardize()
+                layoutIcon.imageIcon.setImageResource(category.icon)
             }
         }
     }

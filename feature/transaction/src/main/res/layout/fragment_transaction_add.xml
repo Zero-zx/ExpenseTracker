@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:padding="16dp">
+    android:background="@color/my_app_background"
+    android:paddingTop="32dp">
 
     <ImageButton
         android:id="@+id/button_list_transaction"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
         android:background="@drawable/ripple_image_button"
         android:src="@drawable/icon_history"
         app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
@@ -22,11 +22,12 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/dropdown_menu_transaction"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="6:1"
         app:layout_constraintEnd_toStartOf="@+id/button_submit"
         app:layout_constraintStart_toEndOf="@id/button_list_transaction"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.5">
 
         <AutoCompleteTextView
             android:layout_width="match_parent"
@@ -38,6 +39,7 @@
         android:id="@+id/button_submit"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/ripple_image_button"
         android:src="@drawable/icon_submit"
         app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
@@ -45,110 +47,393 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/layout_amount"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dropdown_menu_transaction">
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dropdown_menu_transaction">\
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Amount"
-            android:textAlignment="center" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/edit_text_amount"
+            <LinearLayout
+                android:id="@+id/layout_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="13"
-                android:text="0"
-                android:textAlignment="center" />
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_background"
+                android:elevation="4dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dropdown_menu_transaction">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Amount"
+                    android:textAlignment="center" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/edit_text_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/my_app_on_primary"
+                        android:maxLength="13"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/my_app_on_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="đ"
+                        android:textColor="@color/my_app_on_primary" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_category_selection"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="đ" />
-        </LinearLayout>
-    </LinearLayout>
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_background"
+                android:clickable="true"
+                android:elevation="4dp"
+                android:focusable="true"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/layout_amount">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_category_selection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_background"
-        android:clickable="true"
-        android:focusable="true"
-        android:elevation="8dp"
-        android:orientation="horizontal"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/layout_amount">
+                <include
+                    android:id="@+id/icon_category"
+                    layout="@layout/layout_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@id/text_view_category"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/text_view_category" />
 
-        <include
-            android:id="@+id/icon_category"
-            layout="@layout/layout_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/text_view_category"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_view_category" />
+                <TextView
+                    android:id="@+id/text_view_category"
+                    android:layout_width="239dp"
+                    android:layout_height="17dp"
+                    android:layout_margin="16dp"
+                    android:text="Add a category"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/text_view_all"
+                    app:layout_constraintStart_toEndOf="@+id/icon_category"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/text_view_category"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:text="Add a category"
-            app:layout_constraintEnd_toStartOf="@+id/text_view_all"
-            app:layout_constraintStart_toEndOf="@+id/icon_category"
-            app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/text_view_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All"
+                    app:layout_constraintBottom_toBottomOf="@id/text_view_category"
+                    app:layout_constraintEnd_toStartOf="@id/icon_chevron"
+                    app:layout_constraintTop_toTopOf="@id/text_view_category" />
 
-        <TextView
-            android:id="@+id/text_view_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="All"
-            app:layout_constraintBottom_toBottomOf="@id/text_view_category"
-            app:layout_constraintEnd_toStartOf="@id/icon_chevron"
-            app:layout_constraintTop_toTopOf="@id/text_view_category" />
+                <ImageView
+                    android:id="@+id/icon_chevron"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_chevron"
+                    app:layout_constraintBottom_toBottomOf="@id/text_view_all"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/text_view_all" />
 
-        <ImageView
-            android:id="@+id/icon_chevron"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_chevron"
-            app:layout_constraintBottom_toBottomOf="@id/text_view_all"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_view_all" />
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black"
+                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:alpha="0.1"
-            android:background="@android:color/black"
-            app:layout_constraintTop_toBottomOf="@id/icon_category" />
+                <LinearLayout
+                    android:id="@+id/layout_recently_use"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_categories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/divider"
-            app:spanCount="4"
-            tools:itemCount="8"
-            tools:listitem="@layout/item_category" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Recently used" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_chevron" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_categories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/layout_recently_use"
+                    app:spanCount="4"
+                    tools:itemCount="8"
+                    tools:listitem="@layout/item_category" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_addition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/rounded_background"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/layout_category_selection">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:id="@+id/icon_account"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleType="center"
+                        android:src="@drawable/icon_salary"
+                        android:tint="@color/my_app_on_primary"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintWidth_percent="0.1" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:gravity="center_vertical"
+                        android:text="Cash wallet"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/icon_account_chevron"
+                        app:layout_constraintStart_toEndOf="@id/icon_account"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/icon_account_chevron"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_chevron"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black"
+                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:id="@+id/icon_date"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleType="center"
+                        android:src="@drawable/icon_calender_today"
+                        android:tint="@color/my_app_on_primary"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintWidth_percent="0.1" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:gravity="center_vertical"
+                        android:text="Today - 27/11/2025"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/text_view_time"
+                        app:layout_constraintStart_toEndOf="@id/icon_date"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_view_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/icon_chevron"
+                        android:text="12:00"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black"
+                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp">
+
+                    <ImageView
+                        android:id="@+id/icon_note"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleType="center"
+                        android:src="@drawable/icon_note"
+                        android:tint="@color/my_app_on_primary"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintWidth_percent="0.1" />
+
+                    <EditText
+                        android:id="@+id/edit_text_note"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:gravity="center_vertical"
+                        android:padding="4dp"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/icon_note"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_background"
+                android:orientation="vertical"
+                app:layout_constraintDimensionRatio="8:1"
+                app:layout_constraintTop_toBottomOf="@+id/layout_addition">
+
+                <ui.CustomTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="16dp"
+                    app:src="@drawable/icon_bag"
+                    app:text="Holiday, event"
+                    app:textColor="@android:color/secondary_text_dark"
+                    app:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black"
+                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
+
+                <ui.CustomTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="16dp"
+                    app:src="@drawable/icon_person"
+                    app:text="Who pay"
+                    app:textColor="@android:color/secondary_text_dark"
+
+                    app:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black"
+                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
+
+                <ui.CustomTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="16dp"
+                    app:src="@drawable/icon_salary"
+                    app:text="Location"
+                    app:textColor="@android:color/secondary_text_dark"
+                    app:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_lend"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_background"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintDimensionRatio="9:1"
+                app:layout_constraintTop_toBottomOf="@id/layout_more">
+
+                <include
+                    layout="@layout/text_with_toggle_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black"
+                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_fee"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/rounded_background"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintDimensionRatio="9:1"
+                app:layout_constraintTop_toBottomOf="@id/layout_lend">
+
+                <include
+                    layout="@layout/text_with_toggle_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black"
+                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

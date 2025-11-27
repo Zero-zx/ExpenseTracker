@@ -86,13 +86,4 @@
             android:text="Retry" />
     </LinearLayout>
 
-    <!-- FAB -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddTransaction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="Add Transaction" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

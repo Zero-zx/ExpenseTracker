@@ -7,23 +7,22 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
-import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.transaction.R
 import com.example.transaction.databinding.FragmentTransactionAddBinding
-import constants.CategoryIcon
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.Category
-import data.model.CategoryType
 import kotlinx.coroutines.launch
 import presentation.AddTransactionUiState
 import presentation.CategoryUiState
+import ui.GridSpacingItemDecoration
 
 
 @AndroidEntryPoint
@@ -63,6 +62,8 @@ class TransactionAddFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding.recyclerViewCategories.apply {
+            layoutManager = GridLayoutManager(context, 4)
+            addItemDecoration(GridSpacingItemDecoration(4, 8, false))
             adapter = this@TransactionAddFragment.adapter
         }
     }
@@ -77,10 +78,14 @@ class TransactionAddFragment : Fragment() {
             viewModel.onHistoryClick()
         }
 
-        // Click listener for category selection area
         binding.layoutCategorySelection.setOnClickListener {
             viewModel.onMoreCategory()
         }
+
+        binding.layoutRecentlyUse.setOnClickListener {
+            toggleRecentlyCategory()
+        }
+
 
         binding.buttonSubmit.setOnClickListener {
             val selectedCategory = viewModel.transactionState.value.selectedCategory
@@ -92,7 +97,7 @@ class TransactionAddFragment : Fragment() {
                 ).show()
                 return@setOnClickListener
             }
-            
+
             viewModel.addTransaction(
                 amount = binding.editTextAmount.text.toString().toDoubleOrNull() ?: 0.0,
                 description = binding.editTextAmount.text?.toString()
@@ -134,9 +139,11 @@ class TransactionAddFragment : Fragment() {
                         is CategoryUiState.Loading -> {
                             // Show loading indicator if needed
                         }
+
                         is CategoryUiState.Success -> {
                             showCategories(state.categories.take(8))
                         }
+
                         is CategoryUiState.Error -> {
                             Toast.makeText(
                                 context,
@@ -144,6 +151,7 @@ class TransactionAddFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+
                         else -> {}
                     }
                 }
@@ -159,14 +167,16 @@ class TransactionAddFragment : Fragment() {
                     state.selectedCategory?.let { category ->
                         updateCategoryUI(category)
                     }
-                    
+
                     when (state) {
                         is AddTransactionUiState.Initial -> {
                             // Initial state, no action needed
                         }
+
                         is AddTransactionUiState.Loading -> {
                             // Show loading indicator if needed
                         }
+
                         is AddTransactionUiState.Success -> {
                             Toast.makeText(
                                 context,
@@ -174,6 +184,7 @@ class TransactionAddFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+
                         is AddTransactionUiState.Error -> {
                             Toast.makeText(
                                 context,
@@ -185,6 +196,10 @@ class TransactionAddFragment : Fragment() {
                 }
             }
         }
+    }
+
+    fun toggleRecentlyCategory() {
+        binding.recyclerViewCategories.isVisible = !binding.recyclerViewCategories.isVisible
     }
 
     private fun showCategories(categories: List<Category>) {

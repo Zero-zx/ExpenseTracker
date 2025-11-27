@@ -2,9 +2,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">    <!-- State when the item is selected -->
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/my_app_primary_variant" />
-            <corners android:radius="8dp"/>
-            <stroke android:width="2dp" android:color="@android:color/background_light" />
+            <solid android:color="@color/my_app_on_background" />
+            <corners android:radius="8dp" />
         </shape>
     </item>
     <item>

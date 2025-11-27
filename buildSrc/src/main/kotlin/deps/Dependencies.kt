@@ -18,4 +18,7 @@ object Dependencies {
     const val roomRuntime = "androidx.room:room-runtime:${DependenciesVersions.ROOM}"
     const val roomCompiler = "androidx.room:room-compiler:${DependenciesVersions.ROOM}"
     const val roomKtx = "androidx.room:room-ktx:${DependenciesVersions.ROOM}"
+    const val lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:${DependenciesVersions.LIFE_CYCLE}"
+    const val fragment = "androidx.fragment:fragment-ktx:${DependenciesVersions.FRAGMENT}"
+    const val cardView = "androidx.cardview:cardview:${DependenciesVersions.CARD_VIEW}"
 }

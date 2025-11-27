@@ -42,7 +42,6 @@ class TransactionListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        setupFab()
         observeUiState()
     }
 
@@ -50,13 +49,6 @@ class TransactionListFragment : Fragment() {
         binding.recyclerViewTransactions.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@TransactionListFragment.adapter
-        }
-    }
-
-    private fun setupFab() {
-        binding.fabAddTransaction.setOnClickListener {
-            // Navigate to add transaction screen
-            // findNavController().navigate(...)
         }
     }
 

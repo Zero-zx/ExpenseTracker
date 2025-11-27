@@ -1,6 +1,12 @@
+import deps.androidx
+import deps.feature
+import deps.hilt
+
 plugins {
     id(build.BuildPlugins.ANDROID_LIBRARY)
     id(build.BuildPlugins.KOTLIN_ANDROID)
+    id(build.BuildPlugins.HILT)
+    id(build.BuildPlugins.KSP)
 }
 
 android {
@@ -35,9 +41,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    androidx()
+    hilt()
+    feature()
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

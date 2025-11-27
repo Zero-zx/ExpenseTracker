@@ -1,6 +1,6 @@
 package model
 
-import AccountType
+import data.model.AccountType
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey

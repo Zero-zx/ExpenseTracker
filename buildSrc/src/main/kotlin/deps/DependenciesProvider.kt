@@ -1,7 +1,6 @@
 package deps
 
 import org.gradle.api.artifacts.dsl.DependencyHandler
-import org.gradle.kotlin.dsl.project
 
 fun DependencyHandler.room() {
     implementation(Dependencies.roomKtx)
@@ -26,12 +25,8 @@ fun DependencyHandler.androidx() {
     implementation(Dependencies.ANDROIDX_CONSTRAINT_LAYOUT)
 }
 
-fun DependencyHandler.homeModule() {
-    moduleImplementation(project(":home-ui"))
-    moduleImplementation(project(":home-component"))
-}
-
-fun DependencyHandler.noteModule() {
-    moduleImplementation(project(":note-ui"))
-    moduleImplementation(project(":note-component"))
+fun DependencyHandler.feature() {
+    implementation(Dependencies.lifecycle)
+    implementation(Dependencies.fragment)
+    implementation(Dependencies.cardView)
 }
