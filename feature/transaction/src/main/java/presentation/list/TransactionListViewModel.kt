@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import data.model.Transaction
 import domain.usecase.GetTransactionsUseCase
+import presentation.TransactionListUiState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,11 +46,4 @@ class TransactionListViewModel @Inject constructor(
         _uiState.value = TransactionListUiState.Loading
         loadTransactions()
     }
-}
-
-sealed class TransactionListUiState {
-    object Loading : TransactionListUiState()
-    object Empty : TransactionListUiState()
-    data class Success(val transactions: List<Transaction>) : TransactionListUiState()
-    data class Error(val message: String) : TransactionListUiState()
 }

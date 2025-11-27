@@ -5,7 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "tb_transaction",
+@Entity(
+    tableName = "tb_transaction",
     foreignKeys = [
         ForeignKey(
             entity = AccountEntity::class,
@@ -22,11 +23,11 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         )]
 )
-data class TransactionEntity(
+
+// Transaction model for entities layer
+internal data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = "type")
-    val type: String,
     @ColumnInfo(name = "amount")
     val amount: Double,
     @ColumnInfo(name = "create_at")

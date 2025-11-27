@@ -1,9 +1,9 @@
 package domain.usecase
 
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import data.model.Transaction
 import domain.repository.TransactionRepository
+import javax.inject.Inject
 
 class GetTransactionsUseCase @Inject constructor(
     private val transactionRepository: TransactionRepository

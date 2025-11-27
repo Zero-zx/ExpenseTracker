@@ -1,12 +1,13 @@
 package model
 
-import AccountType
+import data.model.AccountType
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+// Account model for entities layer
 @Entity(tableName = "tb_account")
-data class AccountEntity(
+internal data class AccountEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo(name = "username")

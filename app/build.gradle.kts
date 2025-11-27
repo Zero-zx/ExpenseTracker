@@ -52,8 +52,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":common"))
     implementation(project(":data"))
     implementation(project(":feature:transaction"))
+    implementation(project(":feature:login"))
     implementation(libs.androidx.navigation.fragment)
     implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
     androidx()

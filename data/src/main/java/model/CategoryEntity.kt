@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 import data.model.Category
 import data.model.CategoryType
 
-@Entity(tableName = "tb_category",
+@Entity(
+    tableName = "tb_category",
     foreignKeys = [
         ForeignKey(
             entity = CategoryEntity::class,
@@ -15,8 +16,11 @@ import data.model.CategoryType
             childColumns = ["parent_id"],
             onDelete = ForeignKey.CASCADE
         )
-    ])
-data class CategoryEntity(
+    ]
+)
+
+// Category model for entities layer
+internal data class CategoryEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     @ColumnInfo(name = "parent_id")
@@ -24,12 +28,12 @@ data class CategoryEntity(
     @ColumnInfo(name = "title")
     val title: String,
     @ColumnInfo(name = "icon")
-    val icon: String,
+    val icon: Int,
     @ColumnInfo(name = "type")
     val type: CategoryType
 )
 
-fun CategoryEntity.toCategory(): Category {
+internal fun CategoryEntity.toCategory(): Category {
     return Category(
         id = id,
         parentId = parentId,

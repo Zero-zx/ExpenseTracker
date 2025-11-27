@@ -12,8 +12,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.transaction.databinding.FragmentTransactionListBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import data.model.Transaction
+import kotlinx.coroutines.launch
+import presentation.TransactionListUiState
 
 @AndroidEntryPoint
 class TransactionListFragment : Fragment() {
@@ -41,7 +42,6 @@ class TransactionListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        setupFab()
         observeUiState()
     }
 
@@ -49,13 +49,6 @@ class TransactionListFragment : Fragment() {
         binding.recyclerViewTransactions.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@TransactionListFragment.adapter
-        }
-    }
-
-    private fun setupFab() {
-        binding.fabAddTransaction.setOnClickListener {
-            // Navigate to add transaction screen
-            // findNavController().navigate(...)
         }
     }
 

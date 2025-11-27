@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Modern Warm Pastel Sky Blue Palette -->
+
+    <!-- My App Primary Palette - Soft Sky Blue -->
+    <color name="my_app_primary">#EFECE3</color>
+    <color name="my_app_primary_dark">#FF5BA3D0</color>
+    <color name="my_app_primary_variant">#B7CEF4</color>
+
+    <!-- My App Secondary Palette - Warm Peach/Coral accent -->
+    <color name="my_app_secondary">#FFFFB8A6</color>
+    <color name="my_app_secondary_variant">#FFFFA08C</color>
+
+    <!-- App Background & Surfaces - Soft warm whites -->
+    <color name="my_app_background">#AEDEFC</color>
+    <color name="my_app_surface">#FFFFFFFF</color>
+
+    <!-- Text & Icon Colors -->
+    <color name="my_app_on_primary">#F875AA</color>
+    <color name="my_app_on_secondary">#FF5D4037</color>
+    <color name="my_app_on_background">#FDEDED</color>
+    <color name="my_app_on_surface">#FF424242</color>
+
+    <!-- Error Colors - Soft warm red -->
+    <color name="my_app_error">#FFEF9A9A</color>
+    <color name="my_app_on_error">#FF5D4037</color>
+
+    <!-- Material Components Scrim -->
+    <color name="mtrl_scrim">#99000000</color>
+
+    <!-- Material 3 Dynamic Color Palette - Pastel Sky Blue theme -->
+    <color name="my_app_primary_inverse">#FF4A90E2</color>
+    <color name="my_app_primary_container">#FFD4E8F7</color>
+    <color name="my_app_on_primary_container">#FF1A4D6E</color>
+
+    <!-- Secondary Container - Warm peach tones -->
+    <color name="my_app_secondary_container">#FFFFE4DD</color>
+    <color name="my_app_on_secondary_container">#FF5D3A2F</color>
+
+    <!-- Tertiary - Soft lavender accent -->
+    <color name="my_app_tertiary">#FFC5A3E0</color>
+    <color name="my_app_on_tertiary">#FFFFFFFF</color>
+    <color name="my_app_tertiary_container">#FFF3E5F5</color>
+    <color name="my_app_on_tertiary_container">#FF4A2C5E</color>
+
+    <!-- Surface Variants - Soft neutrals -->
+    <color name="my_app_surface_variant">#EDFFF0</color>
+    <color name="my_app_on_surface_variant">#EDFFF0</color>
+
+    <!-- Inverse Surface - Warm dark -->
+    <color name="my_app_inverse_surface">#FF3E3935</color>
+    <color name="my_app_inverse_on_surface">#FFFBF8F5</color>
+    <color name="my_app_outline">#FF9E8E88</color>
+
+    <!-- Error Container -->
+    <color name="my_app_error_container">#FFFFDAD6</color>
+    <color name="my_app_on_error_container">#FF5D1F1A</color>
+
+    <!-- Exposed Dropdown Menu colors - Updated to match theme -->
+    <color name="shrine_pink_100">#FFF0F8FF</color>
+    <color name="shrine_pink_900">#FF2B3E50</color>
+    <color name="shrine_red">#FF87CEEB</color>
+</resources>

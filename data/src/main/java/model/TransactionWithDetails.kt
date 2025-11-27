@@ -5,7 +5,8 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import data.model.Transaction
 
-data class TransactionWithDetails(
+// Model used for query one-to-many relationship
+internal data class TransactionWithDetails(
     @Embedded val transactionEntity: TransactionEntity,
     @Relation(
         parentColumn = "category_id",
@@ -28,16 +29,3 @@ data class TransactionWithDetails(
 //    )
 //    val partner: PartnerEntity?
 )
-
-fun TransactionWithDetails.toTransaction(): Transaction {
-    return Transaction(
-        id = transactionEntity.id,
-        description = transactionEntity.description,
-        amount = transactionEntity.amount,
-        category = categoryEntity.toCategory(),
-        accountId = 1,
-        eventId = 1,
-        partnerId = 1,
-        createAt = transactionEntity.createAt,
-    )
-}

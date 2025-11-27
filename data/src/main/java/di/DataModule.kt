@@ -7,15 +7,21 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dao.AccountDao
+import dao.CategoryDao
 import dao.TransactionDao
 import database.BudgetDatabase
+import domain.repository.AccountRepository
+import domain.repository.CategoryRepository
 import domain.repository.TransactionRepository
+import repository.AccountRepositoryImpl
+import repository.CategoryRepositoryImpl
 import repository.TransactionRepositoryImpl
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataModule {
+internal object DataModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): BudgetDatabase {
@@ -34,8 +40,31 @@ object DataModule {
 
     @Provides
     @Singleton
+    fun provideCategoryDao(appDatabase: BudgetDatabase): CategoryDao {
+        return appDatabase.categoryDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAccountDao(appDatabase: BudgetDatabase): AccountDao {
+        return appDatabase.accountDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideTransactionRepository(transactionDao: TransactionDao): TransactionRepository {
         return TransactionRepositoryImpl(transactionDao)
     }
 
+    @Provides
+    @Singleton
+    fun provideCategoryRepository(categoryDao: CategoryDao): CategoryRepository {
+        return CategoryRepositoryImpl(categoryDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAccountRepository(accountDao: AccountDao): AccountRepository {
+        return AccountRepositoryImpl(accountDao)
+    }
 }
