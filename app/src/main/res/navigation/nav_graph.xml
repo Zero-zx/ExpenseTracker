@@ -20,4 +20,15 @@
     <fragment
         android:id="@+id/categorySelectFragment"
         android:name="presentation.add.CategorySelectFragment" />
+    
+    <fragment
+        android:id="@+id/accountListFragment"
+        android:name="presentation.list.AccountListFragment" >
+        <action
+            android:id="@+id/action_accountListFragment_to_addAccountFragment"
+            app:destination="@id/addAccountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addAccountFragment"
+        android:name="presentation.add.AddAccountFragment" />
 </navigation>

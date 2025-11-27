@@ -3,6 +3,9 @@ package repository
 import dao.AccountDao
 import data.model.Account
 import domain.repository.AccountRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import mapper.toDomain
 import mapper.toEntity
 import javax.inject.Inject
 
@@ -13,5 +16,15 @@ internal class AccountRepositoryImpl @Inject constructor(private val accountDao:
         if (existingAccount == null) {
             accountDao.insert(account.toEntity())
         }
+    }
+
+    override fun getAllAccounts(): Flow<List<Account>> {
+        return accountDao.getAllAccounts().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun insertAccount(account: Account): Long {
+        return accountDao.insert(account.toEntity())
     }
 }

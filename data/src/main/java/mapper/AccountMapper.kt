@@ -12,3 +12,13 @@ internal fun Account.toEntity(): AccountEntity {
         createAt = createAt
     )
 }
+
+internal fun AccountEntity.toDomain(): Account {
+    return Account(
+        id = id,
+        username = username,
+        type = type,
+        balance = balance,
+        createAt = createAt
+    )
+}
