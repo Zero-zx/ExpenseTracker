@@ -9,4 +9,6 @@ interface Navigator {
     fun popBackStack(): Boolean
     fun navigateToTransaction()
     fun navigateToMoreCategory()
+    fun navigateToAccountList()
+    fun navigateToAddAccount()
 }

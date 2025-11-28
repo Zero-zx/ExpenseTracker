@@ -1,23 +1,18 @@
 package presentation.list
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import data.model.Transaction
 import domain.usecase.GetTransactionsUseCase
-import presentation.TransactionListUiState
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TransactionListViewModel @Inject constructor(
     private val getTransactionsUseCase: GetTransactionsUseCase
-) : ViewModel() {
-
-    private val _uiState = MutableStateFlow<TransactionListUiState>(TransactionListUiState.Loading)
-    val uiState: StateFlow<TransactionListUiState> = _uiState.asStateFlow()
-
-    // For demo purposes - in real app, get from auth/session
+) : BaseViewModel<List<Transaction>>() {
     private val currentAccountId = 1L
 
     init {
@@ -28,22 +23,18 @@ class TransactionListViewModel @Inject constructor(
         viewModelScope.launch {
             getTransactionsUseCase(currentAccountId)
                 .catch { exception ->
-                    _uiState.value = TransactionListUiState.Error(
-                        exception.message ?: "Unknown error occurred"
-                    )
+                    setError(exception.message ?: "Unknown error occurred")
                 }
                 .collect { transactions ->
-                    _uiState.value = if (transactions.isEmpty()) {
-                        TransactionListUiState.Empty
-                    } else {
-                        TransactionListUiState.Success(transactions)
+                    if (transactions.isNotEmpty()) {
+                        setSuccess(transactions)
                     }
                 }
         }
     }
 
     fun refresh() {
-        _uiState.value = TransactionListUiState.Loading
+        setLoading()
         loadTransactions()
     }
 }

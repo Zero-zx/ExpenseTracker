@@ -1,27 +1,22 @@
 package presentation.list
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import base.BaseFragment
+import base.UIState
 import com.example.transaction.databinding.FragmentTransactionListBinding
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.Transaction
 import kotlinx.coroutines.launch
-import presentation.TransactionListUiState
 
 @AndroidEntryPoint
-class TransactionListFragment : Fragment() {
-
-    private var _binding: FragmentTransactionListBinding? = null
-    private val binding get() = _binding!!
-
+class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
+    FragmentTransactionListBinding::inflate
+) {
     private val viewModel: TransactionListViewModel by viewModels()
     private val adapter = TransactionListAdapter(
         onItemClick = { transaction ->
@@ -30,40 +25,32 @@ class TransactionListFragment : Fragment() {
         }
     )
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentTransactionListBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun initView() {
+        setupRecyclerView()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-        observeUiState()
+    override fun observeData() {
+        collectFlow(viewModel.uiState) { state ->
+            when (state) {
+                is UIState.Loading -> showLoading()
+                is UIState.Idle -> showEmpty()
+                is UIState.Success -> showTransactions(state.data)
+                is UIState.Error -> showError(state.message)
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+
+                }
+            }
+        }
     }
 
     private fun setupRecyclerView() {
         binding.recyclerViewTransactions.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@TransactionListFragment.adapter
-        }
-    }
-
-    private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    when (state) {
-                        is TransactionListUiState.Loading -> showLoading()
-                        is TransactionListUiState.Empty -> showEmpty()
-                        is TransactionListUiState.Success -> showTransactions(state.transactions)
-                        is TransactionListUiState.Error -> showError(state.message)
-                    }
-                }
-            }
         }
     }
 
@@ -106,10 +93,5 @@ class TransactionListFragment : Fragment() {
                 viewModel.refresh()
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

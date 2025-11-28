@@ -127,7 +127,7 @@ class ExpandableCategoryAdapter(
         fun bind(category: Category, isExpanded: Boolean, onToggle: () -> Unit) {
             binding.apply {
                 // Set icon
-                iconCategory.imageIcon.setImageResource(category.icon)
+                iconCategory.imageIcon.setImageResource(category.iconRes)
 
                 // Set category name
                 textViewCategoryName.text = category.title.standardize()
@@ -166,7 +166,7 @@ class ExpandableCategoryAdapter(
 
         override fun bind(category: Category) {
             binding.apply {
-                iconCategory.imageIcon.setImageResource(category.icon)
+                iconCategory.imageIcon.setImageResource(category.iconRes)
                 textViewCategoryName.text = category.title.standardize()
             }
         }

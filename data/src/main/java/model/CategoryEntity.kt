@@ -28,7 +28,7 @@ internal data class CategoryEntity(
     @ColumnInfo(name = "title")
     val title: String,
     @ColumnInfo(name = "icon")
-    val icon: Int,
+    val icon: String,
     @ColumnInfo(name = "type")
     val type: CategoryType
 )

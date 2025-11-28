@@ -49,7 +49,7 @@ class CategoryAdapter(
             binding.apply {
                 itemView.isSelected = isSelected
                 textCategory.text = category.title.standardize()
-                layoutIcon.imageIcon.setImageResource(category.icon)
+                layoutIcon.imageIcon.setImageResource(category.iconRes)
             }
         }
     }

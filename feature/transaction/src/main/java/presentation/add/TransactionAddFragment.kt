@@ -22,7 +22,7 @@ import data.model.Category
 import kotlinx.coroutines.launch
 import presentation.AddTransactionUiState
 import presentation.CategoryUiState
-import ui.GridSpacingItemDecoration
+import custom.GridSpacingItemDecoration
 
 
 @AndroidEntryPoint
@@ -125,7 +125,7 @@ class TransactionAddFragment : Fragment() {
     private fun updateCategoryUI(category: Category) {
         binding.apply {
             // Update icon
-            iconCategory.imageIcon.setImageResource(category.icon)
+            iconCategory.imageIcon.setImageResource(category.iconRes)
             // Update category name
             textViewCategory.text = category.title
         }
