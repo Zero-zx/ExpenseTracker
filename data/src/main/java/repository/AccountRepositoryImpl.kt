@@ -1,8 +1,8 @@
 package repository
 
+import account.model.Account
+import account.repository.AccountRepository
 import dao.AccountDao
-import data.model.Account
-import domain.repository.AccountRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import mapper.toDomain

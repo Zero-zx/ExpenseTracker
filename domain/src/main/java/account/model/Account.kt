@@ -1,4 +1,4 @@
-package data.model
+package account.model
 
 data class Account(
     val id: Long = 0,

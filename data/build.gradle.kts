@@ -50,6 +50,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":feature:transaction"))
-    implementation(project(":feature:account"))
+    implementation(project(":domain"))
     implementation(project(":common"))
 }

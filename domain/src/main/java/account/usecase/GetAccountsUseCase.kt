@@ -1,7 +1,7 @@
-package domain.usecase
+package account.usecase
 
-import data.model.Account
-import domain.repository.AccountRepository
+import account.repository.AccountRepository
+import account.model.Account
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

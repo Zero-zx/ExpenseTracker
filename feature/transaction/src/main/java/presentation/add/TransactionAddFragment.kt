@@ -22,7 +22,7 @@ import data.model.Category
 import kotlinx.coroutines.launch
 import presentation.AddTransactionUiState
 import presentation.CategoryUiState
-import ui.GridSpacingItemDecoration
+import custom.GridSpacingItemDecoration
 
 
 @AndroidEntryPoint

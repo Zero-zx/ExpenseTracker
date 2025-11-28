@@ -1,5 +1,6 @@
 package di
 
+import account.repository.AccountRepository
 import android.content.Context
 import androidx.room.Room
 import dagger.Module
@@ -11,7 +12,6 @@ import dao.AccountDao
 import dao.CategoryDao
 import dao.TransactionDao
 import database.BudgetDatabase
-import domain.repository.AccountRepository
 import domain.repository.CategoryRepository
 import domain.repository.TransactionRepository
 import repository.AccountRepositoryImpl

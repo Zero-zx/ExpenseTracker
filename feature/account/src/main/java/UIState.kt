@@ -1,6 +1,5 @@
-package presentation
-
-import data.model.Account
+import account.model.Account
+import account.model.AccountType
 
 /**
  * UIState for account list operations.
@@ -20,6 +19,7 @@ sealed class AccountListUiState {
 sealed class AddAccountUiState {
     object Initial : AddAccountUiState()
     object Loading : AddAccountUiState()
+    data class SelectedType(val type: AccountType) : AddAccountUiState()
     data class Success(val accountId: Long) : AddAccountUiState()
     data class Error(val message: String) : AddAccountUiState()
 }

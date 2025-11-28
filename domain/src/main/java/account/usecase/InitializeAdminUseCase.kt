@@ -1,8 +1,8 @@
-package domain.usecase
+package account.usecase
 
-import data.model.Account
-import data.model.AccountType
-import domain.repository.AccountRepository
+import account.repository.AccountRepository
+import account.model.Account
+import account.model.AccountType
 import javax.inject.Inject
 
 class InitializeAdminUseCase @Inject constructor(

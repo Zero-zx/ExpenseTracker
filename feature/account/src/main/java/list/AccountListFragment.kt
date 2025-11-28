@@ -1,4 +1,4 @@
-package presentation.list
+package list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,11 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.login.databinding.FragmentAccountListBinding
-import com.example.login.R
 import dagger.hilt.android.AndroidEntryPoint
-import data.model.Account
+import account.model.Account
 import kotlinx.coroutines.launch
-import presentation.AccountListUiState
+import AccountListUiState
 
 @AndroidEntryPoint
 class AccountListFragment : Fragment() {

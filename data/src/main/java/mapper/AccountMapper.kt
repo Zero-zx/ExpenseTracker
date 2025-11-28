@@ -1,6 +1,6 @@
 package mapper
 
-import data.model.Account
+import account.model.Account
 import model.AccountEntity
 
 internal fun Account.toEntity(): AccountEntity {

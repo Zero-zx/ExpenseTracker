@@ -1,4 +1,4 @@
-package presentation.list
+package list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.login.databinding.ItemAccountBinding
-import data.model.Account
+import account.model.Account
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date

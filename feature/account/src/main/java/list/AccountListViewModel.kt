@@ -1,13 +1,16 @@
-package presentation.list
+package list
 
+import AccountListUiState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import domain.usecase.GetAccountsUseCase
-import kotlinx.coroutines.flow.*
+import account.usecase.GetAccountsUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import navigation.Navigator
-import presentation.AccountListUiState
 import javax.inject.Inject
 
 @HiltViewModel

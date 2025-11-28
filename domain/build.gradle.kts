@@ -1,6 +1,12 @@
+import deps.androidx
+import deps.hilt
+import deps.implementation
+
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id(build.BuildPlugins.ANDROID_LIBRARY)
+    id(build.BuildPlugins.KOTLIN_ANDROID)
+    id(build.BuildPlugins.HILT)
+    id(build.BuildPlugins.KSP)
 }
 
 android {
@@ -35,9 +41,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(project(":common"))
+    androidx()
+    hilt()
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

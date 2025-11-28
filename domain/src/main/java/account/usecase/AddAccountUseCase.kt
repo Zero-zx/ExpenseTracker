@@ -1,7 +1,9 @@
-package domain.usecase
+package account.usecase
 
-import data.model.Account
-import domain.repository.AccountRepository
+
+import account.model.Account
+import account.model.AccountType
+import account.repository.AccountRepository
 import javax.inject.Inject
 
 class AddAccountUseCase @Inject constructor(
@@ -9,7 +11,7 @@ class AddAccountUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         username: String,
-        type: data.model.AccountType,
+        type: AccountType,
         balance: Double
     ): Long {
         val account = Account(

@@ -1,4 +1,4 @@
-package data.model
+package account.model
 
 enum class AccountType(val rawValue: String) {
     NORMAL("normal"),

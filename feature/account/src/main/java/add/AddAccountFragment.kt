@@ -1,5 +1,6 @@
-package presentation.add
+package add
 
+import account.model.AccountType
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import base.UIState
 import com.example.login.databinding.FragmentAddAccountBinding
 import dagger.hilt.android.AndroidEntryPoint
-import data.model.AccountType
 import kotlinx.coroutines.launch
-import presentation.AddAccountUiState
 
 @AndroidEntryPoint
 class AddAccountFragment : Fragment() {
@@ -45,6 +45,14 @@ class AddAccountFragment : Fragment() {
         }
         binding.buttonSave.setOnClickListener {
             createAccount()
+        }
+
+        binding.textViewAccountType.setOnClickListener {
+            val bottomSheet = AccountTypeBottomSheet {
+                binding.textViewAccountType.setText(it.name)
+                viewModel.updateAccountType(it)
+            }
+            bottomSheet.show(parentFragmentManager, "AccountTypeBottomSheet")
         }
     }
 
@@ -95,17 +103,17 @@ class AddAccountFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     when (state) {
-                        is AddAccountUiState.Initial -> {
+                        is UIState.Idle -> {
                             // Initial state, no action needed
                         }
 
-                        is AddAccountUiState.Loading -> {
+                        is UIState.Loading -> {
                             // Show loading indicator if needed
                             binding.buttonSubmit.isEnabled = false
                             binding.buttonSave.isEnabled = false
                         }
 
-                        is AddAccountUiState.Success -> {
+                        is UIState.Success -> {
                             Toast.makeText(
                                 context,
                                 "Account added successfully",
@@ -115,7 +123,7 @@ class AddAccountFragment : Fragment() {
                             binding.buttonSave.isEnabled = true
                         }
 
-                        is AddAccountUiState.Error -> {
+                        is UIState.Error -> {
                             Toast.makeText(
                                 context,
                                 "Error adding account: ${state.message}",

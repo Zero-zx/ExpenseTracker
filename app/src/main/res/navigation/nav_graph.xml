@@ -23,12 +23,12 @@
     
     <fragment
         android:id="@+id/accountListFragment"
-        android:name="presentation.list.AccountListFragment" >
+        android:name="list.AccountListFragment" >
         <action
             android:id="@+id/action_accountListFragment_to_addAccountFragment"
             app:destination="@id/addAccountFragment" />
     </fragment>
     <fragment
         android:id="@+id/addAccountFragment"
-        android:name="presentation.add.AddAccountFragment" />
+        android:name="add.AddAccountFragment" />
 </navigation>
