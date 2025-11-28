@@ -125,7 +125,7 @@ class TransactionAddFragment : Fragment() {
     private fun updateCategoryUI(category: Category) {
         binding.apply {
             // Update icon
-            iconCategory.imageIcon.setImageResource(category.icon)
+            iconCategory.imageIcon.setImageResource(category.iconRes)
             // Update category name
             textViewCategory.text = category.title
         }

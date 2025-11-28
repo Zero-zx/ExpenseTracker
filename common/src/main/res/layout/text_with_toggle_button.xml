@@ -16,9 +16,7 @@
     <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/toggle_switch"
         android:layout_width="wrap_content"
-        app:trackTint="@color/my_app_on_surface_variant"
-        android:layout_height="wrap_content"
-        android:checked="false"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

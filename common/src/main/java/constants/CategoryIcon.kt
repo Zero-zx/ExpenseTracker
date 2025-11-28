@@ -17,7 +17,7 @@ enum class CategoryIcon(
     SPORT(R.drawable.icon_sport, "sport"),
     CLOTHES(R.drawable.icon_clothes, "clothes"),
     ATM(R.drawable.icon_atm, "atm"),
-    BABY(R.drawable.icon_baby, "study"),
+    BABY(R.drawable.icon_baby, "baby"),
     MOVIE(R.drawable.icon_movie, "movie");
 
     companion object {

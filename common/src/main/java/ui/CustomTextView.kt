@@ -49,6 +49,11 @@ class CustomTextView @JvmOverloads constructor(
         binding.textView.text = text
     }
 
+    fun getText(): String {
+        return binding.textView.text.toString()
+    }
+
+
     fun setTextColor(color: Int) {
         binding.textView.setTextColor(color)
     }

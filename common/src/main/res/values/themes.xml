@@ -96,7 +96,9 @@
 
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
         <item name="colorSurface">@color/my_app_surface</item>
-        <item name="colorOnSurfaceVariant">@color/my_app_on_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/my_app_on_secondary</item>
+        <item name="colorOnSecondaryContainer">@color/my_app_primary_container</item>
+        <item name="colorSecondaryContainer">@color/my_app_on_primary</item>
     </style>
 
     <style name="Widget.App.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
@@ -104,7 +106,7 @@
     </style>
 
     <style name="ThemeOverlay.App.Switch" parent="">
-        <item name="colorPrimary">@color/my_app_on_surface</item>
+        <item name="colorPrimary">@color/my_app_on_primary</item>
         <item name="colorSurfaceVariant">@color/my_app_on_surface_variant</item>
     </style>
 </resources>

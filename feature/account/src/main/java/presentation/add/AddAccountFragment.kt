@@ -4,15 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.login.R
 import com.example.login.databinding.FragmentAddAccountBinding
 import dagger.hilt.android.AndroidEntryPoint
 import data.model.AccountType
@@ -37,59 +34,60 @@ class AddAccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupAccountTypeDropdown()
         setupListeners()
         observeUiState()
     }
 
-    private fun setupAccountTypeDropdown() {
-        val accountTypes = AccountType.values().map { it.name }
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, accountTypes)
-        (binding.textInputAccountType.editText as? AutoCompleteTextView)?.setAdapter(adapter)
-    }
 
     private fun setupListeners() {
         binding.buttonSubmit.setOnClickListener {
-            val username = binding.textInputUsername.editText?.text?.toString() ?: ""
-            val accountTypeText = binding.textInputAccountType.editText?.text?.toString() ?: ""
-            val balanceText = binding.textInputBalance.editText?.text?.toString() ?: "0"
-
-            if (username.isBlank()) {
-                Toast.makeText(
-                    context,
-                    "Please enter a username",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
-            val accountType = try {
-                AccountType.valueOf(accountTypeText.uppercase())
-            } catch (e: IllegalArgumentException) {
-                Toast.makeText(
-                    context,
-                    "Please select a valid account type",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
-            val balance = balanceText.toDoubleOrNull() ?: 0.0
-            if (balance < 0) {
-                Toast.makeText(
-                    context,
-                    "Balance must be greater than or equal to 0",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
-            viewModel.addAccount(
-                username = username,
-                type = accountType,
-                balance = balance
-            )
+            createAccount()
         }
+        binding.buttonSave.setOnClickListener {
+            createAccount()
+        }
+    }
+
+    fun createAccount() {
+        val username = binding.editeTextAccountName.text?.toString() ?: ""
+        val accountTypeText = binding.textViewAccountType.getText()
+        val balanceText = binding.editTextAmount.text?.toString() ?: "0"
+
+        if (username.isBlank()) {
+            Toast.makeText(
+                context,
+                "Please enter a username",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        val accountType = try {
+            AccountType.valueOf(accountTypeText.uppercase())
+        } catch (e: IllegalArgumentException) {
+            Toast.makeText(
+                context,
+                "Please select a valid account type",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        val balance = balanceText.toDoubleOrNull() ?: 0.0
+        if (balance < 0) {
+            Toast.makeText(
+                context,
+                "Balance must be greater than or equal to 0",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        viewModel.addAccount(
+            username = username,
+            type = accountType,
+            balance = balance
+        )
     }
 
     private fun observeUiState() {
@@ -104,6 +102,7 @@ class AddAccountFragment : Fragment() {
                         is AddAccountUiState.Loading -> {
                             // Show loading indicator if needed
                             binding.buttonSubmit.isEnabled = false
+                            binding.buttonSave.isEnabled = false
                         }
 
                         is AddAccountUiState.Success -> {
@@ -113,8 +112,7 @@ class AddAccountFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                             binding.buttonSubmit.isEnabled = true
-                            // Navigate back to list
-//                            findNavController().popBackStack()
+                            binding.buttonSave.isEnabled = true
                         }
 
                         is AddAccountUiState.Error -> {
@@ -124,17 +122,12 @@ class AddAccountFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                             binding.buttonSubmit.isEnabled = true
+                            binding.buttonSave.isEnabled = true
                         }
                     }
                 }
             }
         }
-    }
-
-    private fun clearForm() {
-        binding.textInputUsername.editText?.text?.clear()
-        binding.textInputAccountType.editText?.text?.clear()
-        binding.textInputBalance.editText?.text?.clear()
     }
 
     override fun onResume() {

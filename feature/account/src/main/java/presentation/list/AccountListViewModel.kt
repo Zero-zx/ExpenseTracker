@@ -6,12 +6,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import domain.usecase.GetAccountsUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import navigation.Navigator
 import presentation.AccountListUiState
 import javax.inject.Inject
 
 @HiltViewModel
 class AccountListViewModel @Inject constructor(
-    private val getAccountsUseCase: GetAccountsUseCase
+    private val getAccountsUseCase: GetAccountsUseCase,
+    private val navigator: Navigator
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<AccountListUiState>(AccountListUiState.Loading)
@@ -38,6 +40,11 @@ class AccountListViewModel @Inject constructor(
                 }
         }
     }
+
+    fun goToAddAccount() {
+        navigator.navigateToAddAccount()
+    }
+
 
     fun refresh() {
         _uiState.value = AccountListUiState.Loading

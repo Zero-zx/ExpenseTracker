@@ -53,7 +53,7 @@ class TransactionListAdapter(
             binding.apply {
                 // Category
                 textViewCategory.text = transaction.category.title
-                textViewCategoryIcon.setImageResource(transaction.category.icon)
+                textViewCategoryIcon.setImageResource(transaction.category.iconRes)
 
                 // Description
                 if (!transaction.description.isNullOrEmpty()) {

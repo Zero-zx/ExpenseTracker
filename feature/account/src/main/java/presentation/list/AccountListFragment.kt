@@ -48,9 +48,9 @@ class AccountListFragment : Fragment() {
     }
 
     private fun setupFab() {
-//        binding.fabAddAccount.setOnClickListener {
-//            findNavController().navigate(R.id.action_accountListFragment_to_addAccountFragment)
-//        }
+        binding.fabAddAccount.setOnClickListener {
+            viewModel.goToAddAccount()
+        }
     }
 
     private fun setupRecyclerView() {

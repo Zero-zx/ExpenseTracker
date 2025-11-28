@@ -1,8 +1,11 @@
 import deps.androidx
+import deps.hilt
 
 plugins {
     id(build.BuildPlugins.ANDROID_LIBRARY)
     id(build.BuildPlugins.KOTLIN_ANDROID)
+    id(build.BuildPlugins.HILT)
+    id(build.BuildPlugins.KSP)
 }
 
 android {
@@ -44,6 +47,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
     androidx()
+    hilt()
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

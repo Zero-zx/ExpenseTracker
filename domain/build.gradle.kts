@@ -1,17 +1,10 @@
-import deps.androidx
-import deps.hilt
-import deps.room
-
 plugins {
-    id(build.BuildPlugins.ANDROID_LIBRARY)
-    id(build.BuildPlugins.KOTLIN_ANDROID)
-    id(build.BuildPlugins.KSP)
-    id(build.BuildPlugins.HILT)
-
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
-    namespace = "com.example.data"
+    namespace = "com.example.domain"
     compileSdk {
         version = release(36)
     }
@@ -42,14 +35,10 @@ android {
 }
 
 dependencies {
-    androidx()
-    hilt()
-    room()
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation(project(":feature:transaction"))
-    implementation(project(":feature:account"))
-    implementation(project(":common"))
 }
