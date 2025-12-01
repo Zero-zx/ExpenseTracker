@@ -12,8 +12,8 @@ import com.example.transaction.R
 import com.example.transaction.databinding.FragmentTransactionAddBinding
 import custom.GridSpacingItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
-import data.model.Category
-import data.model.CategoryType
+import transaction.model.Category
+import transaction.model.CategoryType
 import presentation.CategoryUiState
 import presentation.add.adapter.CategoryAdapter
 import presentation.add.viewModel.AddTransactionViewModel

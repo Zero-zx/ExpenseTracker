@@ -3,8 +3,8 @@ package presentation.add.viewModel
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import data.model.Category
-import domain.usecase.GetCategoriesUseCase
+import transaction.model.Category
+import transaction.usecase.GetCategoriesUseCase
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch

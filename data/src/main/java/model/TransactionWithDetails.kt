@@ -3,7 +3,7 @@ package model
 import android.R
 import androidx.room.Embedded
 import androidx.room.Relation
-import data.model.Transaction
+import transaction.model.Transaction
 
 // Model used for query one-to-many relationship
 internal data class TransactionWithDetails(

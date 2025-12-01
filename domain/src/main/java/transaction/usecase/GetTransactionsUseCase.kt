@@ -1,8 +1,8 @@
-package domain.usecase
+package transaction.usecase
 
 import kotlinx.coroutines.flow.Flow
-import data.model.Transaction
-import domain.repository.TransactionRepository
+import transaction.model.Transaction
+import transaction.repository.TransactionRepository
 import javax.inject.Inject
 
 class GetTransactionsUseCase @Inject constructor(
@@ -12,3 +12,5 @@ class GetTransactionsUseCase @Inject constructor(
         return transactionRepository.getAllTransactionByAccount(accountId)
     }
 }
+
+

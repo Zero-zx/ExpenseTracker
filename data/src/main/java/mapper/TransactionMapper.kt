@@ -1,6 +1,6 @@
 package mapper
 
-import data.model.Transaction
+import transaction.model.Transaction
 import model.TransactionEntity
 import model.TransactionWithDetails
 import model.toCategory

@@ -1,8 +1,8 @@
 package repository
 
 import dao.TransactionDao
-import data.model.Transaction
-import domain.repository.TransactionRepository
+import transaction.model.Transaction
+import transaction.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import mapper.toDomain

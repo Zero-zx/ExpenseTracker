@@ -1,6 +1,6 @@
-package domain.usecase
+package transaction.usecase
 
-import domain.repository.CategoryRepository
+import transaction.repository.CategoryRepository
 import javax.inject.Inject
 
 class InitializeCategoriesUseCase @Inject constructor(
@@ -10,3 +10,5 @@ class InitializeCategoriesUseCase @Inject constructor(
         categoryRepository.initializeCategories()
     }
 }
+
+

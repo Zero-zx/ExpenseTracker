@@ -12,8 +12,8 @@ import dao.AccountDao
 import dao.CategoryDao
 import dao.TransactionDao
 import database.BudgetDatabase
-import domain.repository.CategoryRepository
-import domain.repository.TransactionRepository
+import transaction.repository.CategoryRepository
+import transaction.repository.TransactionRepository
 import repository.AccountRepositoryImpl
 import repository.CategoryRepositoryImpl
 import repository.TransactionRepositoryImpl

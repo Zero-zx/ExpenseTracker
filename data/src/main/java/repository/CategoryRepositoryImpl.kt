@@ -1,8 +1,8 @@
 package repository
 
 import dao.CategoryDao
-import data.model.Category
-import domain.repository.CategoryRepository
+import transaction.model.Category
+import transaction.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import model.InitCategory

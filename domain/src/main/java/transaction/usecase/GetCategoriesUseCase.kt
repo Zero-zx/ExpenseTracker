@@ -1,8 +1,8 @@
-package domain.usecase
+package transaction.usecase
 
-import data.model.Category
-import domain.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
+import transaction.model.Category
+import transaction.repository.CategoryRepository
 import javax.inject.Inject
 
 class GetCategoriesUseCase @Inject constructor(
@@ -12,3 +12,5 @@ class GetCategoriesUseCase @Inject constructor(
         return categoryRepository.getAllCategory()
     }
 }
+
+

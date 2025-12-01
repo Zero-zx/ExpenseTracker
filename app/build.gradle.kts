@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":data"))
     implementation(project(":domain"))
+    implementation(project(":feature:statistics"))
     implementation(project(":feature:transaction"))
     implementation(project(":feature:account"))
     implementation(libs.androidx.navigation.fragment)

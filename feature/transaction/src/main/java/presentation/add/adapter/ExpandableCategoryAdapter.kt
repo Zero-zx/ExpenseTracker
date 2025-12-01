@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemCategoryChildBinding
 import com.example.transaction.databinding.ItemCategoryParentBinding
-import data.model.Category
+import transaction.model.Category
 import helpers.standardize
 
 class ExpandableCategoryAdapter(

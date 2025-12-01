@@ -1,4 +1,4 @@
-package data.model
+package transaction.model
 
 // Transaction model for domain layer
 data class Transaction(
@@ -11,3 +11,5 @@ data class Transaction(
     val eventId: Long,
     val partnerId: Long
 )
+
+
