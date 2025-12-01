@@ -1,9 +1,11 @@
-package domain.repository
+package transaction.repository
 
-import data.model.Category
 import kotlinx.coroutines.flow.Flow
+import transaction.model.Category
 
 interface CategoryRepository {
     suspend fun initializeCategories()
     fun getAllCategory(): Flow<List<Category>>
 }
+
+

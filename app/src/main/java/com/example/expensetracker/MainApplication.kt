@@ -3,7 +3,7 @@ package com.example.expensetracker
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 import account.usecase.InitializeAdminUseCase
-import domain.usecase.InitializeCategoriesUseCase
+import transaction.usecase.InitializeCategoriesUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

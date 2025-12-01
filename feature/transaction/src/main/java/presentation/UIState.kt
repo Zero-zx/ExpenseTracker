@@ -1,7 +1,7 @@
 package presentation
 
-import data.model.Category
-import data.model.Transaction
+import transaction.model.Category
+import transaction.model.Transaction
 
 /**
  * UIState for category loading operations.

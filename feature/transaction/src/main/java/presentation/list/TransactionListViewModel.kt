@@ -3,8 +3,8 @@ package presentation.list
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import data.model.Transaction
-import domain.usecase.GetTransactionsUseCase
+import transaction.model.Transaction
+import transaction.usecase.GetTransactionsUseCase
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.R
 import com.example.transaction.databinding.ItemTransactionBinding
-import data.model.CategoryType
-import data.model.Transaction
+import transaction.model.CategoryType
+import transaction.model.Transaction
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date

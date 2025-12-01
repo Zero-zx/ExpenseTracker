@@ -10,7 +10,7 @@ import base.BaseFragment
 import base.UIState
 import com.example.transaction.databinding.FragmentTransactionListBinding
 import dagger.hilt.android.AndroidEntryPoint
-import data.model.Transaction
+import transaction.model.Transaction
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint

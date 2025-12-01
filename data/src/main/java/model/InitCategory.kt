@@ -1,7 +1,7 @@
 package model
 
 import constants.CategoryIcon
-import data.model.CategoryType
+import transaction.model.CategoryType
 
 object InitCategory {
     internal val CATEGORY_LIST = listOf(

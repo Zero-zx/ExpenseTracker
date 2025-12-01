@@ -1,4 +1,4 @@
-package data.model
+package transaction.model
 
 import constants.CategoryIcon
 
@@ -12,3 +12,5 @@ data class Category(
     val iconRes: Int
         get() = CategoryIcon.fromName(icon).iconRes
 }
+
+

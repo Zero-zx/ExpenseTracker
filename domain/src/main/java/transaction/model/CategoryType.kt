@@ -1,4 +1,4 @@
-package data.model
+package transaction.model
 
 enum class CategoryType {
     IN,
@@ -6,3 +6,5 @@ enum class CategoryType {
     LEND,
     LOAN
 }
+
+

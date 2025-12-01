@@ -35,4 +35,9 @@
     <fragment
         android:id="@+id/addAccountFragment"
         android:name="add.AddAccountFragment" />
+
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="presentation.StatisticsFragment"
+        android:label="Statistics" />
 </navigation>

@@ -1,8 +1,8 @@
-package domain.usecase
+package transaction.usecase
 
-import data.model.Category
-import data.model.Transaction
-import domain.repository.TransactionRepository
+import transaction.model.Category
+import transaction.model.Transaction
+import transaction.repository.TransactionRepository
 import javax.inject.Inject
 
 class AddTransactionUseCase @Inject constructor(
@@ -28,3 +28,5 @@ class AddTransactionUseCase @Inject constructor(
         return repository.insertTransaction(transaction)
     }
 }
+
+

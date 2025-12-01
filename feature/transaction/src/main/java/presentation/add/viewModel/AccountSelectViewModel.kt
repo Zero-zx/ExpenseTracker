@@ -5,7 +5,7 @@ import account.usecase.GetAccountsUseCase
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import domain.usecase.GetCategoriesUseCase
+import transaction.usecase.GetCategoriesUseCase
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
