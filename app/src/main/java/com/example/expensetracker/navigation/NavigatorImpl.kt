@@ -2,6 +2,7 @@ package com.example.expensetracker.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import com.example.expensetracker.R
 import navigation.NavigationDestination
 import navigation.Navigator
 import navigation.navigateWithAnim
@@ -35,19 +36,28 @@ class NavigatorImpl @Inject constructor() : Navigator {
         return navController?.popBackStack() ?: false
     }
 
+    override fun navigateToTransactionRoute() {
+        navController?.navigateWithAnim(R.id.transaction_graph)
+    }
+
+
     override fun navigateToTransaction() {
-        navController?.navigate(com.example.expensetracker.R.id.transactionListFragment)
+        navController?.navigateWithAnim(R.id.transactionListFragment)
     }
 
     override fun navigateToMoreCategory() {
-        navController?.navigate(com.example.expensetracker.R.id.categorySelectFragment)
+        navController?.navigateWithAnim(R.id.categorySelectFragment)
     }
 
     override fun navigateToAccountList() {
-        navController?.navigate(com.example.expensetracker.R.id.accountListFragment)
+        navController?.navigateWithAnim(R.id.accountListFragment)
     }
 
     override fun navigateToAddAccount() {
-        navController?.navigate(com.example.expensetracker.R.id.addAccountFragment)
+        navController?.navigateWithAnim(R.id.addAccountFragment)
+    }
+
+    override fun navigateToSelectAccount() {
+        navController?.navigateWithAnim(R.id.accountSelectFragment)
     }
 }

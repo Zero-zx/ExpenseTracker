@@ -1,34 +1,33 @@
-package presentation.add
+package presentation.add.adapter
 
+import account.model.Account
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.transaction.databinding.ItemCategoryBinding
-import data.model.Category
-import helpers.standardize
+import com.example.transaction.databinding.ItemAccountTransactionBinding
 
 
-class CategoryAdapter(
-    private val onItemClick: (Category) -> Unit
-) : ListAdapter<Category, CategoryAdapter.CategoryViewHolder>(CategoryAdapter.CategoryDiffCallback()) {
+class AccountAdapter(
+    private val onItemClick: (Account) -> Unit
+) : ListAdapter<Account, AccountAdapter.AccountViewHolder>(AccountDiffCallback()) {
     private var selectedPosition = RecyclerView.NO_POSITION
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val binding = ItemCategoryBinding.inflate(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountViewHolder {
+        val binding = ItemAccountTransactionBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return CategoryViewHolder(binding)
+        return AccountViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AccountViewHolder, position: Int) {
         holder.bind(getItem(position), position == selectedPosition)
     }
 
-    inner class CategoryViewHolder(
-        private val binding: ItemCategoryBinding
+    inner class AccountViewHolder(
+        private val binding: ItemAccountTransactionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
 
@@ -45,21 +44,21 @@ class CategoryAdapter(
             }
         }
 
-        fun bind(category: Category, isSelected: Boolean) {
+        fun bind(account: Account, isSelected: Boolean) {
             binding.apply {
                 itemView.isSelected = isSelected
-                textCategory.text = category.title.standardize()
-                layoutIcon.imageIcon.setImageResource(category.iconRes)
+                textViewName.text = account.username
+                textViewAmount.text = account.balance.toString()
             }
         }
     }
 
-    private class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
-        override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
+    private class AccountDiffCallback : DiffUtil.ItemCallback<Account>() {
+        override fun areItemsTheSame(oldItem: Account, newItem: Account): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
+        override fun areContentsTheSame(oldItem: Account, newItem: Account): Boolean {
             return oldItem == newItem
         }
     }

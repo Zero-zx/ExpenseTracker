@@ -7,8 +7,10 @@ interface Navigator {
     fun navigateTo(destination: NavigationDestination, navOptions: NavOptions? = null)
     fun navigateUp(): Boolean
     fun popBackStack(): Boolean
+    fun navigateToTransactionRoute()
     fun navigateToTransaction()
     fun navigateToMoreCategory()
     fun navigateToAccountList()
     fun navigateToAddAccount()
+    fun navigateToSelectAccount()
 }

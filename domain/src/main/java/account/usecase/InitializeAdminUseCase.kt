@@ -11,7 +11,7 @@ class InitializeAdminUseCase @Inject constructor(
     suspend operator fun invoke() {
         val account = Account(
             username = "Hieu",
-            type = AccountType.PREMIUM,
+            type = AccountType.CASH,
             balance = 10000.0,
             createAt = System.currentTimeMillis()
         )
