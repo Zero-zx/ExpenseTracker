@@ -3,6 +3,7 @@ package model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import data.model.Category
 import data.model.CategoryType
@@ -16,6 +17,9 @@ import data.model.CategoryType
             childColumns = ["parent_id"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index(value = ["parent_id"])
     ]
 )
 

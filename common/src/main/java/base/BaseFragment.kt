@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -37,9 +39,26 @@ abstract class BaseFragment<VBinding : ViewBinding>(
         observeData()
     }
 
+    /**
+     * Collect a StateFlow<UIState<T>> using lifecycle-aware repeatOnLifecycle(STARTED).
+     * Use for UI state updates.
+     */
     fun <T> collectFlow(flow: StateFlow<UIState<T>>, action: (UIState<T>) -> Unit) {
         viewLifecycleOwner.lifecycleScope.launch {
-            flow.collect { state -> action(state) }
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                flow.collect { state -> action(state) }
+            }
+        }
+    }
+
+    /**
+     * Collect any StateFlow<T> using lifecycle-aware repeatOnLifecycle(STARTED).
+     */
+    fun <T> collectState(flow: StateFlow<T>, action: (T) -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                flow.collect { value -> action(value) }
+            }
         }
     }
 

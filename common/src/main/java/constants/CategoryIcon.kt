@@ -18,11 +18,16 @@ enum class CategoryIcon(
     CLOTHES(R.drawable.icon_clothes, "clothes"),
     ATM(R.drawable.icon_atm, "atm"),
     BABY(R.drawable.icon_baby, "baby"),
-    MOVIE(R.drawable.icon_movie, "movie");
+    MOVIE(R.drawable.icon_movie, "movie"),
+    CASH(R.drawable.icon_cash, "icon_cash"),
+    BANK(R.drawable.icon_bank, "icon_bank"),
+    CREDIT(R.drawable.icon_credit, "icon_credit"),
+    E_WALLET(R.drawable.icon_e_wallet, "icon_e_wallet"),
+    OTHER(R.drawable.icon_other, "icon_other");
 
     companion object {
         fun fromName(name: String): CategoryIcon {
-            return entries.find { it.iconName == name } ?: SALARY
+            return entries.find { it.iconName == name } ?: OTHER
         }
     }
 }
