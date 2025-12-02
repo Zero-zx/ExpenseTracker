@@ -51,7 +51,6 @@
         </item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Material3.LargeComponent
         </item>
-        <item name="textInputStyle">@style/Widget.App.ExposedDropdownMenu</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="materialSwitchStyle">@style/Widget.App.Switch</item>
     </style>

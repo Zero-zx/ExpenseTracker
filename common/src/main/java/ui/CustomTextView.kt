@@ -1,4 +1,4 @@
-package custom
+package ui
 
 import android.content.Context
 import android.graphics.Color

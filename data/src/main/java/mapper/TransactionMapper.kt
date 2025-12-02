@@ -3,7 +3,7 @@ package mapper
 import transaction.model.Transaction
 import model.TransactionEntity
 import model.TransactionWithDetails
-import model.toCategory
+import model.toDomain
 
 internal fun Transaction.toEntity(): TransactionEntity {
     return TransactionEntity(
@@ -12,8 +12,8 @@ internal fun Transaction.toEntity(): TransactionEntity {
         createAt = createAt,
         description = description!!,
         categoryId = category.id,
-        accountId = accountId,
-        eventId = eventId,
+        accountId = account.id,
+        eventId = event?.id,
         partnerId = partnerId,
     )
 }
@@ -23,9 +23,9 @@ internal fun TransactionWithDetails.toDomain(): Transaction {
         id = transactionEntity.id,
         description = transactionEntity.description,
         amount = transactionEntity.amount,
-        category = categoryEntity.toCategory(),
-        accountId = 1,
-        eventId = 1,
+        category = categoryEntity.toDomain(),
+        account = accountEntity.toDomain(),
+        event = eventEntity?.toDomain(),
         partnerId = 1,
         createAt = transactionEntity.createAt,
     )

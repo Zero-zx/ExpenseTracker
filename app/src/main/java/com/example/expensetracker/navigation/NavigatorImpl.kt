@@ -3,7 +3,6 @@ package com.example.expensetracker.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.example.expensetracker.R
-import navigation.NavigationDestination
 import navigation.Navigator
 import navigation.navigateWithAnim
 import javax.inject.Inject
@@ -16,16 +15,6 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     fun setNavController(navController: NavController) {
         this.navController = navController
-    }
-
-    override fun navigateTo(destination: NavigationDestination, navOptions: NavOptions?) {
-        val route = when (destination) {
-            is NavigationDestination.TransactionDetail -> destination.createRoute()
-            is NavigationDestination.EditTransaction -> destination.createRoute()
-            else -> destination.route
-        }
-
-        navController?.navigateWithAnim(route)
     }
 
     override fun navigateUp(): Boolean {
@@ -59,5 +48,21 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun navigateToSelectAccount() {
         navController?.navigateWithAnim(R.id.accountSelectFragment)
+    }
+
+    override fun navigateToSelectEvent() {
+        navController?.navigateWithAnim(R.id.eventSelectFragment)
+    }
+
+    override fun navigateToEventList() {
+        navController?.navigateWithAnim(R.id.eventListFragment)
+    }
+
+    override fun navigateToAddEvent() {
+        navController?.navigateWithAnim(R.id.addEventFragment)
+    }
+
+    override fun navigateToAddParticipants() {
+        navController?.navigateWithAnim(R.id.addParticipantsFragment)
     }
 }

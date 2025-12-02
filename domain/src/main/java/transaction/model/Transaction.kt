@@ -1,5 +1,7 @@
 package transaction.model
 
+import account.model.Account
+
 // Transaction model for domain layer
 data class Transaction(
     val id: Long = 0,
@@ -7,8 +9,8 @@ data class Transaction(
     val createAt: Long,
     val category: Category,
     val description: String?,
-    val accountId: Long,
-    val eventId: Long,
+    val account: Account,
+    val event: Event?,
     val partnerId: Long
 )
 

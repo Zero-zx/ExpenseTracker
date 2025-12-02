@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/transaction_graph"
+        android:id="@+id/homeFragment"
         android:icon="@drawable/icon_home_menu"
         android:title="Home" />
     <item
@@ -9,7 +9,7 @@
         android:icon="@drawable/icon_wallet"
         android:title="Account" />
     <item
-        android:id="@+id/categorySelectFragment"
+        android:id="@+id/transaction_graph"
         android:icon="@drawable/icon_add"
         android:title="Transaction" />
     <item

@@ -4,9 +4,6 @@ import account.model.Account
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import transaction.model.Category
-import transaction.usecase.AddTransactionUseCase
-import transaction.usecase.GetCategoriesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -14,6 +11,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import navigation.Navigator
 import presentation.CategoryUiState
+import transaction.model.Category
+import transaction.model.Event
+import transaction.usecase.GetCategoriesUseCase
+import usecase.AddTransactionUseCase
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,6 +32,8 @@ class AddTransactionViewModel @Inject constructor(
 
     private val _selectedAccount = MutableStateFlow<Account?>(null)
     val selectedAccount = _selectedAccount.asStateFlow()
+    private val _selectedEvent = MutableStateFlow<Event?>(null)
+    val selectedEvent = _selectedEvent.asStateFlow()
 
 
     init {
@@ -55,16 +58,23 @@ class AddTransactionViewModel @Inject constructor(
 
     fun addTransaction(
         amount: Double,
-        description: String?
+        description: String?,
+        createAt: Long
     ) {
         viewModelScope.launch {
             val selectedCategory = _selectedCategory.value ?: return@launch
+            val selectedAccount = _selectedAccount.value ?: return@launch
+            val selectedEvent = _selectedEvent.value
+
             setLoading()
             try {
                 val id = addTransactionUseCase(
                     amount = amount,
                     category = selectedCategory,
-                    description = description
+                    account = selectedAccount,
+                    event = selectedEvent,
+                    description = description,
+                    createAt = createAt
                 )
                 setSuccess(id)
             } catch (e: Exception) {
@@ -82,6 +92,10 @@ class AddTransactionViewModel @Inject constructor(
         _selectedAccount.value = account
     }
 
+    fun selectEvent(event: Event) {
+        _selectedEvent.value = event
+    }
+
     fun onHistoryClick() {
         navigator.navigateToTransaction()
     }
@@ -92,6 +106,10 @@ class AddTransactionViewModel @Inject constructor(
 
     fun toSelectAccount() {
         navigator.navigateToSelectAccount()
+    }
+
+    fun toSelectEvent() {
+        navigator.navigateToSelectEvent()
     }
 
     fun navigateBack() {

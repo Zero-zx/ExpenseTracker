@@ -21,6 +21,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/dropdown_menu_transaction"
+        style="@style/Widget.App.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="6:1"
@@ -51,10 +52,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingHorizontal="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_save"
         app:layout_constraintTop_toBottomOf="@+id/dropdown_menu_transaction">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -217,6 +219,7 @@
                         app:layout_constraintWidth_percent="0.1" />
 
                     <TextView
+                        android:id="@+id/text_view_account_name"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:gravity="center_vertical"
@@ -259,6 +262,7 @@
                         app:layout_constraintWidth_percent="0.1" />
 
                     <TextView
+                        android:id="@+id/text_view_date"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:background="@drawable/rounded_ripple_image_button"
@@ -333,12 +337,12 @@
                 app:layout_constraintDimensionRatio="8:1"
                 app:layout_constraintTop_toBottomOf="@+id/layout_addition">
 
-                <custom.CustomTextView
+                <ui.CustomTextView
+                    android:id="@+id/custom_text_event"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:src="@drawable/icon_bag"
                     app:text="Holiday, event"
-                    app:textColor="@android:color/secondary_text_dark"
                     app:textSize="14sp" />
 
                 <View
@@ -347,12 +351,11 @@
                     android:alpha="0.1"
                     android:background="@android:color/black" />
 
-                <custom.CustomTextView
+                <ui.CustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:src="@drawable/icon_person"
                     app:text="Who pay"
-                    app:textColor="@android:color/secondary_text_dark"
                     app:textSize="14sp" />
 
                 <View
@@ -361,12 +364,11 @@
                     android:alpha="0.1"
                     android:background="@android:color/black" />
 
-                <custom.CustomTextView
+                <ui.CustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:src="@drawable/icon_salary"
                     app:text="Location"
-                    app:textColor="@android:color/secondary_text_dark"
                     app:textSize="14sp" />
 
             </LinearLayout>
@@ -426,5 +428,14 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/rounded_background"
+        android:text="Save Transaction"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
