@@ -18,11 +18,11 @@ internal data class TransactionWithDetails(
         entityColumn = "id"
     )
     val accountEntity: AccountEntity,
-//    @Relation(
-//        parentColumn = "event_id",
-//        entityColumn = "id"
-//    )
-//    val event: EventEntity?,
+    @Relation(
+        parentColumn = "event_id",
+        entityColumn = "id"
+    )
+    val eventEntity: EventEntity?,
 //    @Relation(
 //        parentColumn = "partner_id",
 //        entityColumn = "id"

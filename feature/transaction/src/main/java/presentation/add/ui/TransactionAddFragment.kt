@@ -1,5 +1,6 @@
 package presentation.add.ui
 
+import account.model.Account
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
@@ -10,13 +11,17 @@ import base.BaseFragment
 import base.UIState
 import com.example.transaction.R
 import com.example.transaction.databinding.FragmentTransactionAddBinding
-import custom.GridSpacingItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
-import transaction.model.Category
-import transaction.model.CategoryType
+import helpers.standardize
 import presentation.CategoryUiState
 import presentation.add.adapter.CategoryAdapter
 import presentation.add.viewModel.AddTransactionViewModel
+import transaction.model.Category
+import transaction.model.CategoryType
+import transaction.model.Event
+import ui.GridSpacingItemDecoration
+import ui.openDatePicker
+import ui.openTimePicker
 
 
 @AndroidEntryPoint
@@ -29,6 +34,10 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             viewModel.selectCategory(category = category)
         }
     )
+
+    // store selected date (start-of-day millis) and time (offset millis from midnight)
+    private var selectedDateStartMillis: Long? = null
+    private var selectedTimeOffsetMillis: Long? = null
 
     override fun initView() {
         val items = CategoryType.entries
@@ -45,38 +54,58 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
 
     override fun initListener() {
-        binding.buttonListTransaction.setOnClickListener {
-            viewModel.onHistoryClick()
-        }
-
-        binding.layoutCategorySelection.setOnClickListener {
-            viewModel.toSelectCategory()
-        }
-
-        binding.layoutRecentlyUse.setOnClickListener {
-            toggleRecentlyCategory()
-        }
-
-        binding.buttonSelectWallet.setOnClickListener {
-            viewModel.toSelectAccount()
-        }
-
-
-        binding.buttonSubmit.setOnClickListener {
-            val selectedCategory = viewModel.selectedCategory.value
-            if (selectedCategory == null) {
-                Toast.makeText(
-                    context,
-                    "Please select a category",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
+        binding.apply {
+            buttonListTransaction.setOnClickListener {
+                viewModel.onHistoryClick()
             }
 
-            viewModel.addTransaction(
-                amount = binding.editTextAmount.text.toString().toDoubleOrNull() ?: 0.0,
-                description = binding.editTextAmount.text?.toString()
-            )
+            layoutCategorySelection.setOnClickListener {
+                viewModel.toSelectCategory()
+            }
+
+            layoutRecentlyUse.setOnClickListener {
+                toggleRecentlyCategory()
+            }
+
+            buttonSelectWallet.setOnClickListener {
+                viewModel.toSelectAccount()
+            }
+
+            customTextEvent.setOnClickListener {
+                viewModel.toSelectEvent()
+            }
+
+
+            textViewDate.setOnClickListener {
+                openDatePicker(textViewDate) { startOfDayMillis ->
+                    selectedDateStartMillis = startOfDayMillis
+                }
+            }
+
+            textViewTime.setOnClickListener {
+                openTimePicker(textViewTime) { offsetMillis ->
+                    selectedTimeOffsetMillis = offsetMillis
+                }
+            }
+
+            buttonSubmit.setOnClickListener {
+                val selectedCategory = viewModel.selectedCategory.value
+                if (selectedCategory == null) {
+                    Toast.makeText(
+                        context,
+                        "Please select a category",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
+
+                viewModel.addTransaction(
+                    amount = editTextAmount.text.toString().toDoubleOrNull() ?: 0.0,
+                    description = editTextAmount.text?.toString(),
+                    createAt = selectedDateStartMillis?.plus(selectedTimeOffsetMillis ?: 0)
+                        ?: System.currentTimeMillis()
+                )
+            }
         }
     }
 
@@ -102,9 +131,15 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
 
         collectState(viewModel.selectedCategory) { category ->
-            // Update selection highlight in the categories RecyclerView and get the adapter position
             adapter.setSelectedCategory(category)
-            category?.let { updateCategoryUI(it) }
+            category?.let { updateSelectedCategory(it) }
+        }
+
+        collectState(viewModel.selectedAccount) { account ->
+            account?.let { updateSelectedAccount(it) }
+        }
+        collectState(viewModel.selectedEvent) { event ->
+            event?.let { updateSelectedEvent(it) }
         }
 
         collectFlow(viewModel.uiState) { state ->
@@ -131,17 +166,33 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
     }
 
-    private fun updateCategoryUI(category: Category) {
+    private fun updateSelectedCategory(category: Category) {
         binding.apply {
             // Update icon
             iconCategory.imageIcon.setImageResource(category.iconRes)
             // Update category name
-            textViewCategory.text = category.title
+            textViewCategory.text = category.title.standardize()
         }
     }
 
+
+    private fun updateSelectedAccount(account: Account) {
+        binding.apply {
+            textViewAccountName.text = account.username.standardize()
+        }
+    }
+
+    private fun updateSelectedEvent(event: Event) {
+        binding.apply {
+            customTextEvent.setText(event.eventName.standardize())
+        }
+    }
+
+
     fun toggleRecentlyCategory() {
-        binding.recyclerViewCategories.isVisible = !binding.recyclerViewCategories.isVisible
+        binding.apply {
+            recyclerViewCategories.isVisible = !recyclerViewCategories.isVisible
+        }
     }
 
     private fun showCategories(categories: List<Category>) {

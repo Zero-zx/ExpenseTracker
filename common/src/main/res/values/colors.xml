@@ -3,7 +3,7 @@
     <!-- Modern Warm Pastel Sky Blue Palette -->
 
     <!-- My App Primary Palette - Soft Sky Blue -->
-    <color name="my_app_primary">#EFECE3</color>
+    <color name="my_app_primary">#2DBFE9</color>
     <color name="my_app_primary_dark">#FF5BA3D0</color>
     <color name="my_app_primary_variant">#B7CEF4</color>
 
@@ -13,7 +13,7 @@
 
     <!-- App Background & Surfaces - Soft warm whites -->
     <color name="my_app_background">#AEDEFC</color>
-    <color name="my_app_surface">#FFFFFFFF</color>
+    <color name="my_app_surface">#DAE785</color>
 
     <!-- Text & Icon Colors -->
     <color name="my_app_on_primary">#F875AA</color>
@@ -45,7 +45,7 @@
 
     <!-- Surface Variants - Soft neutrals -->
     <color name="my_app_surface_variant">#EDFFF0</color>
-    <color name="my_app_on_surface_variant">#EDFFF0</color>
+    <color name="my_app_on_surface_variant">#2DBFE9</color>
 
     <!-- Inverse Surface - Warm dark -->
     <color name="my_app_inverse_surface">#FF3E3935</color>

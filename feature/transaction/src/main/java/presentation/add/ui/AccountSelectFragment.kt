@@ -21,23 +21,23 @@ import presentation.add.viewModel.AddTransactionViewModel
 class AccountSelectFragment : BaseFragment<FragmentAccountSelectBinding>(
     FragmentAccountSelectBinding::inflate
 ) {
-    private val sharedVm: AddTransactionViewModel by navGraphViewModels(R.id.transaction_graph) { defaultViewModelProviderFactory }
-    private val listVm: AccountSelectViewModel by viewModels()
+    private val sharedViewModel: AddTransactionViewModel by navGraphViewModels(R.id.transaction_graph) { defaultViewModelProviderFactory }
+    private val viewModel: AccountSelectViewModel by viewModels()
     private lateinit var adapter: AccountAdapter
     private var searchVisible = false
 
     override fun initView() {
         adapter = AccountAdapter { account ->
             // Set selected account on the shared nav-graph scoped ViewModel and navigate back
-            sharedVm.selectAccount(account)
-            sharedVm.navigateBack()
+            sharedViewModel.selectAccount(account)
+            sharedViewModel.navigateBack()
         }
         binding.recyclerView.adapter = adapter
     }
 
     override fun initListener() {
         binding.buttonBack.setOnClickListener {
-            sharedVm.navigateBack()
+            sharedViewModel.navigateBack()
         }
 
         binding.buttonSearch.setOnClickListener {
@@ -61,15 +61,19 @@ class AccountSelectFragment : BaseFragment<FragmentAccountSelectBinding>(
     }
 
     override fun observeData() {
-        // the list VM provides the accounts for display
-        collectFlow(listVm.uiState) { state ->
+        collectFlow(viewModel.uiState) { state ->
             when (state) {
                 is UIState.Loading -> {}
                 is UIState.Success -> {
                     adapter.submitList(state.data)
                 }
+
                 else -> {}
             }
+        }
+
+        collectState(sharedViewModel.selectedAccount) { account ->
+            adapter.setSelectedAccount(account)
         }
     }
 

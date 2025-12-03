@@ -4,7 +4,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 
 interface Navigator {
-    fun navigateTo(destination: NavigationDestination, navOptions: NavOptions? = null)
     fun navigateUp(): Boolean
     fun popBackStack(): Boolean
     fun navigateToTransactionRoute()
@@ -13,4 +12,8 @@ interface Navigator {
     fun navigateToAccountList()
     fun navigateToAddAccount()
     fun navigateToSelectAccount()
+    fun navigateToSelectEvent()
+    fun navigateToEventList()
+    fun navigateToAddEvent()
+    fun navigateToAddParticipants()
 }

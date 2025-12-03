@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import transaction.model.Transaction
-import transaction.usecase.GetTransactionsUseCase
+import usecase.GetTransactionsUseCase
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject

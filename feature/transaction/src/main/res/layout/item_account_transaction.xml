@@ -6,7 +6,9 @@
     android:layout_margin="8dp"
     android:background="@drawable/category_selector"
     android:clickable="true"
-    android:focusable="true">
+    android:elevation="4dp"
+    android:focusable="true"
+    android:padding="6dp">
 
     <ImageView
         android:id="@+id/image_view_icon_account"

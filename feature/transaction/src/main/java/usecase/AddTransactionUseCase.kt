@@ -1,6 +1,8 @@
-package transaction.usecase
+package usecase
 
+import account.model.Account
 import transaction.model.Category
+import transaction.model.Event
 import transaction.model.Transaction
 import transaction.repository.TransactionRepository
 import javax.inject.Inject
@@ -11,15 +13,18 @@ class AddTransactionUseCase @Inject constructor(
     suspend operator fun invoke(
         amount: Double,
         category: Category,
-        description: String?
+        description: String?,
+        account: Account,
+        event: Event? = null,
+        createAt: Long
     ): Long {
         val transaction = Transaction(
             amount = amount,
-            createAt = System.currentTimeMillis(),
+            createAt = createAt,
             category = category,
             description = description,
-            accountId = 1,
-            eventId = 0,
+            account = account,
+            event = event,
             partnerId = 0
         )
         require(transaction.amount > 0) { "Amount must be greater than 0" }

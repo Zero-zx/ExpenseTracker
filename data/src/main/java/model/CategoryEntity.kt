@@ -37,7 +37,7 @@ internal data class CategoryEntity(
     val type: CategoryType
 )
 
-internal fun CategoryEntity.toCategory(): Category {
+internal fun CategoryEntity.toDomain(): Category {
     return Category(
         id = id,
         parentId = parentId,

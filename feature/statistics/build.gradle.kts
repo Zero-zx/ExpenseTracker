@@ -53,8 +53,8 @@ dependencies {
     feature()
     
     // MPAndroidChart for line charts
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    
+    implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,4 +62,3 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":domain"))
 }
-

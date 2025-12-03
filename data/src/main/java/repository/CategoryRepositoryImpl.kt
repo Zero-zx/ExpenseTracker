@@ -6,7 +6,7 @@ import transaction.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import model.InitCategory
-import model.toCategory
+import model.toDomain
 import javax.inject.Inject
 
 internal class CategoryRepositoryImpl @Inject constructor(
@@ -24,7 +24,7 @@ internal class CategoryRepositoryImpl @Inject constructor(
     override fun getAllCategory(): Flow<List<Category>> {
         return categoryDao.getAllCategory().map { list ->
             list.map { it ->
-                it.toCategory()
+                it.toDomain()
             }
         }
     }

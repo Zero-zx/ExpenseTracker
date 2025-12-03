@@ -10,12 +10,15 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dao.AccountDao
 import dao.CategoryDao
+import dao.EventDao
 import dao.TransactionDao
 import database.BudgetDatabase
 import transaction.repository.CategoryRepository
+import transaction.repository.EventRepository
 import transaction.repository.TransactionRepository
 import repository.AccountRepositoryImpl
 import repository.CategoryRepositoryImpl
+import repository.EventRepositoryImpl
 import repository.TransactionRepositoryImpl
 import javax.inject.Singleton
 
@@ -29,7 +32,8 @@ internal object DataModule {
             context,
             BudgetDatabase::class.java,
             "budget_database"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
@@ -52,6 +56,12 @@ internal object DataModule {
 
     @Provides
     @Singleton
+    fun provideEventDao(appDatabase: BudgetDatabase): EventDao {
+        return appDatabase.eventDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideTransactionRepository(transactionDao: TransactionDao): TransactionRepository {
         return TransactionRepositoryImpl(transactionDao)
     }
@@ -66,5 +76,11 @@ internal object DataModule {
     @Singleton
     fun provideAccountRepository(accountDao: AccountDao): AccountRepository {
         return AccountRepositoryImpl(accountDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventRepository(eventDao: EventDao): EventRepository {
+        return EventRepositoryImpl(eventDao)
     }
 }
