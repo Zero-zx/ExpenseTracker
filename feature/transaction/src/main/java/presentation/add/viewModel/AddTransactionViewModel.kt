@@ -32,8 +32,9 @@ class AddTransactionViewModel @Inject constructor(
 
     private val _selectedAccount = MutableStateFlow<Account?>(null)
     val selectedAccount = _selectedAccount.asStateFlow()
-    private val _selectedEvent = MutableStateFlow<Event?>(null)
-    val selectedEvent = _selectedEvent.asStateFlow()
+
+    private val _selectedEvents = MutableStateFlow<List<Event>>(emptyList())
+    val selectedEvents = _selectedEvents.asStateFlow()
 
 
     init {
@@ -64,7 +65,7 @@ class AddTransactionViewModel @Inject constructor(
         viewModelScope.launch {
             val selectedCategory = _selectedCategory.value ?: return@launch
             val selectedAccount = _selectedAccount.value ?: return@launch
-            val selectedEvent = _selectedEvent.value
+            val selectedEvent = _selectedEvents.value.firstOrNull()
 
             setLoading()
             try {
@@ -93,7 +94,19 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun selectEvent(event: Event) {
-        _selectedEvent.value = event
+        val currentEvents = _selectedEvents.value.toMutableList()
+        if (currentEvents.any { it.id == event.id }) {
+            currentEvents.removeAll { it.id == event.id }
+        } else {
+            currentEvents.add(event)
+        }
+        _selectedEvents.value = currentEvents
+    }
+
+    fun removeEvent(event: Event) {
+        val currentEvents = _selectedEvents.value.toMutableList()
+        currentEvents.removeAll { it.id == event.id }
+        _selectedEvents.value = currentEvents
     }
 
     fun onHistoryClick() {

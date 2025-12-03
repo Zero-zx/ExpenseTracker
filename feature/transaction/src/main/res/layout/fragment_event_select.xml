@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/my_app_on_tertiary">
+    android:background="@color/white_bg">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/my_app_on_tertiary"
+        android:background="@color/white"
         android:elevation="4dp"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -14,6 +14,11 @@ fun DependencyHandler.hilt() {
     add("ksp", Dependencies.hiltCompiler)
 }
 
+fun DependencyHandler.hiltFeature() {
+    implementation(Dependencies.hiltAndroid)
+}
+
+
 fun DependencyHandler.androidx() {
     implementation(Dependencies.ANDROIDX_CORE)
     implementation(Dependencies.ANDROIDX_JUNIT)

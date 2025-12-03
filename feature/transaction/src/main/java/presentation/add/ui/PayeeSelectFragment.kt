@@ -11,31 +11,27 @@ import androidx.navigation.navGraphViewModels
 import base.BaseFragment
 import base.UIState
 import com.example.transaction.R
-import com.example.transaction.databinding.FragmentEventSelectBinding
+import com.example.transaction.databinding.FragmentAccountSelectBinding
 import dagger.hilt.android.AndroidEntryPoint
-import presentation.add.adapter.EventAdapter
+import presentation.add.adapter.AccountAdapter
+import presentation.add.viewModel.AccountSelectViewModel
 import presentation.add.viewModel.AddTransactionViewModel
-import presentation.add.viewModel.EventSelectViewModel
 
 @AndroidEntryPoint
-class EventSelectFragment : BaseFragment<FragmentEventSelectBinding>(
-    FragmentEventSelectBinding::inflate
+class PayeeSelectFragment : BaseFragment<FragmentAccountSelectBinding>(
+    FragmentAccountSelectBinding::inflate
 ) {
     private val sharedViewModel: AddTransactionViewModel by navGraphViewModels(R.id.transaction_graph) { defaultViewModelProviderFactory }
-    private val viewModel: EventSelectViewModel by viewModels()
-    private lateinit var adapter: EventAdapter
+    private val viewModel: AccountSelectViewModel by viewModels()
+    private lateinit var adapter: AccountAdapter
     private var searchVisible = false
 
     override fun initView() {
-        adapter = EventAdapter(
-            { event ->
-                // Toggle event selection on the shared ViewModel (does not navigate back)
-                sharedViewModel.selectEvent(event)
-            },
-            {
-                // TODO: Handle item update
-            }
-        )
+        adapter = AccountAdapter { account ->
+            // Set selected account on the shared nav-graph scoped ViewModel and navigate back
+            sharedViewModel.selectAccount(account)
+            sharedViewModel.navigateBack()
+        }
         binding.recyclerView.adapter = adapter
     }
 
@@ -76,8 +72,8 @@ class EventSelectFragment : BaseFragment<FragmentEventSelectBinding>(
             }
         }
 
-        collectState(sharedViewModel.selectedEvents) { events ->
-            adapter.setSelectedEvents(events)
+        collectState(sharedViewModel.selectedAccount) { account ->
+            adapter.setSelectedAccount(account)
         }
     }
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_select_category">Select category</string>
+    <string name="text_amount">Amount</string>
+    <string name="text_all">All</string>
+    <string name="text_most_used">Most used</string>
+    <string name="text_description">Description</string>
+</resources>

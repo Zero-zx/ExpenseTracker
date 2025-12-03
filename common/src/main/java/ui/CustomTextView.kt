@@ -53,12 +53,23 @@ class CustomTextView @JvmOverloads constructor(
         return binding.textView.text.toString()
     }
 
-
     fun setTextColor(color: Int) {
         binding.textView.setTextColor(color)
     }
 
     fun setTextSize(sizeSp: Float) {
         binding.textView.textSize = sizeSp
+    }
+
+    fun setTextVisible(visible: Boolean) {
+        binding.textView.visibility = if (visible) VISIBLE else GONE
+    }
+
+    fun setChip(text: String) {
+        binding.chip.text = text
+    }
+
+    fun setChipVisible(visible: Boolean) {
+        binding.chip.visibility = if (visible) VISIBLE else GONE
     }
 }

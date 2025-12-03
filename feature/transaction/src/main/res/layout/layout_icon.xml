@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="40dp"
     android:layout_height="40dp"
-    app:cardBackgroundColor="@color/my_app_on_primary"
+    app:cardBackgroundColor="@color/blue_category_bg"
     app:cardCornerRadius="4dp">
 
     <ImageView
