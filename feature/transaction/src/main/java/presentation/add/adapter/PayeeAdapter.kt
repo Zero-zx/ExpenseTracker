@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemEventTransactionBinding
 import transaction.model.Event
 
-class EventAdapter(
+class PayeeAdapter(
     private val onItemClick: (Event) -> Unit,
     private val onItemUpdate: (Event) -> Unit
-) : ListAdapter<Event, EventAdapter.EventViewHolder>(EventDiffCallback()) {
+) : ListAdapter<Event, PayeeAdapter.EventViewHolder>(EventDiffCallback()) {
     private val selectedEventIds = mutableSetOf<Long>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {

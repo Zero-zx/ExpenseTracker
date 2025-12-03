@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.App" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:windowBackground">@color/my_app_background</item>
+        <item name="android:windowBackground">@color/app_background</item>
         <!-- Original AppCompat attributes. -->
-        <item name="colorPrimary">@color/my_app_primary</item>
-        <item name="colorPrimaryDark">@color/my_app_primary_dark</item>
-        <item name="colorSecondary">@color/my_app_secondary</item>
-        <item name="android:colorBackground">@color/my_app_background</item>
-        <item name="colorError">@color/my_app_error</item>
-        <item name="colorPrimaryInverse">@color/my_app_primary_inverse</item>
-        <item name="colorPrimaryContainer">@color/my_app_primary_container</item>
-        <item name="colorOnPrimaryContainer">@color/my_app_on_primary_container</item>
-        <item name="colorSecondaryContainer">@color/my_app_secondary_container</item>
-        <item name="colorOnSecondaryContainer">@color/my_app_on_secondary_container</item>
-        <item name="colorTertiary">@color/my_app_tertiary</item>
-        <item name="colorOnTertiary">@color/my_app_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/my_app_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/my_app_on_tertiary_container</item>
-        <item name="colorSurfaceVariant">@color/my_app_surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/my_app_on_surface_variant</item>
-        <item name="colorSurfaceInverse">@color/my_app_inverse_surface</item>
-        <item name="colorOnSurfaceInverse">@color/my_app_inverse_on_surface</item>
-        <item name="colorOutline">@color/my_app_outline</item>
-        <item name="colorErrorContainer">@color/my_app_error_container</item>
-        <item name="colorOnErrorContainer">@color/my_app_on_error_container</item>
+        <!--        <item name="colorPrimary">@color/my_app_primary</item>-->
+        <!--        <item name="colorPrimaryDark">@color/my_app_primary_dark</item>-->
+        <!--        <item name="colorSecondary">@color/my_app_secondary</item>-->
+        <!--        <item name="android:colorBackground">@color/my_app_background</item>-->
+        <!--        <item name="colorError">@color/my_app_error</item>-->
+        <!--        <item name="colorPrimaryInverse">@color/my_app_primary_inverse</item>-->
+        <!--        <item name="colorPrimaryContainer">@color/my_app_primary_container</item>-->
+        <!--        <item name="colorOnPrimaryContainer">@color/my_app_on_primary_container</item>-->
+        <!--        <item name="colorSecondaryContainer">@color/my_app_secondary_container</item>-->
+        <!--        <item name="colorOnSecondaryContainer">@color/my_app_on_secondary_container</item>-->
+        <!--        <item name="colorTertiary">@color/my_app_tertiary</item>-->
+        <!--        <item name="colorOnTertiary">@color/my_app_on_tertiary</item>-->
+        <!--        <item name="colorTertiaryContainer">@color/my_app_tertiary_container</item>-->
+        <!--        <item name="colorOnTertiaryContainer">@color/my_app_on_tertiary_container</item>-->
+        <!--        <item name="colorSurfaceVariant">@color/my_app_surface_variant</item>-->
+        <!--        <item name="colorOnSurfaceVariant">@color/my_app_on_surface_variant</item>-->
+        <!--        <item name="colorSurfaceInverse">@color/my_app_inverse_surface</item>-->
+        <!--        <item name="colorOnSurfaceInverse">@color/my_app_inverse_on_surface</item>-->
+        <!--        <item name="colorOutline">@color/my_app_outline</item>-->
+        <!--        <item name="colorErrorContainer">@color/my_app_error_container</item>-->
+        <!--        <item name="colorOnErrorContainer">@color/my_app_on_error_container</item>-->
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.Material3.DisplayLarge</item>
         <item name="textAppearanceDisplayMedium">@style/TextAppearance.Material3.DisplayMedium
         </item>
@@ -64,24 +64,52 @@
     </style>
 
     <style name="ThemeOverlay.App.ExposedDropdownMenu" parent="">
-        <item name="colorPrimary">@color/shrine_pink_100</item>
-        <item name="colorOnSurface">@color/shrine_pink_900</item>
-        <item name="colorError">@color/shrine_red</item>
-        <item name="textAppearanceBodyLarge">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceBodySmall">@style/TextAppearance.App.BodySmall</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnSurface">@color/blue_spinner</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.App.Title</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.App.Normal</item>
         <item name="autoCompleteTextViewStyle">
             @style/Widget.Material3.AutoCompleteTextView.OutlinedBox
         </item>
     </style>
 
-    <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
-        <!--        <item name="fontFamily">@font/rubik</item>-->
-        <!--        <item name="android:fontFamily">@font/rubik</item>-->
+
+    <!-- New text appearance families requested by the user -->
+
+    <!-- Normal text: 14sp -->
+    <style name="TextAppearance.App.Normal" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
-        <!--        <item name="fontFamily">@font/rubik</item>-->
-        <!--        <item name="android:fontFamily">@font/rubik</item>-->
+    <style name="TextAppearance.App.Normal.Black" parent="TextAppearance.App.Normal">
+        <item name="android:textColor">@color/black_text</item>
+    </style>
+
+    <style name="TextAppearance.App.Normal.White" parent="TextAppearance.App.Normal">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextAppearance.App.Normal.Blue" parent="TextAppearance.App.Normal">
+        <item name="android:textColor">@color/blue_bg</item>
+    </style>
+
+    <!-- Title text: 20sp -->
+    <style name="TextAppearance.App.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextAppearance.App.Title.Black" parent="TextAppearance.App.Title">
+        <item name="android:textColor">@color/black_text</item>
+    </style>
+
+    <style name="TextAppearance.App.Title.White" parent="TextAppearance.App.Title">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Hint text: 14sp + gray color -->
+    <style name="TextAppearance.App.Hint" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/gray_hint</item>
     </style>
 
     <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
@@ -94,10 +122,10 @@
     </style>
 
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
-        <item name="colorSurface">@color/my_app_surface</item>
-        <item name="colorOnSurfaceVariant">@color/my_app_on_secondary</item>
-        <item name="colorOnSecondaryContainer">@color/my_app_primary_container</item>
-        <item name="colorSecondaryContainer">@color/my_app_on_primary</item>
+        <item name="colorSurface">@color/mav_bar_background</item>
+        <item name="colorOnSurfaceVariant">@color/gray_small_icon</item>
+        <item name="colorOnSecondaryContainer">@color/blue_bg</item>
+<!--        <item name="colorSecondaryContainer">@color/blue_bg</item>-->
     </style>
 
     <style name="Widget.App.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
@@ -105,7 +133,7 @@
     </style>
 
     <style name="ThemeOverlay.App.Switch" parent="">
-        <item name="colorPrimary">@color/my_app_on_primary</item>
-        <item name="colorSurfaceVariant">@color/my_app_on_surface_variant</item>
+        <item name="colorPrimary">@color/blue_bg</item>
+        <item name="colorSurfaceVariant">@color/blue_category_bg</item>
     </style>
 </resources>

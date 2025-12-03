@@ -24,7 +24,7 @@
         style="@style/Widget.App.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="6:1"
+        app:layout_constraintDimensionRatio="5:1"
         app:layout_constraintEnd_toStartOf="@+id/button_submit"
         app:layout_constraintStart_toEndOf="@id/button_list_transaction"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,9 @@
         <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none" />
+            android:background="@drawable/rounded_background"
+            android:inputType="none"
+            android:text="Expense" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageButton
@@ -77,9 +79,10 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
+                    style="@style/TextAppearance.App.Normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Amount"
+                    android:text="@string/text_amount"
                     android:textAlignment="center" />
 
                 <LinearLayout
@@ -91,17 +94,17 @@
                         android:id="@+id/edit_text_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@color/my_app_on_primary"
+                        android:backgroundTint="@color/red_money"
                         android:maxLength="13"
                         android:text="0"
                         android:textAlignment="center"
-                        android:textColor="@color/my_app_on_primary" />
+                        android:textColor="@color/red_money" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="đ"
-                        android:textColor="@color/my_app_on_primary" />
+                        android:textColor="@color/red_money" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -130,20 +133,21 @@
 
                 <TextView
                     android:id="@+id/text_view_category"
+                    style="@style/TextAppearance.App.Hint"
                     android:layout_width="239dp"
                     android:layout_height="17dp"
                     android:layout_margin="16dp"
-                    android:text="Add a category"
-                    android:textStyle="bold"
+                    android:text="@string/text_select_category"
                     app:layout_constraintEnd_toStartOf="@+id/text_view_all"
                     app:layout_constraintStart_toEndOf="@+id/icon_category"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/text_view_all"
+                    style="@style/TextAppearance.App.Normal.Blue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="All"
+                    android:text="@string/text_all"
                     app:layout_constraintBottom_toBottomOf="@id/text_view_category"
                     app:layout_constraintEnd_toStartOf="@id/icon_chevron"
                     app:layout_constraintTop_toTopOf="@id/text_view_category" />
@@ -153,6 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/icon_chevron"
+                    android:tint="@color/black_chevron"
                     app:layout_constraintBottom_toBottomOf="@id/text_view_all"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/text_view_all" />
@@ -168,12 +173,13 @@
 
                 <TextView
                     android:id="@+id/layout_recently_use"
+                    style="@style/TextAppearance.App.Normal.Black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:drawableEnd="@drawable/icon_chevron"
                     android:gravity="center_vertical"
-                    android:text="Recently used"
+                    android:text="@string/text_most_used"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider" />
 
@@ -220,10 +226,10 @@
 
                     <TextView
                         android:id="@+id/text_view_account_name"
+                        style="@style/TextAppearance.App.Normal.Black"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:gravity="center_vertical"
-                        android:text="Cash wallet"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/icon_account_chevron"
                         app:layout_constraintStart_toEndOf="@id/icon_account"
@@ -234,6 +240,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_chevron"
+                        android:tint="@color/black_chevron"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -312,10 +319,12 @@
 
                     <EditText
                         android:id="@+id/edit_text_note"
+                        style="@style/TextAppearance.App.Normal.Black"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:backgroundTint="@android:color/transparent"
                         android:gravity="center_vertical"
+                        android:hint="@string/text_description"
                         android:padding="4dp"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -338,11 +347,11 @@
                 app:layout_constraintTop_toBottomOf="@+id/layout_addition">
 
                 <ui.CustomTextView
-                    android:id="@+id/custom_text_event"
+                    android:id="@+id/custom_view_payee"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:src="@drawable/icon_bag"
-                    app:text="Holiday, event"
+                    app:src="@drawable/icon_person"
+                    app:text="Who pay"
                     app:textSize="14sp" />
 
                 <View
@@ -351,12 +360,80 @@
                     android:alpha="0.1"
                     android:background="@android:color/black" />
 
-                <ui.CustomTextView
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_event_selection"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:src="@drawable/icon_person"
-                    app:text="Who pay"
-                    app:textSize="14sp" />
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:id="@+id/icon_trip"
+                        android:layout_width="39dp"
+                        android:layout_height="38dp"
+                        android:scaleType="center"
+                        android:src="@drawable/icon_bag"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_percent="0.1" />
+
+                    <TextView
+                        android:id="@+id/text_view_event_hint"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical"
+                        android:hint="Trip, event"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/icon_trip_chevron"
+                        app:layout_constraintStart_toEndOf="@id/icon_trip"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ScrollView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="80dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/icon_trip_chevron"
+                        app:layout_constraintStart_toEndOf="@id/icon_trip"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chip_group_events"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            app:chipSpacingHorizontal="8dp"
+                            app:singleLine="false">
+
+                            <!-- Chips will be added dynamically -->
+                            <!--                        <com.google.android.material.chip.Chip-->
+                            <!--                            android:id="@+id/chip_add_event"-->
+                            <!--                            style="@style/Widget.Material3.Chip.Suggestion"-->
+                            <!--                            android:layout_width="wrap_content"-->
+                            <!--                            android:layout_height="wrap_content"-->
+                            <!--                            android:text="+ Add Event"-->
+                            <!--                            android:textSize="14sp" />-->
+
+                        </com.google.android.material.chip.ChipGroup>
+                    </ScrollView>
+
+                    <ImageView
+                        android:id="@+id/icon_trip_chevron"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_chevron"
+                        android:tint="@color/black_chevron"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -433,9 +510,11 @@
         android:id="@+id/button_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_background"
         android:text="Save Transaction"
+        app:backgroundTint="@color/blue_bg"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

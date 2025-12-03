@@ -71,10 +71,9 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 viewModel.toSelectAccount()
             }
 
-            customTextEvent.setOnClickListener {
+            layoutEventSelection.setOnClickListener {
                 viewModel.toSelectEvent()
             }
-
 
             textViewDate.setOnClickListener {
                 openDatePicker(textViewDate) { startOfDayMillis ->
@@ -138,8 +137,9 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         collectState(viewModel.selectedAccount) { account ->
             account?.let { updateSelectedAccount(it) }
         }
-        collectState(viewModel.selectedEvent) { event ->
-            event?.let { updateSelectedEvent(it) }
+
+        collectState(viewModel.selectedEvents) { events ->
+            updateSelectedEvents(events)
         }
 
         collectFlow(viewModel.uiState) { state ->
@@ -182,9 +182,22 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
     }
 
-    private fun updateSelectedEvent(event: Event) {
+    private fun updateSelectedEvents(events: List<Event>) {
         binding.apply {
-            customTextEvent.setText(event.eventName.standardize())
+            textViewEventHint.isVisible = events.isEmpty()
+            chipGroupEvents.removeAllViews()
+
+            // Add chips for each selected event
+            events.forEach { event ->
+                val chip = com.google.android.material.chip.Chip(requireContext())
+                chip.text = event.eventName.standardize()
+                chip.isCloseIconVisible = true
+                chip.setOnCloseIconClickListener {
+                    viewModel.removeEvent(event)
+                }
+                // Insert before the "Add Event" chip
+                chipGroupEvents.addView(chip, chipGroupEvents.childCount - 1)
+            }
         }
     }
 
