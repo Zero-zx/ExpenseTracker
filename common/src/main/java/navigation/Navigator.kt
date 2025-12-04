@@ -16,4 +16,5 @@ interface Navigator {
     fun navigateToEventList()
     fun navigateToAddEvent()
     fun navigateToAddParticipants()
+    fun navigateToIncomeExpenseDetail()
 }

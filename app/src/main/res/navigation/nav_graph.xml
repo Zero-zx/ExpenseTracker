@@ -47,7 +47,16 @@
     <fragment
         android:id="@+id/statisticsFragment"
         android:name="presentation.ReportsFragment"
-        android:label="Statistics" />
+        android:label="Statistics">
+        <action
+            android:id="@+id/action_statisticsFragment_to_incomeExpenseDetailFragment"
+            app:destination="@id/incomeExpenseDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/incomeExpenseDetailFragment"
+        android:name="presentation.detail.IncomeExpenseDetailFragment"
+        android:label="Income vs Expense Detail" />
 
     <fragment
         android:id="@+id/eventListFragment"
