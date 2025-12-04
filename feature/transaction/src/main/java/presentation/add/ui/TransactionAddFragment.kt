@@ -1,6 +1,7 @@
 package presentation.add.ui
 
 import account.model.Account
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
@@ -20,6 +21,8 @@ import transaction.model.Category
 import transaction.model.CategoryType
 import transaction.model.Event
 import ui.GridSpacingItemDecoration
+import ui.createSlideDownAnimation
+import ui.createSlideUpAnimation
 import ui.openDatePicker
 import ui.openTimePicker
 
@@ -84,6 +87,22 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             textViewTime.setOnClickListener {
                 openTimePicker(textViewTime) { offsetMillis ->
                     selectedTimeOffsetMillis = offsetMillis
+                }
+            }
+
+            buttonShowMore.setOnClickListener {
+                if (layoutMore.visibility == View.GONE) {
+                    layoutMore.visibility = View.VISIBLE
+                    buttonShowMore.text = getString(com.example.common.R.string.text_hide_details)
+                    layoutMore.startAnimation(
+                        createSlideDownAnimation(context)
+                    )
+                } else {
+                    buttonShowMore.text =
+                        getString(com.example.common.R.string.text_show_more_details)
+                    layoutMore.startAnimation(
+                        createSlideUpAnimation(context, layoutMore)
+                    )
                 }
             }
 
@@ -169,7 +188,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     private fun updateSelectedCategory(category: Category) {
         binding.apply {
             // Update icon
-            iconCategory.imageIcon.setImageResource(category.iconRes)
+            iconCategory.setImageResource(category.iconRes)
             // Update category name
             textViewCategory.text = category.title.standardize()
         }

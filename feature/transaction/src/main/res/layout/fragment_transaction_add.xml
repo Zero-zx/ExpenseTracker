@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/my_app_background"
-    android:paddingTop="32dp">
+    android:background="@drawable/blue_white_background"
+    android:paddingTop="16dp">
 
     <ImageButton
         android:id="@+id/button_list_transaction"
@@ -24,7 +24,7 @@
         style="@style/Widget.App.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="5:1"
+        app:layout_constraintDimensionRatio="9:2"
         app:layout_constraintEnd_toStartOf="@+id/button_submit"
         app:layout_constraintStart_toEndOf="@id/button_list_transaction"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,10 +32,15 @@
 
         <AutoCompleteTextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_background"
+            android:layout_height="match_parent"
+            android:background="@drawable/blue_outline_rounded_background"
+            android:gravity="center"
             android:inputType="none"
-            android:text="Expense" />
+            android:paddingVertical="0dp"
+            android:paddingStart="4dp"
+            android:text="Expense"
+            android:textColor="@color/blue_bg"
+            android:textStyle="bold" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageButton
@@ -58,7 +63,7 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingHorizontal="16dp"
-        app:layout_constraintBottom_toTopOf="@id/button_save"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dropdown_menu_transaction">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -71,7 +76,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_background"
-                android:elevation="4dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -115,29 +119,30 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/rounded_background"
                 android:clickable="true"
-                android:elevation="4dp"
                 android:focusable="true"
                 android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
+                android:paddingHorizontal="8dp"
                 android:paddingVertical="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/layout_amount">
 
-                <include
+                <ImageView
                     android:id="@+id/icon_category"
-                    layout="@layout/layout_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/text_view_category"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/text_view_category" />
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/chi_1_an_uong"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.1" />
 
                 <TextView
                     android:id="@+id/text_view_category"
                     style="@style/TextAppearance.App.Hint"
-                    android:layout_width="239dp"
-                    android:layout_height="17dp"
-                    android:layout_margin="16dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
                     android:text="@string/text_select_category"
+                    app:layout_constraintBottom_toBottomOf="@id/icon_category"
                     app:layout_constraintEnd_toStartOf="@+id/text_view_all"
                     app:layout_constraintStart_toEndOf="@+id/icon_category"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -200,7 +205,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/rounded_background"
-                android:elevation="4dp"
                 android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@id/layout_category_selection">
 
@@ -222,7 +226,7 @@
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintWidth_percent="0.1" />
+                        app:layout_constraintWidth_percent="0.12" />
 
                     <TextView
                         android:id="@+id/text_view_account_name"
@@ -250,7 +254,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:alpha="0.1"
-                    android:background="@android:color/black"
+                    android:background="@android:color/white"
                     app:layout_constraintTop_toBottomOf="@id/icon_category" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -266,7 +270,7 @@
                         android:src="@drawable/icon_calender_today"
                         android:tint="@color/my_app_on_primary"
                         app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintWidth_percent="0.1" />
+                        app:layout_constraintWidth_percent="0.12" />
 
                     <TextView
                         android:id="@+id/text_view_date"
@@ -315,7 +319,7 @@
                         android:src="@drawable/icon_note"
                         android:tint="@color/my_app_on_primary"
                         app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintWidth_percent="0.1" />
+                        app:layout_constraintWidth_percent="0.12" />
 
                     <EditText
                         android:id="@+id/edit_text_note"
@@ -336,185 +340,209 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_more"
+                android:id="@+id/layout_more_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/rounded_background"
-                android:elevation="4dp"
-                android:orientation="vertical"
-                app:layout_constraintDimensionRatio="8:1"
                 app:layout_constraintTop_toBottomOf="@+id/layout_addition">
 
-                <ui.CustomTextView
-                    android:id="@+id/custom_view_payee"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:src="@drawable/icon_person"
-                    app:text="Who pay"
-                    app:textSize="14sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:alpha="0.1"
-                    android:background="@android:color/black" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_event_selection"
+                <LinearLayout
+                    android:id="@+id/layout_more"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:background="@drawable/rounded_background"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintDimensionRatio="8:1"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_addition">
 
-                    <ImageView
-                        android:id="@+id/icon_trip"
-                        android:layout_width="39dp"
-                        android:layout_height="38dp"
-                        android:scaleType="center"
-                        android:src="@drawable/icon_bag"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintWidth_percent="0.1" />
+                    <ui.CustomTextView
+                        android:id="@+id/custom_view_payee"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:src="@drawable/icon_person"
+                        app:text="Who pay"
+                        app:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/text_view_event_hint"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_marginStart="16dp"
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:alpha="0.1"
+                        android:background="@android:color/black" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_event_selection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:hint="Trip, event"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/icon_trip_chevron"
-                        app:layout_constraintStart_toEndOf="@id/icon_trip"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:orientation="horizontal"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
 
-                    <ScrollView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:maxHeight="80dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/icon_trip_chevron"
-                        app:layout_constraintStart_toEndOf="@id/icon_trip"
-                        app:layout_constraintTop_toTopOf="parent">
+                        <ImageView
+                            android:id="@+id/icon_trip"
+                            android:layout_width="39dp"
+                            android:layout_height="38dp"
+                            android:scaleType="center"
+                            android:src="@drawable/icon_bag"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintDimensionRatio="1:1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintWidth_percent="0.1" />
 
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/chip_group_events"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/text_view_event_hint"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginStart="16dp"
+                            android:gravity="center_vertical"
+                            android:hint="Trip, event"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/icon_trip_chevron"
+                            app:layout_constraintStart_toEndOf="@id/icon_trip"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ScrollView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            app:chipSpacingHorizontal="8dp"
-                            app:singleLine="false">
+                            android:maxHeight="80dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/icon_trip_chevron"
+                            app:layout_constraintStart_toEndOf="@id/icon_trip"
+                            app:layout_constraintTop_toTopOf="parent">
 
-                            <!-- Chips will be added dynamically -->
-                            <!--                        <com.google.android.material.chip.Chip-->
-                            <!--                            android:id="@+id/chip_add_event"-->
-                            <!--                            style="@style/Widget.Material3.Chip.Suggestion"-->
-                            <!--                            android:layout_width="wrap_content"-->
-                            <!--                            android:layout_height="wrap_content"-->
-                            <!--                            android:text="+ Add Event"-->
-                            <!--                            android:textSize="14sp" />-->
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/chip_group_events"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:chipSpacingHorizontal="8dp"
+                                app:singleLine="false">
 
-                        </com.google.android.material.chip.ChipGroup>
-                    </ScrollView>
+                                <!-- Chips will be added dynamically -->
+                                <!--                        <com.google.android.material.chip.Chip-->
+                                <!--                            android:id="@+id/chip_add_event"-->
+                                <!--                            style="@style/Widget.Material3.Chip.Suggestion"-->
+                                <!--                            android:layout_width="wrap_content"-->
+                                <!--                            android:layout_height="wrap_content"-->
+                                <!--                            android:text="+ Add Event"-->
+                                <!--                            android:textSize="14sp" />-->
 
-                    <ImageView
-                        android:id="@+id/icon_trip_chevron"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_chevron"
-                        android:tint="@color/black_chevron"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                            </com.google.android.material.chip.ChipGroup>
+                        </ScrollView>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <ImageView
+                            android:id="@+id/icon_trip_chevron"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_chevron"
+                            android:tint="@color/black_chevron"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:alpha="0.1"
-                    android:background="@android:color/black" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <ui.CustomTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:src="@drawable/icon_salary"
-                    app:text="Location"
-                    app:textSize="14sp" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:alpha="0.1"
+                        android:background="@android:color/black" />
 
+                    <ui.CustomTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:src="@drawable/icon_salary"
+                        app:text="Location"
+                        app:textSize="14sp" />
+
+
+                    <LinearLayout
+                        android:id="@+id/layout_lend"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/rounded_background"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="16dp"
+                        app:layout_constraintDimensionRatio="9:1"
+                        app:layout_constraintTop_toBottomOf="@id/layout_more">
+
+                        <include
+                            layout="@layout/text_with_toggle_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:alpha="0.1"
+                            android:background="@android:color/black"
+                            app:layout_constraintTop_toBottomOf="@id/icon_category" />
+
+                    </LinearLayout>
+
+
+                    <!--                <LinearLayout-->
+                    <!--                    android:id="@+id/layout_fee"-->
+                    <!--                    android:layout_width="match_parent"-->
+                    <!--                    android:layout_height="0dp"-->
+                    <!--                    android:layout_marginTop="8dp"-->
+                    <!--                    android:background="@drawable/rounded_background"-->
+                    <!--                    android:orientation="vertical"-->
+                    <!--                    android:paddingHorizontal="16dp"-->
+                    <!--                    app:layout_constraintDimensionRatio="9:1"-->
+                    <!--                    app:layout_constraintTop_toBottomOf="@id/layout_lend">-->
+
+                    <!--                    <include-->
+                    <!--                        layout="@layout/text_with_toggle_button"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="match_parent" />-->
+
+                    <!--                    <View-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="1dp"-->
+                    <!--                        android:alpha="0.1"-->
+                    <!--                        android:background="@android:color/black"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/icon_category" />-->
+
+                    <!--                </LinearLayout>-->
+
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layout_lend"
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_show_more"
+                style="@style/TextAppearance.App.Normal.Blue"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/rounded_background"
-                android:elevation="4dp"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                app:layout_constraintDimensionRatio="9:1"
-                app:layout_constraintTop_toBottomOf="@id/layout_more">
+                android:text="@string/text_show_more_details"
+                android:textStyle="bold"
+                app:backgroundTint="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/layout_more_container" />
 
-                <include
-                    layout="@layout/text_with_toggle_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:alpha="0.1"
-                    android:background="@android:color/black"
-                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_fee"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_save"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/rounded_background"
-                android:elevation="4dp"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                app:layout_constraintDimensionRatio="9:1"
-                app:layout_constraintTop_toBottomOf="@id/layout_lend">
-
-                <include
-                    layout="@layout/text_with_toggle_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:alpha="0.1"
-                    android:background="@android:color/black"
-                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
-
-            </LinearLayout>
+                android:text="Save Transaction"
+                app:backgroundTint="@color/blue_bg"
+                app:layout_constraintTop_toBottomOf="@id/button_show_more" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_background"
-        android:text="Save Transaction"
-        app:backgroundTint="@color/blue_bg"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

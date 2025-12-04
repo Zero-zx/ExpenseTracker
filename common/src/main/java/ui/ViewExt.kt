@@ -1,7 +1,11 @@
 package ui
 
 import android.app.TimePickerDialog
+import android.content.Context
 import android.text.format.DateFormat
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -12,6 +16,30 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+
+/**
+ * Create a slide-up animation for a view.
+ */
+
+fun createSlideUpAnimation(context: Context?, view: View): Animation {
+    val slideUpAnimation =
+        AnimationUtils.loadAnimation(context, com.example.common.R.anim.slide_up)
+    slideUpAnimation.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationStart(animation: Animation?) {}
+
+        override fun onAnimationEnd(animation: Animation?) {
+            view.visibility = View.GONE
+        }
+
+        override fun onAnimationRepeat(animation: Animation?) {}
+    })
+
+    return slideUpAnimation
+}
+
+fun createSlideDownAnimation(context: Context?): Animation {
+    return AnimationUtils.loadAnimation(context, com.example.common.R.anim.slide_down)
+}
 
 /**
  * Open a date picker and write the selected date into [target] in format dd/MM/yyyy.
@@ -62,8 +90,10 @@ fun Fragment.openDatePicker(target: TextView, onSelected: (Long) -> Unit = {}) {
 
             // compute epoch millis at start of selected day in system zone and call callback
             try {
-                val localDate = Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
-                val startOfDay = localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                val localDate =
+                    Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
+                val startOfDay =
+                    localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 onSelected(startOfDay)
             } catch (_: Exception) {
                 // fallback: use selection as-is

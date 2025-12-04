@@ -46,7 +46,7 @@
 
     <fragment
         android:id="@+id/statisticsFragment"
-        android:name="presentation.StatisticsFragment"
+        android:name="presentation.ReportsFragment"
         android:label="Statistics" />
 
     <fragment

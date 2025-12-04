@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemCategoryChildBinding
 import com.example.transaction.databinding.ItemCategoryParentBinding
-import transaction.model.Category
 import helpers.standardize
+import transaction.model.Category
 
 class ExpandableCategoryAdapter(
     private val onCategoryClick: (Category) -> Unit
@@ -67,7 +67,6 @@ class ExpandableCategoryAdapter(
         } else {
             expandedParentIds.add(parentId)
         }
-        // Rebuild the list with updated expansion state
         val categoryItems = buildCategoryItems(allCategories)
         submitList(categoryItems)
     }
@@ -86,12 +85,9 @@ class ExpandableCategoryAdapter(
 
         parentCategories.forEach { parent ->
             result.add(CategoryItem(parent, isParent = true))
-            // Only add children if parent is expanded
-            if (expandedParentIds.contains(parent.id)) {
-                val childCategories = categories.filter { it.parentId == parent.id }
-                childCategories.forEach { child ->
-                    result.add(CategoryItem(child, isParent = false))
-                }
+            val childCategories = categories.filter { it.parentId == parent.id }
+            childCategories.forEach { child ->
+                result.add(CategoryItem(child, isParent = false))
             }
         }
 
@@ -127,7 +123,7 @@ class ExpandableCategoryAdapter(
         fun bind(category: Category, isExpanded: Boolean, onToggle: () -> Unit) {
             binding.apply {
                 // Set icon
-                iconCategory.imageIcon.setImageResource(category.iconRes)
+                imageIcon.setImageResource(category.iconRes)
 
                 // Set category name
                 textViewCategoryName.text = category.title.standardize()
@@ -166,7 +162,7 @@ class ExpandableCategoryAdapter(
 
         override fun bind(category: Category) {
             binding.apply {
-                iconCategory.imageIcon.setImageResource(category.iconRes)
+                imageIcon.setImageResource(category.iconRes)
                 textViewCategoryName.text = category.title.standardize()
             }
         }
