@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/background_current_finance_light"
         app:layout_constraintTop_toBottomOf="@id/top_bar">
 
@@ -44,19 +45,21 @@
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/text_view_financial_statement" />
 
-        <ui.CustomBackground
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="2:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.5" />
+        <!--        <ui.CustomBackground-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            app:layout_constraintDimensionRatio="2:1"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintWidth_percent="0.5" />-->
 
         <LinearLayout
             android:id="@+id/linear_layout_total_income"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginVertical="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/rounded_background"
             android:backgroundTint="#3DFFFFFF"
             android:orientation="vertical"
@@ -85,8 +88,9 @@
             android:id="@+id/linear_layout_total_outcome"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="4dp"
+            android:layout_marginVertical="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/rounded_background"
             android:backgroundTint="#3DFFFFFF"
             android:orientation="vertical"
@@ -171,6 +175,73 @@
             app:layout_constraintWidth_percent="0.5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:padding="16dp"
+        android:rowCount="2"
+        app:layout_constraintTop_toBottomOf="@id/constraint_layout_income_and_outcome">
+
+        <ui.CustomCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_background"
+            app:src="@drawable/v2_ic_outcome_analysic_report"
+            app:text="Expense analysis" />
+
+        <ui.CustomCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_background"
+            app:src="@drawable/v2_ic_income_analysic_report"
+            app:text="Expense analysis" />
+
+        <ui.CustomCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_background"
+            app:text="Expense analysis" />
+
+        <ui.CustomCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_background"
+            app:text="Expense analysis" />
+
+        <ui.CustomCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_background"
+            app:text="Expense analysis" />
+
+        <ui.CustomCardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_background"
+            app:src="@drawable/ic_v2_finance_analysic"
+            app:text="Expense analysis" />
+    </GridLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

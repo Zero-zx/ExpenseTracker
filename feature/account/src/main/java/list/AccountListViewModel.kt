@@ -1,14 +1,12 @@
 package list
 
-import AccountListUiState
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
+import account.model.Account
 import account.usecase.GetAccountsUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.viewModelScope
+import base.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import navigation.Navigator
 import javax.inject.Inject
@@ -17,10 +15,8 @@ import javax.inject.Inject
 class AccountListViewModel @Inject constructor(
     private val getAccountsUseCase: GetAccountsUseCase,
     private val navigator: Navigator
-) : ViewModel() {
+) : BaseViewModel<List<Account>>() {
 
-    private val _uiState = MutableStateFlow<AccountListUiState>(AccountListUiState.Loading)
-    val uiState: StateFlow<AccountListUiState> = _uiState.asStateFlow()
 
     init {
         loadAccounts()
@@ -29,17 +25,14 @@ class AccountListViewModel @Inject constructor(
     private fun loadAccounts() {
         viewModelScope.launch {
             getAccountsUseCase()
+                .onStart {
+                    setLoading()
+                }
                 .catch { exception ->
-                    _uiState.value = AccountListUiState.Error(
-                        exception.message ?: "Unknown error occurred"
-                    )
+                    setError(exception.message.toString())
                 }
                 .collect { accounts ->
-                    _uiState.value = if (accounts.isEmpty()) {
-                        AccountListUiState.Empty
-                    } else {
-                        AccountListUiState.Success(accounts)
-                    }
+                    setSuccess(accounts)
                 }
         }
     }
@@ -50,7 +43,7 @@ class AccountListViewModel @Inject constructor(
 
 
     fun refresh() {
-        _uiState.value = AccountListUiState.Loading
+        resetState()
         loadAccounts()
     }
 }
