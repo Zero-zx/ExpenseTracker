@@ -1,15 +1,14 @@
 package list
 
+import account.model.Account
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.login.databinding.ItemAccountBinding
-import account.model.Account
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class AccountListAdapter(
@@ -34,7 +33,6 @@ class AccountListAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val currencyFormatter = NumberFormat.getCurrencyInstance()
-        private val dateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
         init {
             binding.root.setOnClickListener {
@@ -48,9 +46,8 @@ class AccountListAdapter(
         fun bind(account: Account) {
             binding.apply {
                 textViewUsername.text = account.username
-                textViewType.text = account.type.name
+                iconAccount.setImageResource(account.type.iconRes)
                 textViewBalance.text = currencyFormatter.format(account.balance)
-                textViewDate.text = dateFormatter.format(Date(account.createAt))
             }
         }
     }

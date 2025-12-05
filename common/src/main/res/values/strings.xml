@@ -7,4 +7,5 @@
     <string name="text_description">Description</string>
     <string name="text_show_more_details">Show more details</string>
     <string name="text_hide_details">Hide details</string>
+    <string name="text_total_amount">Total amount</string>
 </resources>

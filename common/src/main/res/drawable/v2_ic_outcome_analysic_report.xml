@@ -9,13 +9,16 @@
         android:pathData="M9,17V21M17,14V21M13,13V21M21,12V21"
         android:strokeWidth="2"
         android:strokeColor="@color/gray_hint"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-    <path
-        android:fillColor="#00000000"
-        android:pathData="M6.5,12V3M6.5,3L10,6.857M6.5,3L3,6.857"
-        android:strokeWidth="2"
-        android:strokeColor="@color/gray_hint"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
+        android:strokeLineCap="round" />
+    <group
+        android:pivotX="6.5"
+        android:pivotY="7.5"
+        android:rotation="180">
+        <path
+            android:fillColor="#00000000"
+            android:pathData="M6.5,3V12M6.5,12L10,8.143M6.5,12L3,8.143"
+            android:strokeWidth="2"
+            android:strokeColor="@color/gray_hint"
+            android:strokeLineCap="round" />
+    </group>
 </vector>

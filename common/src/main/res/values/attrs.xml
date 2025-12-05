@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Shared attributes -->
+    <attr name="src" format="reference" />
+    <attr name="text" format="string" />
+
     <declare-styleable name="CustomTextView">
-        <attr name="src" format="reference" />
-        <attr name="text" format="string" />
+        <attr name="src" />
+        <attr name="text" />
         <attr name="textColor" format="color" />
         <attr name="textSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomCardView">
+        <attr name="src" />
+        <attr name="text" />
     </declare-styleable>
 </resources>

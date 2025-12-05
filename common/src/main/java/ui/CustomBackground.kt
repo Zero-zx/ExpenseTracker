@@ -44,17 +44,29 @@ class CustomBackground @JvmOverloads constructor(
         // Start from top-left
         path.moveTo(0f, 0f)
 
-        // Top edge - stop before the curve
-        path.lineTo(w - w/4, 0f)
+        // Top edge - stop closer to corner (about 80% across)
+        path.lineTo(w * 0.75f, 0f)
 
-        // Circular arc curve - follows a smooth circular pattern inward
-        val curveDepth = w / 5f // How far the curve goes inward
+        // Bezier 1: Start curve - more pronounced bend at entry
         path.cubicTo(
-            w - w/4, r,           // Control point 1: start pulling down and in
-            w - curveDepth, r * 1.5f,    // Control point 2: deepest point of curve
-            w, r * 3f              // End point: back to right edge
+            w * 0.76f, r * 0.3f,
+            w * 0.8f, r * 0.05f,
+            w * 0.82f, r * 1.0f
         )
 
+        // Bezier 2: Deep inward curve - main circular arc, pulls deep into the shape
+        path.cubicTo(
+            w/2, h/2,
+            w/2, h/2,
+            w * 0.88f, r * 2.2f
+        )
+
+        // Bezier 3: Exit curve - smooth return to edge, gentle transition
+        path.cubicTo(
+            w * 0.91f, r * 2.3f,
+            w * 0.95f, r * 2.4f,
+            w, r * 2.5f
+        )
 
         // Right edge down
         path.lineTo(w, h)

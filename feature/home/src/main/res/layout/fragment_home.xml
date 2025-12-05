@@ -9,18 +9,17 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_height="220dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/my_app_primary"
+            android:background="@drawable/back_ground_tab_more_account_namal_light"
             app:contentScrim="@color/my_app_primary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleMarginBottom="16dp"
             app:expandedTitleMarginStart="16dp"
-            app:expandedTitleMarginBottom="16dp">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -33,8 +32,8 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/icon_person"
                     android:contentDescription="Avatar"
+                    android:src="@drawable/icon_person"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -101,54 +100,59 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="-20dp"
+        android:background="@android:color/transparent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:background="@drawable/rounded_16dp_background"
+            android:clipToOutline="true"
             android:clipToPadding="false"
+            android:orientation="vertical"
             android:padding="16dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Quick Actions"
+                android:layout_marginBottom="16dp"
+                android:text="Expense vs Income"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
+                android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_event"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
+                        android:background="@drawable/rounded_background"
+                        android:backgroundTint="@android:color/holo_blue_light"
                         android:contentDescription="Event"
                         android:padding="8dp"
-                        android:src="@drawable/icon_calender_today"
-                        android:background="@drawable/rounded_background"
-                        android:backgroundTint="@android:color/holo_blue_light" />
+                        android:src="@drawable/icon_calender_today" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginStart="16dp"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -162,16 +166,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Manage your events"
-                            android:textSize="14sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/icon_back"
+                        android:contentDescription="Go"
                         android:rotation="180"
-                        android:contentDescription="Go" />
+                        android:src="@drawable/icon_back" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -180,32 +184,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/icon_wallet"
+                        android:background="@drawable/rounded_background"
+                        android:backgroundTint="@android:color/holo_green_light"
                         android:contentDescription="Account"
                         android:padding="8dp"
-                        android:background="@drawable/rounded_background"
-                        android:backgroundTint="@android:color/holo_green_light" />
+                        android:src="@drawable/icon_wallet" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginStart="16dp"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -219,16 +224,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Manage your accounts"
-                            android:textSize="14sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/icon_back"
+                        android:contentDescription="Go"
                         android:rotation="180"
-                        android:contentDescription="Go" />
+                        android:src="@drawable/icon_back" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -237,32 +242,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/icon_note"
+                        android:background="@drawable/rounded_background"
+                        android:backgroundTint="@android:color/holo_orange_light"
                         android:contentDescription="Transaction"
                         android:padding="8dp"
-                        android:background="@drawable/rounded_background"
-                        android:backgroundTint="@android:color/holo_orange_light" />
+                        android:src="@drawable/icon_note" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginStart="16dp"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -276,16 +282,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="View all transactions"
-                            android:textSize="14sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textColor="@android:color/darker_gray"
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/icon_back"
+                        android:contentDescription="Go"
                         android:rotation="180"
-                        android:contentDescription="Go" />
+                        android:src="@drawable/icon_back" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
