@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Work\Personal\ExpenseTracker\feature\login\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest8555940731908040435.xml:2:13-83
+INJECTED from C:\Work\Personal\ExpenseTracker\feature\login\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest8555940731908040435.xml:2:13-83
+	package
+		INJECTED from C:\Work\Personal\ExpenseTracker\feature\login\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest8555940731908040435.xml
+	xmlns:android
+		ADDED from C:\Work\Personal\ExpenseTracker\feature\login\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest8555940731908040435.xml:2:23-81
+uses-sdk
+INJECTED from C:\Work\Personal\ExpenseTracker\feature\login\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest8555940731908040435.xml reason: use-sdk injection requested
+INJECTED from C:\Work\Personal\ExpenseTracker\feature\login\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest8555940731908040435.xml
+INJECTED from C:\Work\Personal\ExpenseTracker\feature\login\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest8555940731908040435.xml
+	android:targetSdkVersion
+		INJECTED from C:\Work\Personal\ExpenseTracker\feature\login\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest8555940731908040435.xml
+	android:minSdkVersion
+		INJECTED from C:\Work\Personal\ExpenseTracker\feature\login\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest8555940731908040435.xml

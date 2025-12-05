@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/top_bar"
+        style="@style/TextAppearance.App.Title.Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Reports"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_current_finance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/background_current_finance_light"
+        app:layout_constraintTop_toBottomOf="@id/top_bar">
+
+        <TextView
+            android:id="@+id/text_view_financial_statement"
+            style="@style/TextAppearance.App.Normal.White"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Finacial statement"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_view_balance"
+            style="@style/TextAppearance.App.Title.White"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="2,000 $"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/text_view_financial_statement" />
+
+        <LinearLayout
+            android:id="@+id/linear_layout_total_income"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="#3DFFFFFF"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/linear_layout_total_outcome"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_balance">
+
+            <TextView
+                style="@style/TextAppearance.App.Normal.White"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total income" />
+
+            <TextView
+                style="@style/TextAppearance.App.Normal.White"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.000.000 $"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_total_outcome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="#3DFFFFFF"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/linear_layout_total_income"
+            app:layout_constraintTop_toBottomOf="@id/text_view_balance">
+
+            <TextView
+                style="@style/TextAppearance.App.Normal.White"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total outcome" />
+
+            <TextView
+                style="@style/TextAppearance.App.Normal.White"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.000.000 $"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_income_and_outcome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/rounded_background"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/constraint_layout_current_finance">
+
+        <TextView
+            android:id="@+id/text_view_income_and_outcome"
+            style="@style/TextAppearance.App.Normal.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Incom vs Outcome"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_view_five_months"
+            style="@style/TextAppearance.App.Normal.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="In the last 5 months"
+            app:layout_constraintTop_toBottomOf="@id/text_view_income_and_outcome" />
+
+        <TextView
+            style="@style/TextAppearance.App.Normal.Blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View details"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart_income_expense"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="2dp"
+            app:layout_constraintDimensionRatio="4:2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_five_months"
+            app:layout_constraintWidth_percent="0.5" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingEnd="16dp"
+            android:text="The income and outcome is equal to 0, no data to compare"
+            android:textAlignment="textStart"
+            app:layout_constraintDimensionRatio="4:2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_five_months"
+            app:layout_constraintWidth_percent="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
