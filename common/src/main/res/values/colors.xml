@@ -9,6 +9,8 @@
     <color name="blue_fab_icon">#E0F3FE</color>
     <color name="blue_spinner">#0992D4</color>
     <color name="red_money">#F57474</color>
+    <color name="red_warning">#FB6272</color>
+    <color name="orange_warning">#FB923C</color>
     <color name="gray_hint">#9DA4B0</color>
     <color name="gray_small_icon">#6B727F</color>
     <color name="gray_big_icon">#6B727F</color>

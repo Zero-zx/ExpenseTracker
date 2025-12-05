@@ -1,7 +1,7 @@
 package account.usecase
 
-import account.repository.AccountRepository
 import account.model.Account
+import account.repository.AccountRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -12,4 +12,3 @@ class GetAccountsUseCase @Inject constructor(
         return accountRepository.getAllAccounts()
     }
 }
-

@@ -1,7 +1,7 @@
 package add
 
 import account.model.AccountType
-import account.usecase.AddAccountUseCase
+import usecase.AddAccountUseCase
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

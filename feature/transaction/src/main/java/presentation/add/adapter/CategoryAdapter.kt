@@ -57,7 +57,7 @@ class CategoryAdapter(
                 val selected = (category.id == selectedCategoryId) || isSelected
                 itemView.isSelected = selected
                 textCategory.text = category.title.standardize()
-                layoutIcon.imageIcon.setImageResource(category.iconRes)
+                imageIcon.setImageResource(category.iconRes)
             }
         }
     }

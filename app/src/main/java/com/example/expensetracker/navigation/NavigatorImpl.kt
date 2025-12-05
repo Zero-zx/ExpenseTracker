@@ -65,4 +65,8 @@ class NavigatorImpl @Inject constructor() : Navigator {
     override fun navigateToAddParticipants() {
         navController?.navigateWithAnim(R.id.addParticipantsFragment)
     }
+
+    override fun navigateToIncomeExpenseDetail() {
+        navController?.navigateWithAnim(R.id.incomeExpenseDetailFragment)
+    }
 }

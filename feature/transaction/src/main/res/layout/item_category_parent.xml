@@ -7,26 +7,28 @@
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:padding="16dp">
+    android:paddingVertical="4dp"
+    android:paddingStart="4dp">
 
     <ImageView
         android:id="@+id/icon_chevron"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icon_chevron"
-        app:layout_constraintBottom_toBottomOf="@id/icon_category"
+        app:layout_constraintBottom_toBottomOf="@id/image_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/icon_category" />
+        app:layout_constraintTop_toTopOf="@id/image_icon" />
 
-    <include
-        android:id="@+id/icon_category"
-        layout="@layout/layout_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/text_view_category_name"
+    <ImageView
+        android:id="@+id/image_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/chi_1_an_uong"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_view_category_name" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.12" />
 
     <TextView
         android:id="@+id/text_view_category_name"
@@ -37,19 +39,18 @@
         android:text="Category Name"
         android:textColor="@android:color/black"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@id/icon_chevron"
-        app:layout_constraintStart_toEndOf="@id/icon_category"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/image_icon"
+        app:layout_constraintStart_toEndOf="@id/image_icon"
+        app:layout_constraintTop_toTopOf="@id/image_icon" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_child_categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:paddingStart="40dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/text_view_category_name"
+        app:layout_constraintTop_toBottomOf="@id/image_icon"
         tools:listitem="@layout/item_category_child" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
