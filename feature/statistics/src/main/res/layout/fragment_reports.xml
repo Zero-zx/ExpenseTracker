@@ -44,6 +44,14 @@
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/text_view_financial_statement" />
 
+        <ui.CustomBackground
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="2:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.5" />
+
         <LinearLayout
             android:id="@+id/linear_layout_total_income"
             android:layout_width="0dp"
@@ -107,11 +115,11 @@
         android:id="@+id/constraint_layout_income_and_outcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
         android:layout_margin="16dp"
         android:background="@drawable/rounded_background"
         android:clickable="true"
         android:focusable="true"
+        android:padding="8dp"
         app:layout_constraintTop_toBottomOf="@id/constraint_layout_current_finance">
 
         <TextView
