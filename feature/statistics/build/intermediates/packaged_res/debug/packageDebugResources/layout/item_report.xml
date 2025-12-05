@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/rounded_background"
+    android:orientation="horizontal"
+
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/text_view_type_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Type Name"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_view_income"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Income: 0"
+            android:textColor="#4CAF50"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/text_view_outcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Outcome: 0"
+            android:textColor="#F44336"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/text_view_rest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Rest: 0"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

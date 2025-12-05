@@ -4,7 +4,7 @@ import android.graphics.Color
 import androidx.fragment.app.viewModels
 import base.BaseFragment
 import base.UIState
-import com.example.statistics.databinding.FragmentStatisticsBinding
+import com.example.statistics.databinding.FragmentReportsBinding
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -13,8 +13,8 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ReportsFragment : BaseFragment<FragmentStatisticsBinding>(
-    FragmentStatisticsBinding::inflate
+class ReportsFragment : BaseFragment<FragmentReportsBinding>(
+    FragmentReportsBinding::inflate
 ) {
     private val viewModel: ReportsViewModel by viewModels()
 

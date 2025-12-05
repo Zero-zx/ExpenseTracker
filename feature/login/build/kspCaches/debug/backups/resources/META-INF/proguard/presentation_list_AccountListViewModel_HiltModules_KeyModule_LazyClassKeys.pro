@@ -1,0 +1,1 @@
+-keep,allowobfuscation,allowshrinking class presentation.list.AccountListViewModel
