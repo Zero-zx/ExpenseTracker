@@ -35,5 +35,8 @@ internal interface EventDao {
 
     @Query("SELECT * FROM tb_event_participant WHERE eventId = :eventId")
     fun getParticipantsByEvent(eventId: Long): Flow<List<EventParticipantEntity>>
+
+    @Query("SELECT * FROM tb_event WHERE id = :eventId")
+    fun getEventById(eventId: Long): EventEntity?
 }
 

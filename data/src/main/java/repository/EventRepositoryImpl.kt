@@ -48,5 +48,9 @@ internal class EventRepositoryImpl @Inject constructor(
             entities.map { it.toDomain() }
         }
     }
+
+    override fun getEventById(eventId: Long): Event? {
+        return eventDao.getEventById(eventId)?.toDomain()
+    }
 }
 

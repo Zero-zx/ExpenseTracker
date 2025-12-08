@@ -8,6 +8,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -17,10 +18,13 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+fun Fragment.navigateBack() {
+    findNavController().popBackStack()
+}
+
 /**
  * Create a slide-up animation for a view.
  */
-
 fun createSlideUpAnimation(context: Context?, view: View): Animation {
     val slideUpAnimation =
         AnimationUtils.loadAnimation(context, com.example.common.R.anim.slide_up)

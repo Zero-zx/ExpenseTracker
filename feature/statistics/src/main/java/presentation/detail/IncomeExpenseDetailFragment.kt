@@ -1,10 +1,9 @@
 package presentation.detail
 
-import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import base.BaseFragment
+import base.TabConfig
+import base.setupWithTabs
 import com.example.statistics.databinding.FragmentIncomeExpenseDetailBinding
-import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.model.TabType
 
@@ -18,30 +17,19 @@ class IncomeExpenseDetailFragment : BaseFragment<FragmentIncomeExpenseDetailBind
     }
 
     private fun setupViewPager() {
-        val adapter = TabPagerAdapter(this)
-        binding.viewPager.adapter = adapter
+        val tabs = listOf(
+            TabConfig("Now") { NowTabFragment() },
+            TabConfig("Monthly") { ChartTabFragment.newInstance(TabType.MONTHLY) },
+            TabConfig("Quarter") { ChartTabFragment.newInstance(TabType.QUARTER) },
+            TabConfig("Year") { ChartTabFragment.newInstance(TabType.YEAR) },
+            TabConfig("Custom") { ChartTabFragment.newInstance(TabType.CUSTOM) }
+        )
 
-        val tabTitles = arrayOf("Now", "Monthly", "Quarter", "Year", "Custom")
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = tabTitles[position]
-        }.attach()
-    }
-
-    private class TabPagerAdapter(fragment: IncomeExpenseDetailFragment) :
-        FragmentStateAdapter(fragment) {
-
-        override fun getItemCount(): Int = 5
-
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> NowTabFragment()
-                1 -> ChartTabFragment.newInstance(TabType.MONTHLY)
-                2 -> ChartTabFragment.newInstance(TabType.QUARTER)
-                3 -> ChartTabFragment.newInstance(TabType.YEAR)
-                4 -> ChartTabFragment.newInstance(TabType.CUSTOM)
-                else -> NowTabFragment()
-            }
-        }
+        binding.viewPager.setupWithTabs(
+            tabLayout = binding.tabLayout,
+            fragment = this,
+            tabs = tabs
+        )
     }
 }
 

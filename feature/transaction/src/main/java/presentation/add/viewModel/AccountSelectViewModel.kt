@@ -5,17 +5,15 @@ import account.usecase.GetAccountsUseCase
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import transaction.usecase.GetCategoriesUseCase
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import navigation.Navigator
 import javax.inject.Inject
 
 @HiltViewModel
 class AccountSelectViewModel @Inject constructor(
-    private val getAccountsUseCase: GetAccountsUseCase,
-    private val navigator: Navigator
+    private val navigator: Navigator,
+    private val getAccountsUseCase: GetAccountsUseCase
 ) : BaseViewModel<List<Account>>() {
 
     init {

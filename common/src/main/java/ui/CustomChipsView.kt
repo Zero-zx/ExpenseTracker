@@ -1,0 +1,47 @@
+package ui
+
+import android.content.Context
+import android.graphics.Color
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.common.R
+import com.example.common.databinding.CustomChipsViewBinding
+import com.google.android.material.chip.ChipGroup
+
+class CustomChipsView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : ConstraintLayout(context, attrs, defStyleAttr) {
+
+    private val binding: CustomChipsViewBinding =
+        CustomChipsViewBinding.inflate(LayoutInflater.from(context), this, true)
+
+    init {
+        attrs?.let {
+            val typedArray = context.obtainStyledAttributes(it, R.styleable.CustomTextView, 0, 0)
+            val imageSrc = typedArray.getResourceId(R.styleable.CustomTextView_src, 0)
+            val text = typedArray.getString(R.styleable.CustomTextView_text)
+            val textColor =
+                typedArray.getColor(R.styleable.CustomTextView_textColor, Color.BLACK)
+
+            if (imageSrc != 0) {
+                binding.imageView.setImageResource(imageSrc)
+            }
+            binding.textView.text = text
+            binding.textView.setTextColor(textColor)
+
+            typedArray.recycle()
+        }
+    }
+
+    fun getTextView(): TextView {
+        return binding.textView
+    }
+
+    fun getChipGroup(): ChipGroup {
+        return binding.chipGroup
+    }
+}

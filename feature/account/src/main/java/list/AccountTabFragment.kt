@@ -27,6 +27,12 @@ class AccountTabFragment : BaseFragment<FragmentTabAccountBinding>(
         setupRecyclerView()
     }
 
+    override fun initListener() {
+        binding.fabAddAccount.setOnClickListener {
+            viewModel.goToAddAccount()
+        }
+    }
+
     private fun setupRecyclerView() {
         binding.recyclerViewAccounts.apply {
             layoutManager = LinearLayoutManager(requireContext())

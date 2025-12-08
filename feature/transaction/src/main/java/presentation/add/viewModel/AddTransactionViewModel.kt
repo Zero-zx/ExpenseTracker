@@ -1,8 +1,10 @@
 package presentation.add.viewModel
 
 import account.model.Account
+import account.usecase.GetAccountsUseCase
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
+import base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,10 +12,10 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import navigation.Navigator
-import presentation.CategoryUiState
 import transaction.model.Category
 import transaction.model.Event
 import transaction.usecase.GetCategoriesUseCase
+import transaction.usecase.GetEventByIdUseCase
 import usecase.AddTransactionUseCase
 import javax.inject.Inject
 
@@ -21,10 +23,12 @@ import javax.inject.Inject
 class AddTransactionViewModel @Inject constructor(
     private val navigator: Navigator,
     private val addTransactionUseCase: AddTransactionUseCase,
-    private val getCategoriesUseCase: GetCategoriesUseCase
+    private val getCategoriesUseCase: GetCategoriesUseCase,
+    private val getAccountsUseCase: GetAccountsUseCase,
+    private val getEventById: GetEventByIdUseCase
 ) : BaseViewModel<Long>() {
 
-    private val _categoryState = MutableStateFlow<CategoryUiState>(CategoryUiState.Loading)
+    private val _categoryState = MutableStateFlow<UIState<List<Category>>>(UIState.Loading)
     val categoryState = _categoryState.asStateFlow()
 
     private val _selectedCategory = MutableStateFlow<Category?>(null)
@@ -44,14 +48,14 @@ class AddTransactionViewModel @Inject constructor(
     fun loadCategories() {
         viewModelScope.launch {
             getCategoriesUseCase()
-                .onStart { _categoryState.value = CategoryUiState.Loading }
+                .onStart { _categoryState.value = UIState.Loading }
                 .catch { exception ->
-                    _categoryState.value = CategoryUiState.Error(
+                    _categoryState.value = UIState.Error(
                         exception.message ?: "Unknown error occurred"
                     )
                 }
                 .collect { categories ->
-                    _categoryState.value = CategoryUiState.Success(categories)
+                    _categoryState.value = UIState.Success(categories)
                 }
         }
     }
@@ -88,19 +92,45 @@ class AddTransactionViewModel @Inject constructor(
         _selectedCategory.value = category
     }
 
+    fun selectCategoryById(categoryId: Long) {
+        val currentState = categoryState.value
+        if (currentState is UIState.Success) {
+            currentState.data.find { it.id == categoryId }?.let { category ->
+                _selectedCategory.value = category
+            }
+        }
+    }
+
     // Allow other fragments to set the selected account in the shared nav-graph scoped ViewModel
     fun selectAccount(account: Account) {
         _selectedAccount.value = account
     }
 
-    fun selectEvent(event: Event) {
-        val currentEvents = _selectedEvents.value.toMutableList()
-        if (currentEvents.any { it.id == event.id }) {
-            currentEvents.removeAll { it.id == event.id }
-        } else {
-            currentEvents.add(event)
+    fun selectAccountById(accountId: Long) {
+        viewModelScope.launch {
+            try {
+                getAccountsUseCase().collect { accounts ->
+                    accounts.find { it.id == accountId }?.let { account ->
+                        _selectedAccount.value = account
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle error if needed
+            }
         }
-        _selectedEvents.value = currentEvents
+    }
+
+    fun selectEventById(eventId: Long) {
+        viewModelScope.launch {
+            try {
+                val event = getEventById(eventId)
+                if (event != null) {
+                    _selectedEvents.value = listOf(event)
+                }
+            } catch (e: Exception) {
+                // Handle error if needed
+            }
+        }
     }
 
     fun removeEvent(event: Event) {
@@ -117,12 +147,12 @@ class AddTransactionViewModel @Inject constructor(
         navigator.navigateToMoreCategory()
     }
 
-    fun toSelectAccount() {
-        navigator.navigateToSelectAccount()
+    fun toSelectAccount(selectedAccountId: Long = -1L) {
+        navigator.navigateToSelectAccount(selectedAccountId)
     }
 
-    fun toSelectEvent() {
-        navigator.navigateToSelectEvent()
+    fun toSelectEvent(selectedEventId: Long = -1L) {
+        navigator.navigateToSelectEvent(selectedEventId)
     }
 
     fun navigateBack() {

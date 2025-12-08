@@ -6,15 +6,20 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.navigation.navGraphViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import base.BaseFragment
 import base.UIState
 import com.example.transaction.R
 import com.example.transaction.databinding.FragmentTransactionAddBinding
+import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
+import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
+import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_ID
+import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
+import constants.FragmentResultKeys.RESULT_CATEGORY_ID
+import constants.FragmentResultKeys.RESULT_EVENT_ID
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.standardize
-import presentation.CategoryUiState
 import presentation.add.adapter.CategoryAdapter
 import presentation.add.viewModel.AddTransactionViewModel
 import transaction.model.Category
@@ -23,6 +28,7 @@ import transaction.model.Event
 import ui.GridSpacingItemDecoration
 import ui.createSlideDownAnimation
 import ui.createSlideUpAnimation
+import ui.listenForSelectionResult
 import ui.openDatePicker
 import ui.openTimePicker
 
@@ -31,7 +37,7 @@ import ui.openTimePicker
 class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     FragmentTransactionAddBinding::inflate
 ) {
-    private val viewModel: AddTransactionViewModel by navGraphViewModels(R.id.transaction_graph) { defaultViewModelProviderFactory }
+    private val viewModel: AddTransactionViewModel by viewModels()
     private val adapter = CategoryAdapter(
         onItemClick = { category ->
             viewModel.selectCategory(category = category)
@@ -49,10 +55,34 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             dropdownAdapter
         )
 
+        setUpRecyclerView()
+        listenForResult()
+    }
+
+    fun setUpRecyclerView() {
         binding.recyclerViewCategories.apply {
             layoutManager = GridLayoutManager(context, 4)
             addItemDecoration(GridSpacingItemDecoration(4, 8, false))
         }.adapter = adapter
+    }
+
+    fun listenForResult() {
+        // Listen for category selection result
+        listenForSelectionResult(REQUEST_SELECT_CATEGORY_ID) { bundle ->
+            val categoryId = bundle.getLong(RESULT_CATEGORY_ID)
+            viewModel.selectCategoryById(categoryId)
+        }
+
+        // Listen for account selection result
+        listenForSelectionResult(REQUEST_SELECT_ACCOUNT_ID) { bundle ->
+            val accountId = bundle.getLong(RESULT_ACCOUNT_ID)
+            viewModel.selectAccountById(accountId)
+        }
+
+        listenForSelectionResult(REQUEST_SELECT_EVENT_ID) { bundle ->
+            val eventId = bundle.getLong(RESULT_EVENT_ID)
+            viewModel.selectEventById(eventId)
+        }
     }
 
 
@@ -71,10 +101,10 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             }
 
             buttonSelectWallet.setOnClickListener {
-                viewModel.toSelectAccount()
+                viewModel.toSelectAccount(viewModel.selectedAccount.value?.id ?: -1L)
             }
 
-            layoutEventSelection.setOnClickListener {
+            customViewEvent.setOnClickListener {
                 viewModel.toSelectEvent()
             }
 
@@ -130,21 +160,23 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     override fun observeData() {
         collectState(viewModel.categoryState) { state ->
             when (state) {
-                is CategoryUiState.Loading -> {
+                is UIState.Loading -> {
                     // Show loading indicator if needed
                 }
 
-                is CategoryUiState.Success -> {
-                    showCategories(state.categories.take(8))
+                is UIState.Success -> {
+                    showCategories(state.data.take(8))
                 }
 
-                is CategoryUiState.Error -> {
+                is UIState.Error -> {
                     Toast.makeText(
                         context,
                         "Error loading categories: ${state.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+                else -> {}
             }
         }
 
@@ -203,8 +235,8 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     private fun updateSelectedEvents(events: List<Event>) {
         binding.apply {
-            textViewEventHint.isVisible = events.isEmpty()
-            chipGroupEvents.removeAllViews()
+            customViewEvent.getTextView().isVisible = events.isEmpty()
+            customViewEvent.getChipGroup().removeAllViews()
 
             // Add chips for each selected event
             events.forEach { event ->
@@ -215,7 +247,8 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     viewModel.removeEvent(event)
                 }
                 // Insert before the "Add Event" chip
-                chipGroupEvents.addView(chip, chipGroupEvents.childCount - 1)
+                customViewEvent.getChipGroup()
+                    .addView(chip, customViewEvent.getChipGroup().childCount - 1)
             }
         }
     }

@@ -19,5 +19,6 @@ interface EventRepository {
     suspend fun deleteEvent(event: Event)
 
     fun getParticipantsByEvent(eventId: Long): Flow<List<EventParticipant>>
+    fun getEventById(eventId: Long): Event?
 }
 

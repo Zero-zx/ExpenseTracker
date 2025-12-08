@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/dimen_padding_top"
     android:background="@color/white_bg">
 
     <androidx.appcompat.widget.Toolbar
@@ -32,6 +32,7 @@
 
             <TextView
                 android:id="@+id/text_view_title"
+                style="@style/TextAppearance.App.Title.Black"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
@@ -40,37 +41,23 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:text="Select event" />
-
-            <EditText
-                android:id="@+id/edit_text_search"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="Search"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:padding="0dp"
-                android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/button_search"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/icon_search" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        tools:listitem="@layout/item_event_transaction" />
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/blue_bg"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/blue_bg" />
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -106,8 +106,8 @@ class NowTabViewModel @Inject constructor(
 
         transactions.forEach { transaction ->
             when (transaction.category.type) {
-                CategoryType.IN, CategoryType.LEND -> income += transaction.amount
-                CategoryType.OUT, CategoryType.LOAN -> expense += transaction.amount
+                CategoryType.INCOME, CategoryType.LEND -> income += transaction.amount
+                CategoryType.EXPENSE, CategoryType.BORROWING -> expense += transaction.amount
             }
         }
 

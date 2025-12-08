@@ -1,33 +1,36 @@
 package presentation.add.ui
 
-import androidx.navigation.navGraphViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
-import presentation.CategoryUiState
-import com.example.transaction.R
+import base.UIState
 import com.example.transaction.databinding.FragmentCategorySelectBinding
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.add.adapter.ExpandableCategoryAdapter
-import presentation.add.viewModel.AddTransactionViewModel
+import presentation.add.viewModel.CategorySelectViewModel
+import ui.navigateBack
+import ui.setCategoryIdSelectionResult
 
 @AndroidEntryPoint
 class CategorySelectFragment : BaseFragment<FragmentCategorySelectBinding>(
     FragmentCategorySelectBinding::inflate
 ) {
-    // shared nav-graph scoped VM for storing selected category and providing categories
-    private val sharedVm: AddTransactionViewModel by navGraphViewModels(R.id.transaction_graph) { defaultViewModelProviderFactory }
+    // Use own ViewModel for category data instead of shared ViewModel
+    private val viewModel: CategorySelectViewModel by viewModels()
 
     private val adapter = ExpandableCategoryAdapter(
         onCategoryClick = { category ->
-            sharedVm.selectCategory(category)
-            sharedVm.navigateBack()
+            // Set the result using the simplified extension function (ID only)
+            setCategoryIdSelectionResult(category.id)
+            // Navigate back using NavController directly
+            navigateBack()
         }
     )
 
     override fun initView() {
         binding.toolbar.setNavigationOnClickListener {
-            // Use shared navigator via shared VM to navigate back instead of deprecated onBackPressed
-            sharedVm.navigateBack()
+            navigateBack()
         }
 
         binding.recyclerViewCategories.apply {
@@ -37,15 +40,18 @@ class CategorySelectFragment : BaseFragment<FragmentCategorySelectBinding>(
     }
 
     override fun observeData() {
-        collectState(sharedVm.categoryState) { state: CategoryUiState ->
+        collectFlow(viewModel.uiState) { state ->
             when (state) {
-                is CategoryUiState.Loading -> {
+                is UIState.Loading -> {
                     // show loading if needed
                 }
-                is CategoryUiState.Success -> adapter.submitCategories(state.categories)
-                is CategoryUiState.Error -> {
+
+                is UIState.Success -> adapter.submitCategories(state.data)
+                is UIState.Error -> {
                     // handle error if needed
                 }
+
+                else -> {}
             }
         }
     }

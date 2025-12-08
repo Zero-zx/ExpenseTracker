@@ -7,37 +7,42 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
-import androidx.navigation.navGraphViewModels
 import base.BaseFragment
 import base.UIState
-import com.example.transaction.R
 import com.example.transaction.databinding.FragmentAccountSelectBinding
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.add.adapter.AccountAdapter
 import presentation.add.viewModel.AccountSelectViewModel
-import presentation.add.viewModel.AddTransactionViewModel
+import ui.setAccountIdSelectionResult
 
 @AndroidEntryPoint
 class AccountSelectFragment : BaseFragment<FragmentAccountSelectBinding>(
     FragmentAccountSelectBinding::inflate
 ) {
-    private val sharedViewModel: AddTransactionViewModel by navGraphViewModels(R.id.transaction_graph) { defaultViewModelProviderFactory }
     private val viewModel: AccountSelectViewModel by viewModels()
     private lateinit var adapter: AccountAdapter
     private var searchVisible = false
 
+    // Get the currently selected account ID from arguments
+    private val selectedAccountId: Long by lazy {
+        arguments?.getLong(ARG_SELECTED_ACCOUNT_ID, -1L) ?: -1L
+    }
+
     override fun initView() {
         adapter = AccountAdapter { account ->
-            // Set selected account on the shared nav-graph scoped ViewModel and navigate back
-            sharedViewModel.selectAccount(account)
-            sharedViewModel.navigateBack()
+            setAccountIdSelectionResult(account.id)
+            viewModel.navigateBack()
         }
         binding.recyclerView.adapter = adapter
     }
 
+    companion object {
+        const val ARG_SELECTED_ACCOUNT_ID = "selected_account_id"
+    }
+
     override fun initListener() {
         binding.buttonBack.setOnClickListener {
-            sharedViewModel.navigateBack()
+            viewModel.navigateBack()
         }
 
         binding.buttonSearch.setOnClickListener {
@@ -56,7 +61,7 @@ class AccountSelectFragment : BaseFragment<FragmentAccountSelectBinding>(
         }
 
         binding.editTextSearch.doOnTextChanged { text, _, _, _ ->
-            // react to search input (filter list)
+            adapter.filter(text.toString())
         }
     }
 
@@ -66,14 +71,16 @@ class AccountSelectFragment : BaseFragment<FragmentAccountSelectBinding>(
                 is UIState.Loading -> {}
                 is UIState.Success -> {
                     adapter.submitList(state.data)
+
+                    // Highlight the currently selected account if ID is valid
+                    if (selectedAccountId != -1L) {
+                        val selectedAccount = state.data.find { it.id == selectedAccountId }
+                        adapter.setSelectedAccount(selectedAccount)
+                    }
                 }
 
                 else -> {}
             }
-        }
-
-        collectState(sharedViewModel.selectedAccount) { account ->
-            adapter.setSelectedAccount(account)
         }
     }
 

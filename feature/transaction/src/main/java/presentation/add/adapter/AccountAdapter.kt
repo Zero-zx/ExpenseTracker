@@ -81,4 +81,13 @@ class AccountAdapter(
         // update selectedPosition for internal click logic
         selectedPosition = newPos
     }
+
+    fun filter(query: String) {
+        val filteredList = if (query.isEmpty()) {
+            currentList
+        } else {
+            currentList.filter { it.username.contains(query, ignoreCase = true) }
+        }
+        submitList(filteredList)
+    }
 }

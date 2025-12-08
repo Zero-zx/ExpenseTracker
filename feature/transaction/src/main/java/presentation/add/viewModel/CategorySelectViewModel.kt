@@ -8,10 +8,12 @@ import transaction.usecase.GetCategoriesUseCase
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import navigation.Navigator
 import javax.inject.Inject
 
 @HiltViewModel
 class CategorySelectViewModel @Inject constructor(
+    private val navigator: Navigator,
     private val getCategoriesUseCase: GetCategoriesUseCase
 ) : BaseViewModel<List<Category>>() {
 
