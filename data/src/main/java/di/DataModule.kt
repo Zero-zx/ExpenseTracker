@@ -11,14 +11,21 @@ import dagger.hilt.components.SingletonComponent
 import dao.AccountDao
 import dao.CategoryDao
 import dao.EventDao
+import dao.LocationDao
+import dao.PayeeTransactionDao
 import dao.TransactionDao
+import dao.TransactionPayeeDao
 import database.BudgetDatabase
 import transaction.repository.CategoryRepository
 import transaction.repository.EventRepository
+import transaction.repository.LocationRepository
+import transaction.repository.PayeeTransactionRepository
 import transaction.repository.TransactionRepository
 import repository.AccountRepositoryImpl
 import repository.CategoryRepositoryImpl
 import repository.EventRepositoryImpl
+import repository.LocationRepositoryImpl
+import repository.PayeeTransactionRepositoryImpl
 import repository.TransactionRepositoryImpl
 import javax.inject.Singleton
 
@@ -62,8 +69,29 @@ internal object DataModule {
 
     @Provides
     @Singleton
-    fun provideTransactionRepository(transactionDao: TransactionDao): TransactionRepository {
-        return TransactionRepositoryImpl(transactionDao)
+    fun providePayeeTransactionDao(appDatabase: BudgetDatabase): PayeeTransactionDao {
+        return appDatabase.payeeTransactionDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationDao(appDatabase: BudgetDatabase): LocationDao {
+        return appDatabase.locationDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTransactionPayeeDao(appDatabase: BudgetDatabase): TransactionPayeeDao {
+        return appDatabase.transactionPayeeDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTransactionRepository(
+        transactionDao: TransactionDao,
+        transactionPayeeDao: TransactionPayeeDao
+    ): TransactionRepository {
+        return TransactionRepositoryImpl(transactionDao, transactionPayeeDao)
     }
 
     @Provides
@@ -82,5 +110,17 @@ internal object DataModule {
     @Singleton
     fun provideEventRepository(eventDao: EventDao): EventRepository {
         return EventRepositoryImpl(eventDao)
+    }
+
+    @Provides
+    @Singleton
+    fun providePayeeTransactionRepository(payeeTransactionDao: PayeeTransactionDao): PayeeTransactionRepository {
+        return PayeeTransactionRepositoryImpl(payeeTransactionDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationRepository(locationDao: LocationDao): LocationRepository {
+        return LocationRepositoryImpl(locationDao)
     }
 }

@@ -1,7 +1,7 @@
 package com.example.expensetracker.navigation
 
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import com.example.expensetracker.R
 import navigation.Navigator
 import navigation.navigateWithAnim
@@ -46,12 +46,32 @@ class NavigatorImpl @Inject constructor() : Navigator {
         navController?.navigateWithAnim(R.id.addAccountFragment)
     }
 
-    override fun navigateToSelectAccount() {
-        navController?.navigateWithAnim(R.id.accountSelectFragment)
+    override fun navigateToSelectAccount(selectedAccountId: Long) {
+        navController?.navigateWithAnim(
+            R.id.accountSelectFragment,
+            bundleOf("selected_account_id" to selectedAccountId)
+        )
     }
 
-    override fun navigateToSelectEvent() {
-        navController?.navigateWithAnim(R.id.eventSelectFragment)
+    override fun navigateToSelectEvent(selectedEventId: Long) {
+        navController?.navigateWithAnim(
+            R.id.eventSelectFragment,
+            bundleOf("selected_event_id" to selectedEventId)
+        )
+    }
+
+    override fun navigateToSelectPayee(selectedPayeeIds: LongArray) {
+        navController?.navigateWithAnim(
+            R.id.payeeSelectFragment,
+            bundleOf("selected_payee_ids" to selectedPayeeIds)
+        )
+    }
+
+    override fun navigateToSelectLocation(selectedLocationId: Long) {
+        navController?.navigateWithAnim(
+            R.id.locationSelectFragment,
+            bundleOf("selected_location_id" to selectedLocationId)
+        )
     }
 
     override fun navigateToEventList() {

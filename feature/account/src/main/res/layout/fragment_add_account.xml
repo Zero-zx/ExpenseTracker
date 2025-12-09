@@ -107,8 +107,7 @@
                 android:layout_height="0dp"
                 android:paddingHorizontal="16dp"
                 android:scaleType="center"
-                android:src="@drawable/icon_wallet"
-                android:tint="@android:color/holo_orange_dark"
+                android:src="@drawable/account_master"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintTop_toTopOf="parent"
@@ -136,7 +135,7 @@
             android:id="@+id/text_view_account_type"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:src="@drawable/icon_salary"
+            app:src="@drawable/account_wallet"
             app:text="Cash"
             app:textSize="14sp" />
 
@@ -172,7 +171,7 @@
                 android:paddingHorizontal="16dp"
                 android:scaleType="center"
                 android:src="@drawable/icon_note"
-                android:tint="@android:color/holo_orange_dark"
+                android:tint="@color/gray_hint"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintTop_toTopOf="parent"

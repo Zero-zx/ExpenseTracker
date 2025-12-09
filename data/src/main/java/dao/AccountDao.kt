@@ -17,4 +17,7 @@ internal interface AccountDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(account: AccountEntity): Long
+
+    @Query("SELECT * FROM tb_account WHERE id = :accountId")
+    fun getAccountById(accountId: Long): AccountEntity?
 }

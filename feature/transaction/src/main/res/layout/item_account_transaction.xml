@@ -5,9 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/category_selector"
     android:clickable="true"
-    android:elevation="4dp"
     android:focusable="true"
-    android:padding="6dp">
+    android:padding="12dp">
 
     <ImageView
         android:id="@+id/image_view_icon_account"
@@ -23,9 +22,11 @@
 
     <TextView
         android:id="@+id/text_view_name"
+        style="@style/TextAppearance.App.Normal.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="NAME"
+        android:layout_marginStart="8dp"
+        android:text="Cash wallet"
         app:layout_constraintEnd_toStartOf="@id/image_view_checked"
         app:layout_constraintStart_toEndOf="@id/image_view_icon_account"
         app:layout_constraintTop_toTopOf="@id/image_view_icon_account" />
@@ -34,6 +35,7 @@
         android:id="@+id/text_view_amount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="1.000.000.000 đ"
         app:layout_constraintBottom_toBottomOf="@id/image_view_icon_account"
         app:layout_constraintEnd_toStartOf="@id/image_view_checked"
@@ -46,6 +48,7 @@
         android:layout_height="0dp"
         android:scaleType="center"
         android:src="@drawable/icon_submit"
+        android:tint="@color/blue_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"

@@ -52,6 +52,7 @@ class AccountAdapter(
                 imageViewChecked.isVisible = selected
                 textViewName.text = account.username
                 textViewAmount.text = account.balance.toString()
+                imageViewIconAccount.setImageResource(account.type.iconRes)
             }
         }
     }
@@ -80,5 +81,14 @@ class AccountAdapter(
         if (newPos != -1) notifyItemChanged(newPos)
         // update selectedPosition for internal click logic
         selectedPosition = newPos
+    }
+
+    fun filter(query: String) {
+        val filteredList = if (query.isEmpty()) {
+            currentList
+        } else {
+            currentList.filter { it.username.contains(query, ignoreCase = true) }
+        }
+        submitList(filteredList)
     }
 }

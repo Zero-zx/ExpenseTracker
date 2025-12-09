@@ -74,14 +74,14 @@ class ReportsViewModel @Inject constructor(
                 val (currentIncome, currentExpense) = monthlyDataMap[monthKey] ?: Pair(0.0, 0.0)
                 
                 when (transaction.category.type) {
-                    CategoryType.IN, CategoryType.LEND -> {
+                    CategoryType.INCOME, CategoryType.LEND -> {
                         // Income: IN and LEND
                         monthlyDataMap[monthKey] = Pair(
                             currentIncome + transaction.amount,
                             currentExpense
                         )
                     }
-                    CategoryType.OUT, CategoryType.LOAN -> {
+                    CategoryType.EXPENSE, CategoryType.BORROWING -> {
                         // Expense: OUT and LOAN
                         monthlyDataMap[monthKey] = Pair(
                             currentIncome,

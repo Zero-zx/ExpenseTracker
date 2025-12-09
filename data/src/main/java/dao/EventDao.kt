@@ -9,8 +9,8 @@ import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import model.EventEntity
-import model.EventParticipantEntity
-import model.EventWithParticipantsEntity
+import model.PayeeEntity
+import model.EventWithPayeesEntity
 
 @Dao
 internal interface EventDao {
@@ -19,13 +19,13 @@ internal interface EventDao {
 
     @Transaction
     @Query("SELECT * FROM tb_event WHERE id = :eventId")
-    fun getEventWithParticipants(eventId: Long): Flow<EventWithParticipantsEntity?>
+    fun getEventWithPayees(eventId: Long): Flow<EventWithPayeesEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEvent(event: EventEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertParticipants(participants: List<EventParticipantEntity>)
+    suspend fun insertParticipants(participants: List<PayeeEntity>)
 
     @Update
     suspend fun updateEvent(event: EventEntity)
@@ -34,6 +34,9 @@ internal interface EventDao {
     suspend fun deleteEvent(event: EventEntity)
 
     @Query("SELECT * FROM tb_event_participant WHERE eventId = :eventId")
-    fun getParticipantsByEvent(eventId: Long): Flow<List<EventParticipantEntity>>
+    fun getPayeesByEvent(eventId: Long): Flow<List<PayeeEntity>>
+
+    @Query("SELECT * FROM tb_event WHERE id = :eventId")
+    suspend fun getEventById(eventId: Long): EventEntity?
 }
 

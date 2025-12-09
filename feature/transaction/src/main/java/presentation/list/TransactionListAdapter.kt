@@ -84,10 +84,10 @@ class TransactionListAdapter(
 //
 //                // Amount and Type
                 val sign = when (transaction.category.type) {
-                    CategoryType.IN -> "+"
-                    CategoryType.OUT -> "-"
+                    CategoryType.INCOME -> "+"
+                    CategoryType.EXPENSE -> "-"
                     CategoryType.LEND -> "→"
-                    CategoryType.LOAN -> "←"
+                    CategoryType.BORROWING -> "←"
                 }
 //
                 textViewAmount.text = "$sign${currencyFormatter.format(transaction.amount)}"

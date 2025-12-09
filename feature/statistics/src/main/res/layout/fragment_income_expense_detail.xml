@@ -2,18 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/dimen_padding_top">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:background="@color/app_background"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@color/blue_bg"
-        app:tabSelectedTextColor="@color/blue_bg"
+        android:background="@color/app_background"
         app:layout_constraintTop_toTopOf="parent"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/blue_bg"
         app:tabMode="fixed"
-        app:tabGravity="fill" />
+        app:tabSelectedTextColor="@color/blue_bg" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"

@@ -3,6 +3,7 @@ package usecase
 import account.model.Account
 import transaction.model.Category
 import transaction.model.Event
+import transaction.model.Location
 import transaction.model.Transaction
 import transaction.repository.TransactionRepository
 import javax.inject.Inject
@@ -16,7 +17,9 @@ class AddTransactionUseCase @Inject constructor(
         description: String?,
         account: Account,
         event: Event? = null,
-        createAt: Long
+        createAt: Long,
+        location: Location? = null,
+        payeeIds: List<Long> = emptyList()
     ): Long {
         val transaction = Transaction(
             amount = amount,
@@ -25,7 +28,9 @@ class AddTransactionUseCase @Inject constructor(
             description = description,
             account = account,
             event = event,
-            partnerId = 0
+            partnerId = 0,
+            location = location,
+            payeeIds = payeeIds
         )
         require(transaction.amount > 0) { "Amount must be greater than 0" }
         require(transaction.description?.isNotBlank() == true) { "Description cannot be blank" }

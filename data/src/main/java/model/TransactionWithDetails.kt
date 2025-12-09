@@ -23,6 +23,11 @@ internal data class TransactionWithDetails(
         entityColumn = "id"
     )
     val eventEntity: EventEntity?,
+    @Relation(
+        parentColumn = "location_id",
+        entityColumn = "id"
+    )
+    val locationEntity: LocationEntity?,
 //    @Relation(
 //        parentColumn = "partner_id",
 //        entityColumn = "id"

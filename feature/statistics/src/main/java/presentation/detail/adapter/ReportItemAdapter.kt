@@ -1,7 +1,5 @@
 package presentation.detail.adapter
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import base.BaseAdapter
 import com.example.statistics.databinding.ItemReportBinding
 import presentation.detail.model.ReportItem
@@ -23,9 +21,9 @@ class ReportItemAdapter(
     override fun onBind(item: ReportItem, binding: ItemReportBinding) {
         binding.apply {
             textViewTypeName.text = item.typeName
-            textViewIncome.text = "Income: ${formatAmount(item.income)}"
-            textViewOutcome.text = "Outcome: ${formatAmount(item.outcome)}"
-            textViewRest.text = "Rest: ${formatAmount(item.rest)}"
+            textViewIncome.text = "${formatAmount(item.income)}"
+            textViewOutcome.text = "${formatAmount(item.outcome)}"
+            textViewRest.text = "${formatAmount(item.rest)}"
         }
     }
 

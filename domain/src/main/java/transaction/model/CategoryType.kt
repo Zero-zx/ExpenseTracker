@@ -1,10 +1,10 @@
 package transaction.model
 
 enum class CategoryType {
-    IN,
-    OUT,
+    INCOME,
+    EXPENSE,
     LEND,
-    LOAN
+    BORROWING
 }
 
 

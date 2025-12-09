@@ -121,10 +121,10 @@ class ChartTabViewModel @Inject constructor(
 
             val (currentIncome, currentExpense) = map[key] ?: Pair(0.0, 0.0)
             when (transaction.category.type) {
-                CategoryType.IN, CategoryType.LEND -> {
+                CategoryType.INCOME, CategoryType.LEND -> {
                     map[key] = Pair(currentIncome + transaction.amount, currentExpense)
                 }
-                CategoryType.OUT, CategoryType.LOAN -> {
+                CategoryType.EXPENSE, CategoryType.BORROWING -> {
                     map[key] = Pair(currentIncome, currentExpense + transaction.amount)
                 }
             }
@@ -153,10 +153,10 @@ class ChartTabViewModel @Inject constructor(
 
             val (currentIncome, currentExpense) = map[key] ?: Pair(0.0, 0.0)
             when (transaction.category.type) {
-                CategoryType.IN, CategoryType.LEND -> {
+                CategoryType.INCOME, CategoryType.LEND -> {
                     map[key] = Pair(currentIncome + transaction.amount, currentExpense)
                 }
-                CategoryType.OUT, CategoryType.LOAN -> {
+                CategoryType.EXPENSE, CategoryType.BORROWING -> {
                     map[key] = Pair(currentIncome, currentExpense + transaction.amount)
                 }
             }
@@ -177,10 +177,10 @@ class ChartTabViewModel @Inject constructor(
 
             val (currentIncome, currentExpense) = map[key] ?: Pair(0.0, 0.0)
             when (transaction.category.type) {
-                CategoryType.IN, CategoryType.LEND -> {
+                CategoryType.INCOME, CategoryType.LEND -> {
                     map[key] = Pair(currentIncome + transaction.amount, currentExpense)
                 }
-                CategoryType.OUT, CategoryType.LOAN -> {
+                CategoryType.EXPENSE, CategoryType.BORROWING -> {
                     map[key] = Pair(currentIncome, currentExpense + transaction.amount)
                 }
             }
@@ -196,8 +196,8 @@ class ChartTabViewModel @Inject constructor(
 
         transactions.forEach { transaction ->
             when (transaction.category.type) {
-                CategoryType.IN, CategoryType.LEND -> income += transaction.amount
-                CategoryType.OUT, CategoryType.LOAN -> expense += transaction.amount
+                CategoryType.INCOME, CategoryType.LEND -> income += transaction.amount
+                CategoryType.EXPENSE, CategoryType.BORROWING -> expense += transaction.amount
             }
         }
 

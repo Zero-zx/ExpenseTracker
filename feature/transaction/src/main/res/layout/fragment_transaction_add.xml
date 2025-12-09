@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/blue_white_background"
-    android:paddingTop="16dp">
+    android:paddingTop="@dimen/dimen_padding_top">
 
     <ImageButton
         android:id="@+id/button_list_transaction"
@@ -132,6 +132,7 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/chi_1_an_uong"
                     app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintWidth_percent="0.1" />
 
@@ -162,10 +163,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/icon_chevron"
-                    android:tint="@color/black_chevron"
                     app:layout_constraintBottom_toBottomOf="@id/text_view_all"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/text_view_all" />
+                    app:layout_constraintTop_toTopOf="@id/text_view_all"
+                    app:tint="@color/black_chevron" />
 
                 <View
                     android:id="@+id/divider"
@@ -221,8 +222,7 @@
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:scaleType="center"
-                        android:src="@drawable/icon_salary"
-                        android:tint="@color/my_app_on_primary"
+                        android:src="@drawable/account_wallet"
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -244,10 +244,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_chevron"
-                        android:tint="@color/black_chevron"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/black_chevron" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
@@ -266,11 +266,15 @@
                         android:id="@+id/icon_date"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:scaleType="center"
-                        android:src="@drawable/icon_calender_today"
-                        android:tint="@color/my_app_on_primary"
+                        android:padding="9dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_v2_calendar"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintWidth_percent="0.12" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_percent="0.12"
+                        app:tint="@color/gray_small_icon" />
 
                     <TextView
                         android:id="@+id/text_view_date"
@@ -317,9 +321,12 @@
                         android:layout_height="0dp"
                         android:scaleType="center"
                         android:src="@drawable/icon_note"
-                        android:tint="@color/my_app_on_primary"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintWidth_percent="0.12" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_percent="0.12"
+                        app:tint="@color/gray_small_icon" />
 
                     <EditText
                         android:id="@+id/edit_text_note"
@@ -329,6 +336,7 @@
                         android:backgroundTint="@android:color/transparent"
                         android:gravity="center_vertical"
                         android:hint="@string/text_description"
+                        android:inputType="text"
                         android:padding="4dp"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -352,16 +360,30 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_background"
                     android:orientation="vertical"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:layout_constraintDimensionRatio="8:1"
                     app:layout_constraintTop_toBottomOf="@+id/layout_addition">
 
-                    <ui.CustomTextView
+                    <ui.CustomChipsView
+                        android:id="@+id/custom_view_event"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:text="Trip, event"
+                        app:textColor="@color/gray_hint" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:alpha="0.1"
+                        android:background="@android:color/black" />
+
+                    <ui.CustomChipsView
                         android:id="@+id/custom_view_payee"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:src="@drawable/icon_person"
                         app:text="Who pay"
+                        app:textColor="@color/gray_hint"
                         app:textSize="14sp" />
 
                     <View
@@ -370,92 +392,13 @@
                         android:alpha="0.1"
                         android:background="@android:color/black" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/layout_event_selection"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
-
-                        <ImageView
-                            android:id="@+id/icon_trip"
-                            android:layout_width="39dp"
-                            android:layout_height="38dp"
-                            android:scaleType="center"
-                            android:src="@drawable/icon_bag"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintDimensionRatio="1:1"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintWidth_percent="0.1" />
-
-                        <TextView
-                            android:id="@+id/text_view_event_hint"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_marginStart="16dp"
-                            android:gravity="center_vertical"
-                            android:hint="Trip, event"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/icon_trip_chevron"
-                            app:layout_constraintStart_toEndOf="@id/icon_trip"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ScrollView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:maxHeight="80dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/icon_trip_chevron"
-                            app:layout_constraintStart_toEndOf="@id/icon_trip"
-                            app:layout_constraintTop_toTopOf="parent">
-
-                            <com.google.android.material.chip.ChipGroup
-                                android:id="@+id/chip_group_events"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                app:chipSpacingHorizontal="8dp"
-                                app:singleLine="false">
-
-                                <!-- Chips will be added dynamically -->
-                                <!--                        <com.google.android.material.chip.Chip-->
-                                <!--                            android:id="@+id/chip_add_event"-->
-                                <!--                            style="@style/Widget.Material3.Chip.Suggestion"-->
-                                <!--                            android:layout_width="wrap_content"-->
-                                <!--                            android:layout_height="wrap_content"-->
-                                <!--                            android:text="+ Add Event"-->
-                                <!--                            android:textSize="14sp" />-->
-
-                            </com.google.android.material.chip.ChipGroup>
-                        </ScrollView>
-
-                        <ImageView
-                            android:id="@+id/icon_trip_chevron"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/icon_chevron"
-                            android:tint="@color/black_chevron"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:alpha="0.1"
-                        android:background="@android:color/black" />
-
-                    <ui.CustomTextView
+                    <ui.CustomChipsView
+                        android:id="@+id/custom_view_location"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:src="@drawable/icon_salary"
                         app:text="Location"
+                        app:textColor="@color/gray_hint"
                         app:textSize="14sp" />
 
 

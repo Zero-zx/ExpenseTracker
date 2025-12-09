@@ -6,15 +6,24 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.navigation.navGraphViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import base.BaseFragment
 import base.UIState
 import com.example.transaction.R
 import com.example.transaction.databinding.FragmentTransactionAddBinding
+import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
+import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
+import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_ID
+import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS
+import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
+import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
+import constants.FragmentResultKeys.RESULT_CATEGORY_ID
+import constants.FragmentResultKeys.RESULT_EVENT_ID
+import constants.FragmentResultKeys.RESULT_PAYEE_IDS
+import constants.FragmentResultKeys.RESULT_LOCATION_ID
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.standardize
-import presentation.CategoryUiState
 import presentation.add.adapter.CategoryAdapter
 import presentation.add.viewModel.AddTransactionViewModel
 import transaction.model.Category
@@ -23,6 +32,7 @@ import transaction.model.Event
 import ui.GridSpacingItemDecoration
 import ui.createSlideDownAnimation
 import ui.createSlideUpAnimation
+import ui.listenForSelectionResult
 import ui.openDatePicker
 import ui.openTimePicker
 
@@ -31,7 +41,7 @@ import ui.openTimePicker
 class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     FragmentTransactionAddBinding::inflate
 ) {
-    private val viewModel: AddTransactionViewModel by navGraphViewModels(R.id.transaction_graph) { defaultViewModelProviderFactory }
+    private val viewModel: AddTransactionViewModel by viewModels()
     private val adapter = CategoryAdapter(
         onItemClick = { category ->
             viewModel.selectCategory(category = category)
@@ -49,10 +59,44 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             dropdownAdapter
         )
 
+        setUpRecyclerView()
+        listenForResult()
+    }
+
+    fun setUpRecyclerView() {
         binding.recyclerViewCategories.apply {
             layoutManager = GridLayoutManager(context, 4)
             addItemDecoration(GridSpacingItemDecoration(4, 8, false))
         }.adapter = adapter
+    }
+
+    fun listenForResult() {
+        // Listen for category selection result
+        listenForSelectionResult(REQUEST_SELECT_CATEGORY_ID) { bundle ->
+            val categoryId = bundle.getLong(RESULT_CATEGORY_ID)
+            viewModel.selectCategoryById(categoryId)
+        }
+
+        // Listen for account selection result
+        listenForSelectionResult(REQUEST_SELECT_ACCOUNT_ID) { bundle ->
+            val accountId = bundle.getLong(RESULT_ACCOUNT_ID)
+            viewModel.selectAccountById(accountId)
+        }
+
+        listenForSelectionResult(REQUEST_SELECT_EVENT_ID) { bundle ->
+            val eventId = bundle.getLong(RESULT_EVENT_ID)
+            viewModel.selectEventById(eventId)
+        }
+
+        listenForSelectionResult(REQUEST_SELECT_PAYEE_IDS) { bundle ->
+            val payeeIds = bundle.getLongArray(RESULT_PAYEE_IDS) ?: longArrayOf()
+            viewModel.selectPayeesByIds(payeeIds)
+        }
+
+        listenForSelectionResult(REQUEST_SELECT_LOCATION_ID) { bundle ->
+            val locationId = bundle.getLong(RESULT_LOCATION_ID)
+            viewModel.selectLocationById(locationId)
+        }
     }
 
 
@@ -74,8 +118,16 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 viewModel.toSelectAccount()
             }
 
-            layoutEventSelection.setOnClickListener {
+            customViewEvent.setOnClickListener {
                 viewModel.toSelectEvent()
+            }
+
+            customViewPayee.setOnClickListener {
+                viewModel.toSelectPayee()
+            }
+
+            customViewLocation.setOnClickListener {
+                viewModel.toSelectLocation()
             }
 
             textViewDate.setOnClickListener {
@@ -130,21 +182,23 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     override fun observeData() {
         collectState(viewModel.categoryState) { state ->
             when (state) {
-                is CategoryUiState.Loading -> {
+                is UIState.Loading -> {
                     // Show loading indicator if needed
                 }
 
-                is CategoryUiState.Success -> {
-                    showCategories(state.categories.take(8))
+                is UIState.Success -> {
+                    showCategories(state.data.take(8))
                 }
 
-                is CategoryUiState.Error -> {
+                is UIState.Error -> {
                     Toast.makeText(
                         context,
                         "Error loading categories: ${state.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
+                else -> {}
             }
         }
 
@@ -157,8 +211,16 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             account?.let { updateSelectedAccount(it) }
         }
 
-        collectState(viewModel.selectedEvents) { events ->
-            updateSelectedEvents(events)
+        collectState(viewModel.selectedEvent) { event ->
+            updateSelectedEvents(event?.let { listOf(it) } ?: emptyList())
+        }
+
+        collectState(viewModel.selectedPayees) { payees ->
+            updateSelectedPayees(payees)
+        }
+
+        collectState(viewModel.selectedLocation) { location ->
+            updateSelectedLocation(location)
         }
 
         collectFlow(viewModel.uiState) { state ->
@@ -203,11 +265,11 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     private fun updateSelectedEvents(events: List<Event>) {
         binding.apply {
-            textViewEventHint.isVisible = events.isEmpty()
-            chipGroupEvents.removeAllViews()
+            customViewEvent.getTextView().isVisible = events.isEmpty()
+            customViewEvent.getChipGroup().removeAllViews()
 
-            // Add chips for each selected event
-            events.forEach { event ->
+            // Add chips for each selected event (filter out nulls for safety)
+            events.filterNotNull().forEach { event ->
                 val chip = com.google.android.material.chip.Chip(requireContext())
                 chip.text = event.eventName.standardize()
                 chip.isCloseIconVisible = true
@@ -215,7 +277,45 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     viewModel.removeEvent(event)
                 }
                 // Insert before the "Add Event" chip
-                chipGroupEvents.addView(chip, chipGroupEvents.childCount - 1)
+                customViewEvent.getChipGroup()
+                    .addView(chip, customViewEvent.getChipGroup().childCount - 1)
+            }
+        }
+    }
+
+    private fun updateSelectedPayees(payees: List<transaction.model.PayeeTransaction>) {
+        binding.apply {
+            customViewPayee.getTextView().isVisible = payees.isEmpty()
+            customViewPayee.getChipGroup().removeAllViews()
+
+            // Add chips for each selected payee
+            payees.forEach { payee ->
+                val chip = com.google.android.material.chip.Chip(requireContext())
+                chip.text = payee.name.standardize()
+                chip.isCloseIconVisible = true
+                chip.setOnCloseIconClickListener {
+                    viewModel.removePayee(payee)
+                }
+                customViewPayee.getChipGroup()
+                    .addView(chip, customViewPayee.getChipGroup().childCount - 1)
+            }
+        }
+    }
+
+    private fun updateSelectedLocation(location: transaction.model.Location?) {
+        binding.apply {
+            customViewLocation.getTextView().isVisible = location == null
+            customViewLocation.getChipGroup().removeAllViews()
+
+            location?.let { loc ->
+                val chip = com.google.android.material.chip.Chip(requireContext())
+                chip.text = loc.name.standardize()
+                chip.isCloseIconVisible = true
+                chip.setOnCloseIconClickListener {
+                    viewModel.removeLocation()
+                }
+                customViewLocation.getChipGroup()
+                    .addView(chip, customViewLocation.getChipGroup().childCount - 1)
             }
         }
     }

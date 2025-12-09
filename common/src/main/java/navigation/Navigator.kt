@@ -1,8 +1,5 @@
 package navigation
 
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-
 interface Navigator {
     fun navigateUp(): Boolean
     fun popBackStack(): Boolean
@@ -11,8 +8,10 @@ interface Navigator {
     fun navigateToMoreCategory()
     fun navigateToAccountList()
     fun navigateToAddAccount()
-    fun navigateToSelectAccount()
-    fun navigateToSelectEvent()
+    fun navigateToSelectAccount(selectedAccountId: Long = -1L)
+    fun navigateToSelectEvent(selectedEventId: Long = -1L)
+    fun navigateToSelectPayee(selectedPayeeIds: LongArray = longArrayOf())
+    fun navigateToSelectLocation(selectedLocationId: Long = -1L)
     fun navigateToEventList()
     fun navigateToAddEvent()
     fun navigateToAddParticipants()

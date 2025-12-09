@@ -11,7 +11,7 @@ object InitCategory {
                 parentId = icon.parentId,
                 title = icon.title,
                 icon = icon.iconName,
-                type = CategoryType.IN
+                type = CategoryType.EXPENSE
             )
         }
 }

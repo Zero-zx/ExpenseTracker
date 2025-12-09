@@ -1,110 +1,86 @@
 package presentation.add.ui
 
-import android.content.Context
-import android.view.KeyEvent
-import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.viewModels
-import androidx.navigation.navGraphViewModels
+import android.os.Bundle
+import androidx.core.os.bundleOf
 import base.BaseFragment
-import base.UIState
-import com.example.transaction.R
-import com.example.transaction.databinding.FragmentAccountSelectBinding
+import base.TabConfig
+import base.setupWithTabs
+import com.example.transaction.databinding.FragmentEventSelectBinding
+import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS
+import constants.FragmentResultKeys.RESULT_PAYEE_IDS
 import dagger.hilt.android.AndroidEntryPoint
-import presentation.add.adapter.AccountAdapter
-import presentation.add.viewModel.AccountSelectViewModel
-import presentation.add.viewModel.AddTransactionViewModel
+import presentation.add.model.PayeeTabType
+import ui.navigateBack
+import ui.setSelectionResult
 
 @AndroidEntryPoint
-class PayeeSelectFragment : BaseFragment<FragmentAccountSelectBinding>(
-    FragmentAccountSelectBinding::inflate
+class PayeeSelectFragment : BaseFragment<FragmentEventSelectBinding>(
+    FragmentEventSelectBinding::inflate
 ) {
-    private val sharedViewModel: AddTransactionViewModel by navGraphViewModels(R.id.transaction_graph) { defaultViewModelProviderFactory }
-    private val viewModel: AccountSelectViewModel by viewModels()
-    private lateinit var adapter: AccountAdapter
-    private var searchVisible = false
+    private val selectedPayeeIds: MutableSet<Long> = mutableSetOf()
+    
+    fun getSelectedPayeeIds(): Set<Long> = selectedPayeeIds.toSet()
 
     override fun initView() {
-        adapter = AccountAdapter { account ->
-            // Set selected account on the shared nav-graph scoped ViewModel and navigate back
-            sharedViewModel.selectAccount(account)
-            sharedViewModel.navigateBack()
+        // Get initially selected payee IDs from arguments
+        arguments?.getLongArray("selected_payee_ids")?.let {
+            selectedPayeeIds.addAll(it.toList())
         }
-        binding.recyclerView.adapter = adapter
+
+        setupViewPager()
+        updateTitle()
     }
 
     override fun initListener() {
-        binding.buttonBack.setOnClickListener {
-            sharedViewModel.navigateBack()
-        }
-
-        binding.buttonSearch.setOnClickListener {
-            toggleSearch(!searchVisible)
-        }
-
-        binding.editTextSearch.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                actionId == EditorInfo.IME_ACTION_DONE ||
-                (event?.keyCode == KeyEvent.KEYCODE_ENTER)
-            ) {
-                // handle search action (e.g. filter adapter)
-                hideKeyboard(v)
-                true
-            } else false
-        }
-
-        binding.editTextSearch.doOnTextChanged { text, _, _, _ ->
-            // react to search input (filter list)
-        }
-    }
-
-    override fun observeData() {
-        collectFlow(viewModel.uiState) { state ->
-            when (state) {
-                is UIState.Loading -> {}
-                is UIState.Success -> {
-                    adapter.submitList(state.data)
-                }
-
-                else -> {}
+        binding.apply {
+            buttonBack.setOnClickListener {
+                navigateBack()
             }
         }
-
-        collectState(sharedViewModel.selectedAccount) { account ->
-            adapter.setSelectedAccount(account)
-        }
     }
 
-    private fun toggleSearch(show: Boolean) {
-        searchVisible = show
-        if (show) {
-            binding.textViewTitle.visibility = View.GONE
-            binding.editTextSearch.visibility = View.VISIBLE
-            binding.editTextSearch.requestFocus()
-            showKeyboard(binding.editTextSearch)
+    fun onPayeeToggled(payeeId: Long) {
+        if (selectedPayeeIds.contains(payeeId)) {
+            selectedPayeeIds.remove(payeeId)
         } else {
-            binding.editTextSearch.setText("")
-            binding.editTextSearch.visibility = View.GONE
-            binding.textViewTitle.visibility = View.VISIBLE
-            hideKeyboard(binding.editTextSearch)
+            selectedPayeeIds.add(payeeId)
+        }
+        updateTitle()
+        // Update selection in all tabs
+        updateTabSelections()
+    }
+
+    fun onConfirmSelection() {
+        setSelectionResult(
+            REQUEST_SELECT_PAYEE_IDS,
+            bundleOf(RESULT_PAYEE_IDS to selectedPayeeIds.toLongArray())
+        )
+        navigateBack()
+    }
+
+    private fun updateTabSelections() {
+        // Update selection in child fragments
+        childFragmentManager.fragments.forEach { fragment ->
+            if (fragment is PayeeTabFragment) {
+                fragment.refreshSelection()
+            }
         }
     }
 
-    private fun showKeyboard(view: View) {
-        val imm =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        view.post {
-            view.requestFocus()
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-        }
+    private fun updateTitle() {
+        binding.textViewTitle.text = "Select payees (${selectedPayeeIds.size} selected)"
     }
 
-    private fun hideKeyboard(view: View) {
-        val imm =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
-    }
+    fun setupViewPager() {
+        val tabs = listOf(
+            TabConfig("Recent") { PayeeTabFragment.newInstance(PayeeTabType.RECENT) },
+            TabConfig("Contacts") { PayeeTabFragment.newInstance(PayeeTabType.CONTACTS) }
+        )
 
+        binding.viewPager.setupWithTabs(
+            tabLayout = binding.tabLayout,
+            fragment = this,
+            tabs = tabs
+        )
+    }
 }

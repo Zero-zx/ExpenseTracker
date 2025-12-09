@@ -11,7 +11,9 @@ data class Transaction(
     val description: String?,
     val account: Account,
     val event: Event?,
-    val partnerId: Long
+    val partnerId: Long,
+    val location: Location? = null,
+    val payeeIds: List<Long> = emptyList()
 )
 
 

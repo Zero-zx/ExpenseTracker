@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.map
 import mapper.toDomain
 import mapper.toEntity
 import transaction.model.Event
-import transaction.model.EventParticipant
-import transaction.model.EventWithParticipants
+import transaction.model.Payee
+import transaction.model.EventWithPayees
 import transaction.repository.EventRepository
 import javax.inject.Inject
 
@@ -21,8 +21,8 @@ internal class EventRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getEventWithParticipants(eventId: Long): Flow<EventWithParticipants?> {
-        return eventDao.getEventWithParticipants(eventId).map { entity ->
+    override fun getEventWithPayees(eventId: Long): Flow<EventWithPayees?> {
+        return eventDao.getEventWithPayees(eventId).map { entity ->
             entity?.toDomain()
         }
     }
@@ -31,7 +31,7 @@ internal class EventRepositoryImpl @Inject constructor(
         return eventDao.insertEvent(event.toEntity())
     }
 
-    override suspend fun insertParticipants(participants: List<EventParticipant>) {
+    override suspend fun insertParticipants(participants: List<Payee>) {
         eventDao.insertParticipants(participants.map { it.toEntity() })
     }
 
@@ -43,10 +43,14 @@ internal class EventRepositoryImpl @Inject constructor(
         eventDao.deleteEvent(event.toEntity())
     }
 
-    override fun getParticipantsByEvent(eventId: Long): Flow<List<EventParticipant>> {
-        return eventDao.getParticipantsByEvent(eventId).map { entities ->
+    override fun getPayeesByEvent(eventId: Long): Flow<List<Payee>> {
+        return eventDao.getPayeesByEvent(eventId).map { entities ->
             entities.map { it.toDomain() }
         }
+    }
+
+    override suspend fun getEventById(eventId: Long): Event? {
+        return eventDao.getEventById(eventId)?.toDomain()
     }
 }
 
