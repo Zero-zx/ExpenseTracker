@@ -54,3 +54,17 @@ fun Fragment.setAccountIdSelectionResult(selectedId: Long) {
         bundleOf(FragmentResultKeys.RESULT_ACCOUNT_ID to selectedId)
     )
 }
+
+fun Fragment.setPayeeIdsSelectionResult(selectedIds: LongArray) {
+    setSelectionResult(
+        FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS,
+        bundleOf(FragmentResultKeys.RESULT_PAYEE_IDS to selectedIds)
+    )
+}
+
+fun Fragment.setLocationIdSelectionResult(selectedId: Long) {
+    setSelectionResult(
+        FragmentResultKeys.REQUEST_SELECT_LOCATION_ID,
+        bundleOf(FragmentResultKeys.RESULT_LOCATION_ID to selectedId)
+    )
+}

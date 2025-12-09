@@ -6,41 +6,41 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemEventTransactionBinding
-import transaction.model.Event
+import transaction.model.PayeeTransaction
 
 class PayeeAdapter(
-    private val onItemClick: (Event) -> Unit,
-    private val onItemUpdate: (Event) -> Unit
-) : ListAdapter<Event, PayeeAdapter.EventViewHolder>(EventDiffCallback()) {
-    private val selectedEventIds = mutableSetOf<Long>()
+    private val onItemClick: (PayeeTransaction) -> Unit,
+    private val onItemUpdate: (PayeeTransaction) -> Unit
+) : ListAdapter<PayeeTransaction, PayeeAdapter.PayeeViewHolder>(PayeeDiffCallback()) {
+    private val selectedPayeeIds = mutableSetOf<Long>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PayeeViewHolder {
         val binding = ItemEventTransactionBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return EventViewHolder(binding)
+        return PayeeViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        holder.bind(getItem(position), selectedEventIds.contains(getItem(position).id))
+    override fun onBindViewHolder(holder: PayeeViewHolder, position: Int) {
+        holder.bind(getItem(position), selectedPayeeIds.contains(getItem(position).id))
     }
 
-    inner class EventViewHolder(
+    inner class PayeeViewHolder(
         private val binding: ItemEventTransactionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(event: Event, isSelected: Boolean) {
+        fun bind(payee: PayeeTransaction, isSelected: Boolean) {
             binding.apply {
                 itemView.isSelected = isSelected
-                textViewName.text = event.eventName
+                textViewName.text = payee.name
 
                 itemView.setOnClickListener {
                     val position = bindingAdapterPosition
                     if (position != RecyclerView.NO_POSITION) {
                         onItemClick(getItem(position))
-                        // Selection state will be updated via setSelectedEvents
+                        // Selection state will be updated via setSelectedPayees
                     }
                 }
 
@@ -54,24 +54,24 @@ class PayeeAdapter(
         }
     }
 
-    private class EventDiffCallback : DiffUtil.ItemCallback<Event>() {
-        override fun areItemsTheSame(oldItem: Event, newItem: Event): Boolean {
+    private class PayeeDiffCallback : DiffUtil.ItemCallback<PayeeTransaction>() {
+        override fun areItemsTheSame(oldItem: PayeeTransaction, newItem: PayeeTransaction): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Event, newItem: Event): Boolean {
+        override fun areContentsTheSame(oldItem: PayeeTransaction, newItem: PayeeTransaction): Boolean {
             return oldItem == newItem
         }
     }
 
-    fun setSelectedEvents(events: List<Event>) {
-        val newIds = events.map { it.id }.toSet()
-        if (newIds == selectedEventIds) return
+    fun setSelectedPayees(payees: List<PayeeTransaction>) {
+        val newIds = payees.map { it.id }.toSet()
+        if (newIds == selectedPayeeIds) return
 
         // Find positions that changed and notify them
-        val previousIds = selectedEventIds.toSet()
-        selectedEventIds.clear()
-        selectedEventIds.addAll(newIds)
+        val previousIds = selectedPayeeIds.toSet()
+        selectedPayeeIds.clear()
+        selectedPayeeIds.addAll(newIds)
 
         // Notify items that were selected or deselected
         val changedIds = (previousIds + newIds) - (previousIds.intersect(newIds))

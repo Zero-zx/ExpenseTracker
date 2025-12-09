@@ -15,9 +15,13 @@ import com.example.transaction.databinding.FragmentTransactionAddBinding
 import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_ID
+import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS
+import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
 import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
 import constants.FragmentResultKeys.RESULT_CATEGORY_ID
 import constants.FragmentResultKeys.RESULT_EVENT_ID
+import constants.FragmentResultKeys.RESULT_PAYEE_IDS
+import constants.FragmentResultKeys.RESULT_LOCATION_ID
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.standardize
 import presentation.add.adapter.CategoryAdapter
@@ -83,6 +87,16 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             val eventId = bundle.getLong(RESULT_EVENT_ID)
             viewModel.selectEventById(eventId)
         }
+
+        listenForSelectionResult(REQUEST_SELECT_PAYEE_IDS) { bundle ->
+            val payeeIds = bundle.getLongArray(RESULT_PAYEE_IDS) ?: longArrayOf()
+            viewModel.selectPayeesByIds(payeeIds)
+        }
+
+        listenForSelectionResult(REQUEST_SELECT_LOCATION_ID) { bundle ->
+            val locationId = bundle.getLong(RESULT_LOCATION_ID)
+            viewModel.selectLocationById(locationId)
+        }
     }
 
 
@@ -106,6 +120,14 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
             customViewEvent.setOnClickListener {
                 viewModel.toSelectEvent()
+            }
+
+            customViewPayee.setOnClickListener {
+                viewModel.toSelectPayee()
+            }
+
+            customViewLocation.setOnClickListener {
+                viewModel.toSelectLocation()
             }
 
             textViewDate.setOnClickListener {
@@ -190,7 +212,15 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
 
         collectState(viewModel.selectedEvent) { event ->
-            updateSelectedEvents(listOf(event) as List<Event>)
+            updateSelectedEvents(event?.let { listOf(it) } ?: emptyList())
+        }
+
+        collectState(viewModel.selectedPayees) { payees ->
+            updateSelectedPayees(payees)
+        }
+
+        collectState(viewModel.selectedLocation) { location ->
+            updateSelectedLocation(location)
         }
 
         collectFlow(viewModel.uiState) { state ->
@@ -238,8 +268,8 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             customViewEvent.getTextView().isVisible = events.isEmpty()
             customViewEvent.getChipGroup().removeAllViews()
 
-            // Add chips for each selected event
-            events.forEach { event ->
+            // Add chips for each selected event (filter out nulls for safety)
+            events.filterNotNull().forEach { event ->
                 val chip = com.google.android.material.chip.Chip(requireContext())
                 chip.text = event.eventName.standardize()
                 chip.isCloseIconVisible = true
@@ -249,6 +279,43 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 // Insert before the "Add Event" chip
                 customViewEvent.getChipGroup()
                     .addView(chip, customViewEvent.getChipGroup().childCount - 1)
+            }
+        }
+    }
+
+    private fun updateSelectedPayees(payees: List<transaction.model.PayeeTransaction>) {
+        binding.apply {
+            customViewPayee.getTextView().isVisible = payees.isEmpty()
+            customViewPayee.getChipGroup().removeAllViews()
+
+            // Add chips for each selected payee
+            payees.forEach { payee ->
+                val chip = com.google.android.material.chip.Chip(requireContext())
+                chip.text = payee.name.standardize()
+                chip.isCloseIconVisible = true
+                chip.setOnCloseIconClickListener {
+                    viewModel.removePayee(payee)
+                }
+                customViewPayee.getChipGroup()
+                    .addView(chip, customViewPayee.getChipGroup().childCount - 1)
+            }
+        }
+    }
+
+    private fun updateSelectedLocation(location: transaction.model.Location?) {
+        binding.apply {
+            customViewLocation.getTextView().isVisible = location == null
+            customViewLocation.getChipGroup().removeAllViews()
+
+            location?.let { loc ->
+                val chip = com.google.android.material.chip.Chip(requireContext())
+                chip.text = loc.name.standardize()
+                chip.isCloseIconVisible = true
+                chip.setOnCloseIconClickListener {
+                    viewModel.removeLocation()
+                }
+                customViewLocation.getChipGroup()
+                    .addView(chip, customViewLocation.getChipGroup().childCount - 1)
             }
         }
     }

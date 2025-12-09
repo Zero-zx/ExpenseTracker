@@ -46,5 +46,7 @@ internal data class TransactionEntity(
     @ColumnInfo(name = "event_id")
     val eventId: Long?,
     @ColumnInfo(name = "partner_id")
-    val partnerId: Long
+    val partnerId: Long,
+    @ColumnInfo(name = "location_id")
+    val locationId: Long?
 )

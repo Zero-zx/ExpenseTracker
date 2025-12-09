@@ -16,8 +16,12 @@ import kotlinx.coroutines.withContext
 import navigation.Navigator
 import transaction.model.Category
 import transaction.model.Event
+import transaction.model.Location
+import transaction.model.PayeeTransaction
 import transaction.usecase.GetCategoriesUseCase
 import transaction.usecase.GetEventByIdUseCase
+import transaction.usecase.GetLocationByIdUseCase
+import transaction.usecase.GetPayeeByIdUseCase
 import usecase.AddTransactionUseCase
 import javax.inject.Inject
 
@@ -27,7 +31,9 @@ class AddTransactionViewModel @Inject constructor(
     private val addTransactionUseCase: AddTransactionUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getAccountByIdUseCase: GetAccountByIdUseCase,
-    private val getEventByIdUseCase: GetEventByIdUseCase
+    private val getEventByIdUseCase: GetEventByIdUseCase,
+    private val getLocationByIdUseCase: GetLocationByIdUseCase,
+    private val getPayeeByIdUseCase: GetPayeeByIdUseCase
 ) : BaseViewModel<Long>() {
 
     private val _categoryState = MutableStateFlow<UIState<List<Category>>>(UIState.Loading)
@@ -41,6 +47,12 @@ class AddTransactionViewModel @Inject constructor(
 
     private val _selectedEvent = MutableStateFlow<Event?>(null)
     val selectedEvent = _selectedEvent.asStateFlow()
+
+    private val _selectedPayees = MutableStateFlow<List<PayeeTransaction>>(emptyList())
+    val selectedPayees = _selectedPayees.asStateFlow()
+
+    private val _selectedLocation = MutableStateFlow<Location?>(null)
+    val selectedLocation = _selectedLocation.asStateFlow()
 
 
     init {
@@ -75,13 +87,16 @@ class AddTransactionViewModel @Inject constructor(
 
             setLoading()
             try {
+                val payeeIds = _selectedPayees.value.map { it.id }
                 val id = addTransactionUseCase(
                     amount = amount,
                     category = selectedCategory,
                     account = selectedAccount,
                     event = selectedEvent,
                     description = description,
-                    createAt = createAt
+                    createAt = createAt,
+                    location = _selectedLocation.value,
+                    payeeIds = payeeIds
                 )
                 setSuccess(id)
             } catch (e: Exception) {
@@ -151,6 +166,53 @@ class AddTransactionViewModel @Inject constructor(
 
     fun toSelectEvent() {
         navigator.navigateToSelectEvent(selectedEvent.value?.id ?: -1L)
+    }
+
+    fun toSelectPayee() {
+        val selectedPayeeIds = _selectedPayees.value.map { it.id }.toLongArray()
+        navigator.navigateToSelectPayee(selectedPayeeIds)
+    }
+
+    fun toSelectLocation() {
+        navigator.navigateToSelectLocation(_selectedLocation.value?.id ?: -1L)
+    }
+
+    fun selectPayeesByIds(payeeIds: LongArray) {
+        viewModelScope.launch {
+            try {
+                val payees = payeeIds.toList().mapNotNull { payeeId ->
+                    withContext(Dispatchers.IO) {
+                        getPayeeByIdUseCase(payeeId)
+                    }
+                }
+                _selectedPayees.value = payees
+            } catch (e: Exception) {
+                // Handle error if needed
+            }
+        }
+    }
+
+    fun selectLocationById(locationId: Long) {
+        viewModelScope.launch {
+            try {
+                val location = withContext(Dispatchers.IO) {
+                    getLocationByIdUseCase(locationId)
+                }
+                if (location != null) {
+                    _selectedLocation.value = location
+                }
+            } catch (e: Exception) {
+                // Handle error if needed
+            }
+        }
+    }
+
+    fun removePayee(payee: PayeeTransaction) {
+        _selectedPayees.value = _selectedPayees.value.filter { it.id != payee.id }
+    }
+
+    fun removeLocation() {
+        _selectedLocation.value = null
     }
 
     fun navigateBack() {

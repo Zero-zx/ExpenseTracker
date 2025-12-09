@@ -1,6 +1,8 @@
 package repository
 
 import dao.TransactionDao
+import dao.TransactionPayeeDao
+import model.TransactionPayeeEntity
 import transaction.model.Transaction
 import transaction.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +12,8 @@ import mapper.toEntity
 import javax.inject.Inject
 
 internal class TransactionRepositoryImpl @Inject constructor(
-    private val transactionDao: TransactionDao
+    private val transactionDao: TransactionDao,
+    private val transactionPayeeDao: TransactionPayeeDao
 ) : TransactionRepository {
     override fun getAllTransactionByAccount(accountId: Long): Flow<List<Transaction>> {
         return transactionDao.getAccountWithTransactions(accountId)
@@ -18,7 +21,21 @@ internal class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertTransaction(transaction: Transaction): Long {
-        return transactionDao.insert(transaction.toEntity())
+        val transactionId = transactionDao.insert(transaction.toEntity())
+        
+        // Insert payees if any
+        val payeeIds = transaction.payeeIds
+        if (payeeIds.isNotEmpty()) {
+            val transactionPayees = payeeIds.map { payeeId ->
+                TransactionPayeeEntity(
+                    transactionId = transactionId,
+                    payeeId = payeeId
+                )
+            }
+            transactionPayeeDao.insertTransactionPayees(transactionPayees)
+        }
+        
+        return transactionId
     }
 
     override suspend fun updateTransaction(transaction: Transaction) {

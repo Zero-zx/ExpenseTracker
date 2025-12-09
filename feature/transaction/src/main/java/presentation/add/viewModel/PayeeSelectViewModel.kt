@@ -6,58 +6,70 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import navigation.Navigator
-import transaction.model.Event
-import transaction.usecase.AddEventUseCase
-import transaction.usecase.GetEventsByAccountUseCase
+import transaction.model.PayeeTransaction
+import transaction.usecase.AddPayeeUseCase
+import transaction.usecase.GetPayeesByAccountUseCase
+import transaction.usecase.GetRecentPayeesByAccountUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class PayeeSelectViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getEventsByAccountUseCase: GetEventsByAccountUseCase,
-    private val addEventUseCase: AddEventUseCase
-) : BaseViewModel<List<Event>>() {
+    private val getPayeesByAccountUseCase: GetPayeesByAccountUseCase,
+    private val getRecentPayeesByAccountUseCase: GetRecentPayeesByAccountUseCase,
+    private val addPayeeUseCase: AddPayeeUseCase
+) : BaseViewModel<List<PayeeTransaction>>() {
 
-    init {
-        loadEvents()
+    companion object {
+        private const val ACCOUNT_ID = 1L // TODO: Get from account repository
     }
 
-    private fun loadEvents() {
+    init {
+        loadPayees()
+    }
+
+    fun loadPayees() {
         viewModelScope.launch {
-            getEventsByAccountUseCase(1)
+            getPayeesByAccountUseCase(ACCOUNT_ID)
                 .catch { exception ->
                     setError(exception.message ?: "Unknown error occurred")
                 }
-                .collect { events ->
-                    setSuccess(events)
+                .collect { payees ->
+                    setSuccess(payees)
                 }
         }
     }
 
-    fun addEvent(eventName: String) {
-        if (eventName.isBlank()) {
-            setError("Event name cannot be empty")
+    fun loadRecentPayees() {
+        viewModelScope.launch {
+            getRecentPayeesByAccountUseCase(ACCOUNT_ID)
+                .catch { exception ->
+                    setError(exception.message ?: "Unknown error occurred")
+                }
+                .collect { payees ->
+                    setSuccess(payees)
+                }
+        }
+    }
+
+    fun addPayee(payeeName: String) {
+        if (payeeName.isBlank()) {
+            setError("Payee name cannot be empty")
             return
         }
 
         viewModelScope.launch {
             try {
                 setLoading()
-                // Use current timestamp as start date, no end date, and default participant (user)
-                val currentTime = System.currentTimeMillis()
-                addEventUseCase(
-                    eventName = eventName,
-                    startDate = currentTime,
-                    endDate = null,
-                    numberOfParticipants = 1,
-                    accountId = 1,
-                    participants = listOf("Me")
+                addPayeeUseCase(
+                    name = payeeName,
+                    accountId = ACCOUNT_ID,
+                    isFromContacts = false
                 )
-                loadEvents() // Reload events after adding
+                loadPayees() // Reload payees after adding
             } catch (e: Exception) {
-                setError(e.message ?: "Failed to add event")
+                setError(e.message ?: "Failed to add payee")
             }
         }
     }
 }
-

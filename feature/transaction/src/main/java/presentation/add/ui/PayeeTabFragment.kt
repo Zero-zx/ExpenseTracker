@@ -1,32 +1,29 @@
 package presentation.add.ui
 
-import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import base.BaseFragment
 import base.UIState
 import com.example.transaction.databinding.FragmentEventTabBinding
-import com.example.transaction.databinding.FragmentPayeeTabBinding
 import dagger.hilt.android.AndroidEntryPoint
-import presentation.add.adapter.EventAdapter
-import presentation.add.model.EventTabType
-import presentation.add.viewModel.EventSelectViewModel
+import presentation.add.adapter.PayeeAdapter
+import presentation.add.model.PayeeTabType
+import presentation.add.viewModel.PayeeSelectViewModel
 
 @AndroidEntryPoint
-class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
-    FragmentPayeeTabBinding::inflate
+class PayeeTabFragment : BaseFragment<FragmentEventTabBinding>(
+    FragmentEventTabBinding::inflate
 ) {
-    private val viewModel: EventSelectViewModel by viewModels()
-    private lateinit var adapter: EventAdapter
-    private var tabType: EventTabType = EventTabType.IN_PROGRESS
-    private val selectedEventId: Long by lazy {
-        parentFragment?.arguments?.getLong(ARG_SELECTED_EVENT_ID, -1L) ?: -1L
-    }
+    private val viewModel: PayeeSelectViewModel by viewModels()
+    private lateinit var adapter: PayeeAdapter
+    private var tabType: PayeeTabType = PayeeTabType.RECENT
+    private val selectedPayeeIds: Set<Long>
+        get() = (parentFragment as? PayeeSelectFragment)?.getSelectedPayeeIds() ?: emptySet()
 
     override fun initView() {
-        adapter = EventAdapter(
-            { event ->
-                (parentFragment as EventSelectFragment).onEventSelected(event.id)
+        adapter = PayeeAdapter(
+            { payee ->
+                (parentFragment as PayeeSelectFragment).onPayeeToggled(payee.id)
             },
             {
                 // TODO: Handle item update
@@ -34,18 +31,25 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
         )
         binding.recyclerView.adapter = adapter
 
-        val tabTypeArg = arguments?.getSerializable(ARG_TAB_TYPE) as? EventTabType
-        tabType = tabTypeArg ?: EventTabType.IN_PROGRESS
+        val tabTypeArg = arguments?.getSerializable(ARG_TAB_TYPE) as? PayeeTabType
+        tabType = tabTypeArg ?: PayeeTabType.RECENT
+
+        // Load appropriate data based on tab type
+        if (tabType == PayeeTabType.RECENT) {
+            viewModel.loadRecentPayees()
+        } else {
+            viewModel.loadPayees() // For contacts tab (to be implemented later)
+        }
     }
 
     override fun initListener() {
         binding.buttonAddTrip.setOnClickListener {
-            showAddEventView()
+            showAddPayeeView()
         }
 
         binding.buttonSave.setOnClickListener {
-            val eventName = binding.editTextEventName.text.toString()
-            viewModel.addEvent(eventName)
+            val payeeName = binding.editTextEventName.text.toString()
+            viewModel.addPayee(payeeName)
         }
     }
 
@@ -62,9 +66,13 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
                     } else {
                         showRecyclerView()
                         adapter.submitList(state.data)
-                        if (selectedEventId != -1L) {
-                            val selectedEvent = state.data.find { it.id == selectedEventId }
-                            adapter.setSelectedEvents(listOf(selectedEvent!!))
+                        // Update selection based on parent fragment's selection
+                        val currentSelectedIds = selectedPayeeIds
+                        if (currentSelectedIds.isNotEmpty()) {
+                            val selectedPayees = state.data.filter { currentSelectedIds.contains(it.id) }
+                            adapter.setSelectedPayees(selectedPayees)
+                        } else {
+                            adapter.setSelectedPayees(emptyList())
                         }
                     }
                 }
@@ -80,7 +88,7 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
         binding.layoutEmpty.isVisible = true
         binding.recyclerView.isVisible = false
         binding.layoutAddEvent.isVisible = false
-        binding.buttonAddTrip.isVisible = tabType == EventTabType.IN_PROGRESS
+        binding.buttonAddTrip.isVisible = tabType == PayeeTabType.RECENT
     }
 
     fun showRecyclerView() {
@@ -89,19 +97,29 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
         binding.layoutAddEvent.isVisible = false
     }
 
-    fun showAddEventView() {
+    fun showAddPayeeView() {
         binding.layoutEmpty.isVisible = false
         binding.recyclerView.isVisible = false
         binding.layoutAddEvent.isVisible = true
     }
 
-    companion object {
-        private const val ARG_TAB_TYPE = "event_tab_type"
-        const val ARG_SELECTED_EVENT_ID = "selected_event_id"
+    fun refreshSelection() {
+        // Refresh selection when parent fragment's selection changes
+        val currentList = adapter.currentList
+        if (currentList.isNotEmpty()) {
+            val currentSelectedIds = selectedPayeeIds
+            val selectedPayees = currentList.filter { currentSelectedIds.contains(it.id) }
+            adapter.setSelectedPayees(selectedPayees)
+        }
+    }
 
-        fun newInstance(tabType: EventTabType): PayeeTabFragment {
+    companion object {
+        private const val ARG_TAB_TYPE = "payee_tab_type"
+        const val ARG_SELECTED_PAYEE_IDS = "selected_payee_ids"
+
+        fun newInstance(tabType: PayeeTabType): PayeeTabFragment {
             return PayeeTabFragment().apply {
-                arguments = Bundle().apply {
+                arguments = android.os.Bundle().apply {
                     putSerializable(ARG_TAB_TYPE, tabType)
                 }
             }

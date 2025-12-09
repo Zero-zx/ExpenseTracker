@@ -60,6 +60,20 @@ class NavigatorImpl @Inject constructor() : Navigator {
         )
     }
 
+    override fun navigateToSelectPayee(selectedPayeeIds: LongArray) {
+        navController?.navigateWithAnim(
+            R.id.payeeSelectFragment,
+            bundleOf("selected_payee_ids" to selectedPayeeIds)
+        )
+    }
+
+    override fun navigateToSelectLocation(selectedLocationId: Long) {
+        navController?.navigateWithAnim(
+            R.id.locationSelectFragment,
+            bundleOf("selected_location_id" to selectedLocationId)
+        )
+    }
+
     override fun navigateToEventList() {
         navController?.navigateWithAnim(R.id.eventListFragment)
     }

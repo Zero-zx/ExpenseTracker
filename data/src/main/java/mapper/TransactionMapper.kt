@@ -15,6 +15,7 @@ internal fun Transaction.toEntity(): TransactionEntity {
         accountId = account.id,
         eventId = event?.id,
         partnerId = partnerId,
+        locationId = location?.id
     )
 }
 
@@ -28,5 +29,6 @@ internal fun TransactionWithDetails.toDomain(): Transaction {
         event = eventEntity?.toDomain(),
         partnerId = 1,
         createAt = transactionEntity.createAt,
+        location = locationEntity?.toDomain()
     )
 }
