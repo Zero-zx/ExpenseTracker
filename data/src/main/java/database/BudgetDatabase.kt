@@ -1,8 +1,6 @@
 package database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import dao.AccountDao
 import dao.CategoryDao
@@ -11,7 +9,7 @@ import dao.TransactionDao
 import model.AccountEntity
 import model.CategoryEntity
 import model.EventEntity
-import model.EventParticipantEntity
+import model.PayeeEntity
 import model.TransactionEntity
 
 @Database(
@@ -20,7 +18,7 @@ import model.TransactionEntity
         AccountEntity::class,
         CategoryEntity::class,
         EventEntity::class,
-        EventParticipantEntity::class
+        PayeeEntity::class
     ],
     exportSchema = false,
     version = 2

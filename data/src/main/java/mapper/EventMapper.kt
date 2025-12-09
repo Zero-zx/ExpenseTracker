@@ -1,11 +1,11 @@
 package mapper
 
 import model.EventEntity
-import model.EventParticipantEntity
-import model.EventWithParticipantsEntity
+import model.PayeeEntity
+import model.EventWithPayeesEntity
 import transaction.model.Event
-import transaction.model.EventParticipant
-import transaction.model.EventWithParticipants
+import transaction.model.Payee
+import transaction.model.EventWithPayees
 
 internal fun Event.toEntity(): EventEntity {
     return EventEntity(
@@ -31,24 +31,25 @@ internal fun EventEntity.toDomain(): Event {
     )
 }
 
-internal fun EventParticipant.toEntity(): EventParticipantEntity {
-    return EventParticipantEntity(
+internal fun Payee.toEntity(): PayeeEntity {
+    return PayeeEntity(
         id = id,
         eventId = eventId,
         participantName = participantName
     )
 }
 
-internal fun EventParticipantEntity.toDomain(): EventParticipant {
-    return EventParticipant(
+internal fun PayeeEntity.toDomain(): Payee {
+    return Payee(
         id = id,
         eventId = eventId,
-        participantName = participantName
+        participantName = participantName,
+        account = null
     )
 }
 
-internal fun EventWithParticipantsEntity.toDomain(): EventWithParticipants {
-    return EventWithParticipants(
+internal fun EventWithPayeesEntity.toDomain(): EventWithPayees {
+    return EventWithPayees(
         event = event.toDomain(),
         participants = participants.map { it.toDomain() }
     )

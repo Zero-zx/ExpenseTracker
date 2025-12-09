@@ -52,6 +52,7 @@ class AccountAdapter(
                 imageViewChecked.isVisible = selected
                 textViewName.text = account.username
                 textViewAmount.text = account.balance.toString()
+                imageViewIconAccount.setImageResource(account.type.iconRes)
             }
         }
     }

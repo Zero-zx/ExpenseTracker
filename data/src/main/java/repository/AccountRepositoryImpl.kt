@@ -24,6 +24,10 @@ internal class AccountRepositoryImpl @Inject constructor(private val accountDao:
         }
     }
 
+    override suspend fun getAccountById(accountId: Long): Account? {
+        return accountDao.getAccountById(accountId)?.toDomain()
+    }
+
     override suspend fun insertAccount(account: Account): Long {
         return accountDao.insert(account.toEntity())
     }

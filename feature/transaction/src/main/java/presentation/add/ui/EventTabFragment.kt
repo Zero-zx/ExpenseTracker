@@ -9,8 +9,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import presentation.add.adapter.EventAdapter
 import presentation.add.model.EventTabType
 import presentation.add.viewModel.EventSelectViewModel
-import ui.navigateBack
-import ui.setEventIdSelectionResult
 
 @AndroidEntryPoint
 class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
@@ -20,14 +18,13 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
     private lateinit var adapter: EventAdapter
     private var tabType: EventTabType = EventTabType.IN_PROGRESS
     private val selectedEventId: Long by lazy {
-        arguments?.getLong(ARG_SELECTED_EVENT_ID, -1L) ?: -1L
+        parentFragment?.arguments?.getLong(ARG_SELECTED_EVENT_ID, -1L) ?: -1L
     }
 
     override fun initView() {
         adapter = EventAdapter(
             { event ->
-                setEventIdSelectionResult(event.id)
-                navigateBack()
+                (parentFragment as EventSelectFragment).onEventSelected(event.id)
             },
             {
                 // TODO: Handle item update

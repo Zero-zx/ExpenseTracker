@@ -1,16 +1,18 @@
 package presentation.add.viewModel
 
 import account.model.Account
-import account.usecase.GetAccountsUseCase
+import account.usecase.GetAccountByIdUseCase
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import navigation.Navigator
 import transaction.model.Category
 import transaction.model.Event
@@ -24,8 +26,8 @@ class AddTransactionViewModel @Inject constructor(
     private val navigator: Navigator,
     private val addTransactionUseCase: AddTransactionUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
-    private val getAccountsUseCase: GetAccountsUseCase,
-    private val getEventById: GetEventByIdUseCase
+    private val getAccountByIdUseCase: GetAccountByIdUseCase,
+    private val getEventByIdUseCase: GetEventByIdUseCase
 ) : BaseViewModel<Long>() {
 
     private val _categoryState = MutableStateFlow<UIState<List<Category>>>(UIState.Loading)
@@ -37,8 +39,8 @@ class AddTransactionViewModel @Inject constructor(
     private val _selectedAccount = MutableStateFlow<Account?>(null)
     val selectedAccount = _selectedAccount.asStateFlow()
 
-    private val _selectedEvents = MutableStateFlow<List<Event>>(emptyList())
-    val selectedEvents = _selectedEvents.asStateFlow()
+    private val _selectedEvent = MutableStateFlow<Event?>(null)
+    val selectedEvent = _selectedEvent.asStateFlow()
 
 
     init {
@@ -69,7 +71,7 @@ class AddTransactionViewModel @Inject constructor(
         viewModelScope.launch {
             val selectedCategory = _selectedCategory.value ?: return@launch
             val selectedAccount = _selectedAccount.value ?: return@launch
-            val selectedEvent = _selectedEvents.value.firstOrNull()
+            val selectedEvent = _selectedEvent.value ?: return@launch
 
             setLoading()
             try {
@@ -101,18 +103,14 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    // Allow other fragments to set the selected account in the shared nav-graph scoped ViewModel
-    fun selectAccount(account: Account) {
-        _selectedAccount.value = account
-    }
-
     fun selectAccountById(accountId: Long) {
         viewModelScope.launch {
             try {
-                getAccountsUseCase().collect { accounts ->
-                    accounts.find { it.id == accountId }?.let { account ->
-                        _selectedAccount.value = account
-                    }
+                val account = withContext(Dispatchers.IO) {
+                    getAccountByIdUseCase(accountId)
+                }
+                if (account != null) {
+                    _selectedAccount.value = account
                 }
             } catch (e: Exception) {
                 // Handle error if needed
@@ -123,9 +121,11 @@ class AddTransactionViewModel @Inject constructor(
     fun selectEventById(eventId: Long) {
         viewModelScope.launch {
             try {
-                val event = getEventById(eventId)
+                val event = withContext(Dispatchers.IO) {
+                    getEventByIdUseCase(eventId)
+                }
                 if (event != null) {
-                    _selectedEvents.value = listOf(event)
+                    _selectedEvent.value = event
                 }
             } catch (e: Exception) {
                 // Handle error if needed
@@ -134,9 +134,7 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun removeEvent(event: Event) {
-        val currentEvents = _selectedEvents.value.toMutableList()
-        currentEvents.removeAll { it.id == event.id }
-        _selectedEvents.value = currentEvents
+        _selectedEvent.value = null
     }
 
     fun onHistoryClick() {
@@ -147,12 +145,12 @@ class AddTransactionViewModel @Inject constructor(
         navigator.navigateToMoreCategory()
     }
 
-    fun toSelectAccount(selectedAccountId: Long = -1L) {
-        navigator.navigateToSelectAccount(selectedAccountId)
+    fun toSelectAccount() {
+        navigator.navigateToSelectAccount(selectedAccount.value?.id ?: -1L)
     }
 
-    fun toSelectEvent(selectedEventId: Long = -1L) {
-        navigator.navigateToSelectEvent(selectedEventId)
+    fun toSelectEvent() {
+        navigator.navigateToSelectEvent(selectedEvent.value?.id ?: -1L)
     }
 
     fun navigateBack() {

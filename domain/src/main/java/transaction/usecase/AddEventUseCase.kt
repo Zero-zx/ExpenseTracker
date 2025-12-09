@@ -1,7 +1,7 @@
 package transaction.usecase
 
 import transaction.model.Event
-import transaction.model.EventParticipant
+import transaction.model.Payee
 import transaction.repository.EventRepository
 import javax.inject.Inject
 
@@ -38,9 +38,10 @@ class AddEventUseCase @Inject constructor(
         val eventId = repository.insertEvent(event)
 
         val eventParticipants = participants.map { name ->
-            EventParticipant(
+            Payee(
                 eventId = eventId,
-                participantName = name
+                participantName = name,
+                account = null
             )
         }
 

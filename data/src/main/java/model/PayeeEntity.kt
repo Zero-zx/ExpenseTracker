@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
     ],
     indices = [Index("eventId")]
 )
-internal data class EventParticipantEntity(
+internal data class PayeeEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo(name = "eventId")

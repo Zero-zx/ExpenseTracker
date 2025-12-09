@@ -101,7 +101,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             }
 
             buttonSelectWallet.setOnClickListener {
-                viewModel.toSelectAccount(viewModel.selectedAccount.value?.id ?: -1L)
+                viewModel.toSelectAccount()
             }
 
             customViewEvent.setOnClickListener {
@@ -189,8 +189,8 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             account?.let { updateSelectedAccount(it) }
         }
 
-        collectState(viewModel.selectedEvents) { events ->
-            updateSelectedEvents(events)
+        collectState(viewModel.selectedEvent) { event ->
+            updateSelectedEvents(listOf(event) as List<Event>)
         }
 
         collectFlow(viewModel.uiState) { state ->

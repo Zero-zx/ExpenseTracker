@@ -13,6 +13,7 @@ import com.example.transaction.databinding.FragmentAccountSelectBinding
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.add.adapter.AccountAdapter
 import presentation.add.viewModel.AccountSelectViewModel
+import ui.navigateBack
 import ui.setAccountIdSelectionResult
 
 @AndroidEntryPoint
@@ -31,7 +32,7 @@ class AccountSelectFragment : BaseFragment<FragmentAccountSelectBinding>(
     override fun initView() {
         adapter = AccountAdapter { account ->
             setAccountIdSelectionResult(account.id)
-            viewModel.navigateBack()
+            navigateBack()
         }
         binding.recyclerView.adapter = adapter
     }

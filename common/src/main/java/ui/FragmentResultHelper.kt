@@ -5,6 +5,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.LifecycleOwner
 import constants.FragmentResultKeys
 
 
@@ -16,7 +17,7 @@ fun Fragment.setSelectionResult(requestKey: String, bundle: Bundle) {
 // Extension function for listening to result (Receiver side)
 fun Fragment.listenForSelectionResult(
     requestKey: String,
-    lifecycleOwner: androidx.lifecycle.LifecycleOwner = viewLifecycleOwner,
+    lifecycleOwner: LifecycleOwner = viewLifecycleOwner,
     onResult: (Bundle) -> Unit
 ) {
     setFragmentResultListener(requestKey) { _, bundle ->

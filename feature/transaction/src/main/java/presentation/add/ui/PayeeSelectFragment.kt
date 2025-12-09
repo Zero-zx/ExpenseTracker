@@ -29,7 +29,7 @@ class PayeeSelectFragment : BaseFragment<FragmentAccountSelectBinding>(
     override fun initView() {
         adapter = AccountAdapter { account ->
             // Set selected account on the shared nav-graph scoped ViewModel and navigate back
-            sharedViewModel.selectAccount(account)
+
             sharedViewModel.navigateBack()
         }
         binding.recyclerView.adapter = adapter
