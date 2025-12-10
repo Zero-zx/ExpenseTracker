@@ -6,22 +6,23 @@ import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import base.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import navigation.Navigator
 import transaction.model.Category
 import transaction.model.Event
 import transaction.model.Location
 import transaction.model.PayeeTransaction
+import transaction.model.TransactionImage
 import transaction.usecase.GetCategoriesUseCase
 import transaction.usecase.GetEventByIdUseCase
 import transaction.usecase.GetLocationByIdUseCase
 import transaction.usecase.GetPayeeByIdUseCase
+import transaction.usecase.SaveTransactionImageUseCase
+import transaction.usecase.DeleteTransactionImagesUseCase
 import usecase.AddTransactionUseCase
 import javax.inject.Inject
 
@@ -33,7 +34,9 @@ class AddTransactionViewModel @Inject constructor(
     private val getAccountByIdUseCase: GetAccountByIdUseCase,
     private val getEventByIdUseCase: GetEventByIdUseCase,
     private val getLocationByIdUseCase: GetLocationByIdUseCase,
-    private val getPayeeByIdUseCase: GetPayeeByIdUseCase
+    private val getPayeeByIdUseCase: GetPayeeByIdUseCase,
+    private val saveTransactionImageUseCase: SaveTransactionImageUseCase,
+    private val deleteTransactionImagesUseCase: DeleteTransactionImagesUseCase
 ) : BaseViewModel<Long>() {
 
     private val _categoryState = MutableStateFlow<UIState<List<Category>>>(UIState.Loading)
@@ -54,6 +57,11 @@ class AddTransactionViewModel @Inject constructor(
     private val _selectedLocation = MutableStateFlow<Location?>(null)
     val selectedLocation = _selectedLocation.asStateFlow()
 
+    private val _transactionImage = MutableStateFlow<TransactionImage?>(null)
+    val transactionImage = _transactionImage.asStateFlow()
+
+    private val _imageUploadState = MutableStateFlow<UIState<TransactionImage>?>(null)
+    val imageUploadState = _imageUploadState.asStateFlow()
 
     init {
         loadCategories()
@@ -121,9 +129,7 @@ class AddTransactionViewModel @Inject constructor(
     fun selectAccountById(accountId: Long) {
         viewModelScope.launch {
             try {
-                val account = withContext(Dispatchers.IO) {
-                    getAccountByIdUseCase(accountId)
-                }
+                val account = getAccountByIdUseCase(accountId)
                 if (account != null) {
                     _selectedAccount.value = account
                 }
@@ -136,9 +142,7 @@ class AddTransactionViewModel @Inject constructor(
     fun selectEventById(eventId: Long) {
         viewModelScope.launch {
             try {
-                val event = withContext(Dispatchers.IO) {
-                    getEventByIdUseCase(eventId)
-                }
+                val event = getEventByIdUseCase(eventId)
                 if (event != null) {
                     _selectedEvent.value = event
                 }
@@ -181,9 +185,7 @@ class AddTransactionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val payees = payeeIds.toList().mapNotNull { payeeId ->
-                    withContext(Dispatchers.IO) {
-                        getPayeeByIdUseCase(payeeId)
-                    }
+                    getPayeeByIdUseCase(payeeId)
                 }
                 _selectedPayees.value = payees
             } catch (e: Exception) {
@@ -195,9 +197,7 @@ class AddTransactionViewModel @Inject constructor(
     fun selectLocationById(locationId: Long) {
         viewModelScope.launch {
             try {
-                val location = withContext(Dispatchers.IO) {
-                    getLocationByIdUseCase(locationId)
-                }
+                val location = getLocationByIdUseCase(locationId)
                 if (location != null) {
                     _selectedLocation.value = location
                 }
@@ -215,8 +215,59 @@ class AddTransactionViewModel @Inject constructor(
         _selectedLocation.value = null
     }
 
-    fun navigateBack() {
-        navigator.popBackStack()
+    // Image management functions
+    fun saveImage(imageUri: android.net.Uri) {
+        viewModelScope.launch {
+            try {
+                _imageUploadState.value = UIState.Loading
+
+                // Delete old image if exists
+                _transactionImage.value?.let { oldImage ->
+                    deleteTransactionImagesUseCase.deleteSingle(oldImage)
+                }
+
+                val result = saveTransactionImageUseCase(imageUri)
+
+                result.onSuccess { transactionImage ->
+                    _transactionImage.value = transactionImage
+                    _imageUploadState.value = UIState.Success(transactionImage)
+                }.onFailure { error ->
+                    _imageUploadState.value = UIState.Error(
+                        error.message ?: "Failed to save image"
+                    )
+                }
+            } catch (e: Exception) {
+                _imageUploadState.value = UIState.Error(
+                    e.message ?: "Failed to save image"
+                )
+            }
+        }
+    }
+
+    fun removeImage() {
+        viewModelScope.launch {
+            try {
+                val currentImage = _transactionImage.value ?: return@launch
+
+                val result = deleteTransactionImagesUseCase.deleteSingle(currentImage)
+
+                result.onSuccess {
+                    _transactionImage.value = null
+                }.onFailure { error ->
+                    _imageUploadState.value = UIState.Error(
+                        error.message ?: "Failed to delete image"
+                    )
+                }
+            } catch (e: Exception) {
+                _imageUploadState.value = UIState.Error(
+                    e.message ?: "Failed to delete image"
+                )
+            }
+        }
+    }
+
+    fun clearImageUploadState() {
+        _imageUploadState.value = null
     }
 
     fun resetTransactionState() {

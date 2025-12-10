@@ -2,6 +2,7 @@ package presentation.add.viewModel
 
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
+import contact.usecase.GetAllPhoneContactsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ class PayeeSelectViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getPayeesByAccountUseCase: GetPayeesByAccountUseCase,
     private val getRecentPayeesByAccountUseCase: GetRecentPayeesByAccountUseCase,
+    private val getAllPhoneContactsUseCase: GetAllPhoneContactsUseCase,
     private val addPayeeUseCase: AddPayeeUseCase
 ) : BaseViewModel<List<PayeeTransaction>>() {
 
@@ -49,6 +51,24 @@ class PayeeSelectViewModel @Inject constructor(
                 .collect { payees ->
                     setSuccess(payees)
                 }
+        }
+    }
+
+    fun getAllPhoneContacts() {
+        viewModelScope.launch {
+            try {
+                setLoading()
+                val contacts = getAllPhoneContactsUseCase()
+                setSuccess(contacts.map { contact ->
+                    PayeeTransaction(
+                        id = contact.id,
+                        name = contact.displayName,
+                        ACCOUNT_ID
+                    )
+                })
+            } catch (e: Exception) {
+                setError(e.message ?: "Failed to load contacts")
+            }
         }
     }
 

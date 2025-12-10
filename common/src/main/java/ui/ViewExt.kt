@@ -18,6 +18,14 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+fun View.gone() {
+    visibility = View.GONE
+}
+
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
 fun Fragment.navigateBack() {
     findNavController().popBackStack()
 }

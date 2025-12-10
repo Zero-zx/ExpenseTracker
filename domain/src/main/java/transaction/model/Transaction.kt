@@ -13,7 +13,8 @@ data class Transaction(
     val event: Event?,
     val partnerId: Long,
     val location: Location? = null,
-    val payeeIds: List<Long> = emptyList()
+    val payeeIds: List<Long> = emptyList(),
+    val images: TransactionImage? = null
 )
 
 

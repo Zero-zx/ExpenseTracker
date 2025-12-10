@@ -5,27 +5,31 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import base.BaseFragment
 import base.UIState
+import camera.CameraHandler
 import com.example.transaction.R
 import com.example.transaction.databinding.FragmentTransactionAddBinding
 import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_ID
-import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS
 import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
+import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS
 import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
 import constants.FragmentResultKeys.RESULT_CATEGORY_ID
 import constants.FragmentResultKeys.RESULT_EVENT_ID
-import constants.FragmentResultKeys.RESULT_PAYEE_IDS
 import constants.FragmentResultKeys.RESULT_LOCATION_ID
+import constants.FragmentResultKeys.RESULT_PAYEE_IDS
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.standardize
+import permission.PermissionHandler
 import presentation.add.adapter.CategoryAdapter
 import presentation.add.viewModel.AddTransactionViewModel
+import storage.FileProvider
 import transaction.model.Category
 import transaction.model.CategoryType
 import transaction.model.Event
@@ -35,6 +39,7 @@ import ui.createSlideUpAnimation
 import ui.listenForSelectionResult
 import ui.openDatePicker
 import ui.openTimePicker
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -42,11 +47,24 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     FragmentTransactionAddBinding::inflate
 ) {
     private val viewModel: AddTransactionViewModel by viewModels()
+
+    @Inject
+    lateinit var fileProvider: FileProvider
+
     private val adapter = CategoryAdapter(
         onItemClick = { category ->
             viewModel.selectCategory(category = category)
         }
     )
+    private lateinit var cameraHandler: CameraHandler
+    private lateinit var permissionHandler: PermissionHandler
+
+    // Permission launcher
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        permissionHandler.handlePermissionResult(permissions)
+    }
 
     // store selected date (start-of-day millis) and time (offset millis from midnight)
     private var selectedDateStartMillis: Long? = null
@@ -61,6 +79,8 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
         setUpRecyclerView()
         listenForResult()
+        setupPermissionHandler()
+        setupCameraHandler()
     }
 
     fun setUpRecyclerView() {
@@ -176,6 +196,44 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                         ?: System.currentTimeMillis()
                 )
             }
+
+            // Take photo
+            buttonTakePhoto.setOnClickListener {
+                permissionHandler.checkCameraPermission()
+                // After permission granted, launch camera
+                permissionHandler = PermissionHandler(
+                    fragment = this@TransactionAddFragment,
+                    onGranted = { cameraHandler.launchCamera() },
+                    onDenied = {
+                        Toast.makeText(
+                            requireContext(),
+                            "Camera permission required",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                )
+                permissionHandler.setup(permissionLauncher)
+                permissionHandler.checkCameraPermission()
+            }
+
+            // Pick from gallery
+            buttonPickImage.setOnClickListener {
+                permissionHandler.checkGalleryPermission()
+                permissionHandler = PermissionHandler(
+                    fragment = this@TransactionAddFragment,
+                    onGranted = { cameraHandler.launchGallery() },
+                    onDenied = {
+                        Toast.makeText(
+                            requireContext(),
+                            "Gallery permission required",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                )
+                permissionHandler.setup(permissionLauncher)
+                permissionHandler.checkGalleryPermission()
+            }
+
         }
     }
 
@@ -221,6 +279,46 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
         collectState(viewModel.selectedLocation) { location ->
             updateSelectedLocation(location)
+        }
+
+        collectState(viewModel.transactionImage) { image ->
+            // Update UI to show/hide image
+            if (image != null) {
+                // Show image in your UI
+                // You can use Glide or other image loading library
+                // binding.imageView.visible()
+//                 Glide.with(this).load(image.getFullPath(requireContext())).into(binding.imageView)
+            } else {
+                // Hide image
+                // binding.imageView.gone()
+            }
+        }
+
+        collectState(viewModel.imageUploadState) { state ->
+            when (state) {
+                is UIState.Loading -> {
+                    // Show loading indicator
+                    Toast.makeText(context, "Uploading image...", Toast.LENGTH_SHORT).show()
+                }
+
+                is UIState.Success -> {
+                    // Show success message
+                    Toast.makeText(context, "Image saved successfully", Toast.LENGTH_SHORT).show()
+                    viewModel.clearImageUploadState()
+                }
+
+                is UIState.Error -> {
+                    // Show error message
+                    Toast.makeText(context, "Error: ${state.message}", Toast.LENGTH_SHORT).show()
+                    viewModel.clearImageUploadState()
+                }
+
+                null -> {
+                    // No state
+                }
+
+                else -> {}
+            }
         }
 
         collectFlow(viewModel.uiState) { state ->
@@ -320,7 +418,6 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
     }
 
-
     fun toggleRecentlyCategory() {
         binding.apply {
             recyclerViewCategories.isVisible = !recyclerViewCategories.isVisible
@@ -329,6 +426,31 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     private fun showCategories(categories: List<Category>) {
         adapter.submitList(categories)
+    }
+
+    private fun setupPermissionHandler() {
+        permissionHandler = PermissionHandler(
+            fragment = this,
+            onGranted = { /* Will be set dynamically */ },
+            onDenied = {
+                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
+            }
+        )
+        permissionHandler.setup(permissionLauncher)
+    }
+
+    private fun setupCameraHandler() {
+        cameraHandler = CameraHandler(
+            fragment = this,
+            fileProvider = fileProvider,
+            onImageCaptured = { uri ->
+                viewModel.saveImage(uri)
+            },
+            onError = { message ->
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        )
+        cameraHandler.setup()
     }
 
     override fun onResume() {

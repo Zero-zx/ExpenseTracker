@@ -1,5 +1,11 @@
 package presentation.add.ui
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import base.BaseFragment
@@ -34,13 +40,51 @@ class PayeeTabFragment : BaseFragment<FragmentEventTabBinding>(
         val tabTypeArg = arguments?.getSerializable(ARG_TAB_TYPE) as? PayeeTabType
         tabType = tabTypeArg ?: PayeeTabType.RECENT
 
-        // Load appropriate data based on tab type
         if (tabType == PayeeTabType.RECENT) {
             viewModel.loadRecentPayees()
         } else {
-            viewModel.loadPayees() // For contacts tab (to be implemented later)
+            ensureContactsPermissionAndLoad()
         }
     }
+
+    private fun ensureContactsPermissionAndLoad() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                viewModel.getAllPhoneContacts()
+            }
+
+            shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS) -> {
+                showPermissionRationale()
+            }
+
+            else -> {
+                requestReadContactsPermission.launch(Manifest.permission.READ_CONTACTS)
+            }
+        }
+    }
+
+    private fun showPermissionRationale() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Contacts permission required")
+            .setMessage("We need access to your contacts to show them in a list.")
+            .setPositiveButton("Allow") { _, _ ->
+                requestReadContactsPermission.launch(Manifest.permission.READ_CONTACTS)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private val requestReadContactsPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                viewModel.getAllPhoneContacts()
+            } else {
+                Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     override fun initListener() {
         binding.buttonAddTrip.setOnClickListener {
@@ -69,7 +113,8 @@ class PayeeTabFragment : BaseFragment<FragmentEventTabBinding>(
                         // Update selection based on parent fragment's selection
                         val currentSelectedIds = selectedPayeeIds
                         if (currentSelectedIds.isNotEmpty()) {
-                            val selectedPayees = state.data.filter { currentSelectedIds.contains(it.id) }
+                            val selectedPayees =
+                                state.data.filter { currentSelectedIds.contains(it.id) }
                             adapter.setSelectedPayees(selectedPayees)
                         } else {
                             adapter.setSelectedPayees(emptyList())

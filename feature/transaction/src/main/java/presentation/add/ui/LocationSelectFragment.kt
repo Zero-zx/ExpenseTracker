@@ -1,13 +1,17 @@
 package presentation.add.ui
 
-import android.os.Bundle
 import android.text.Editable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import base.BaseFragment
 import base.UIState
+import com.example.common.R
 import com.example.transaction.databinding.FragmentLocationSelectBinding
 import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
 import constants.FragmentResultKeys.RESULT_LOCATION_ID
@@ -41,7 +45,10 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
         // Set up search
         binding.editTextSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.textViewAddress.text = customAddressText(s.toString())
+            }
+
             override fun afterTextChanged(s: Editable?) {
                 viewModel.searchLocations(s?.toString() ?: "")
             }
@@ -59,7 +66,7 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
             }
 
             buttonSave.setOnClickListener {
-                val locationName = editTextLocationName.text.toString()
+                val locationName = editTextSearch.text.toString()
                 viewModel.addLocation(locationName)
             }
         }
@@ -70,12 +77,8 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
             when (state) {
                 is UIState.Loading -> {}
                 is UIState.Success -> {
-                    // Clear the input field after successful add
-                    binding.editTextLocationName.text?.clear()
 
-                    if (state.data.isEmpty()) {
-                        showEmptyView()
-                    } else {
+                    if (state.data.isNotEmpty()) {
                         showRecyclerView()
                         adapter.submitList(state.data)
                         if (selectedLocationId != -1L) {
@@ -103,19 +106,42 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
     fun showEmptyView() {
         binding.layoutEmpty.isVisible = true
         binding.recyclerView.isVisible = false
-        binding.layoutAddLocation.isVisible = false
     }
 
     fun showRecyclerView() {
         binding.layoutEmpty.isVisible = false
         binding.recyclerView.isVisible = true
-        binding.layoutAddLocation.isVisible = false
     }
 
     fun showAddLocationView() {
         binding.layoutEmpty.isVisible = false
         binding.recyclerView.isVisible = false
-        binding.layoutAddLocation.isVisible = true
+    }
+
+    fun customAddressText(address: String): SpannableStringBuilder {
+        var prefix = "Set"
+        val suffix = " as address"
+        if (address.isNotBlank()) {
+            prefix += " "
+        }
+        val startIndex = prefix.length
+        val spannable = SpannableStringBuilder().apply {
+            append(prefix)
+            append(address)
+            append(suffix)
+            setSpan(
+                ForegroundColorSpan(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.blue_bg
+                    )
+                ),
+                startIndex,
+                startIndex + address.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        return spannable
     }
 }
 

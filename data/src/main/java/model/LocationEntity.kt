@@ -24,10 +24,6 @@ internal data class LocationEntity(
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "accountId")
-    val accountId: Long,
-    @ColumnInfo(name = "latitude")
-    val latitude: Double? = null,
-    @ColumnInfo(name = "longitude")
-    val longitude: Double? = null
+    val accountId: Long
 )
 

@@ -1,6 +1,7 @@
 import deps.androidx
 import deps.feature
 import deps.hilt
+import deps.implementation
 
 plugins {
     id(build.BuildPlugins.ANDROID_LIBRARY)
@@ -49,6 +50,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     androidx()
+
     hilt()
     feature()
     testImplementation(libs.junit)
@@ -57,4 +59,6 @@ dependencies {
 
     implementation(project(":common"))
     implementation(project(":domain"))
+//    implementation("com.github.bumptech.glide:glide:5.0.5")
 }
+
