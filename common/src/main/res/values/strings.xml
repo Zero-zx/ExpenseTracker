@@ -7,5 +7,27 @@
     <string name="text_description">Description</string>
     <string name="text_show_more_details">Show more details</string>
     <string name="text_hide_details">Hide details</string>
+    <string name="text_search_location">Search location</string>
     <string name="text_total_amount">Total amount</string>
+    <string name="text_set_as_address">Set as address</string>
+    <string name="text_select_a_location">Select a location</string>
+    <string name="text_with_whom">With whom</string>
+    <string name="Expenses">Expenses</string>
+    <string name="app_name">Misa Moneykeeper</string>
+    <string name="Income">Income\n</string>
+    <string name="Key1">1</string>
+    <string name="Key2">2</string>
+    <string name="Key3">3</string>
+    <string name="Key4">4</string>
+    <string name="Key5">5</string>
+    <string name="Key6">6</string>
+    <string name="Key7">7</string>
+    <string name="Key8">8</string>
+    <string name="Key9">9</string>
+    <string name="Key0">0</string>
+    <string name="Key000">000</string>
+    <string name="KeyDot">.</string>
+    <string name="save_transaction">Save transaction</string>
+    <string name="widget_setting_guid">Setting guide</string>
+    <string name="KeyC">C</string>
 </resources>

@@ -1,6 +1,5 @@
 package presentation.add.ui
 
-import android.os.Bundle
 import androidx.core.os.bundleOf
 import base.BaseFragment
 import base.TabConfig
@@ -18,7 +17,7 @@ class PayeeSelectFragment : BaseFragment<FragmentEventSelectBinding>(
     FragmentEventSelectBinding::inflate
 ) {
     private val selectedPayeeIds: MutableSet<Long> = mutableSetOf()
-    
+
     fun getSelectedPayeeIds(): Set<Long> = selectedPayeeIds.toSet()
 
     override fun initView() {
@@ -28,7 +27,6 @@ class PayeeSelectFragment : BaseFragment<FragmentEventSelectBinding>(
         }
 
         setupViewPager()
-        updateTitle()
     }
 
     override fun initListener() {
@@ -45,8 +43,6 @@ class PayeeSelectFragment : BaseFragment<FragmentEventSelectBinding>(
         } else {
             selectedPayeeIds.add(payeeId)
         }
-        updateTitle()
-        // Update selection in all tabs
         updateTabSelections()
     }
 
@@ -67,14 +63,10 @@ class PayeeSelectFragment : BaseFragment<FragmentEventSelectBinding>(
         }
     }
 
-    private fun updateTitle() {
-        binding.textViewTitle.text = "Select payees (${selectedPayeeIds.size} selected)"
-    }
-
     fun setupViewPager() {
         val tabs = listOf(
             TabConfig("Recent") { PayeeTabFragment.newInstance(PayeeTabType.RECENT) },
-            TabConfig("Contacts") { PayeeTabFragment.newInstance(PayeeTabType.CONTACTS) }
+            TabConfig("Contact") { PayeeTabFragment.newInstance(PayeeTabType.CONTACTS) }
         )
 
         binding.viewPager.setupWithTabs(

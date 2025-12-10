@@ -1,9 +1,5 @@
 package transaction.model
 
-/**
- * Payee model for transactions (separate from Event Payees)
- * Represents a person/entity who paid or received money in a transaction
- */
 data class PayeeTransaction(
     val id: Long = 0,
     val name: String,

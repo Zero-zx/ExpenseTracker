@@ -2,18 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/homeFragment"
-        android:icon="@drawable/icon_home_menu"
+        android:icon="@drawable/ic_home"
         android:title="Home" />
     <item
         android:id="@+id/accountListFragment"
-        android:icon="@drawable/icon_wallet"
+        android:icon="@drawable/ic_wallet"
         android:title="Account" />
     <item
         android:id="@+id/transaction_graph"
-        android:icon="@drawable/icon_add"
+        android:icon="@drawable/ic_v2_add_transaction"
         android:title="Transaction" />
     <item
         android:id="@+id/statisticsFragment"
-        android:icon="@android:drawable/ic_menu_recent_history"
+        android:icon="@drawable/ic_exclude_report"
         android:title="Statistics" />
+    <item
+        android:id="@+id/transactionListFragment"
+        android:icon="@drawable/ic_more"
+        android:title="Other" />
 </menu>

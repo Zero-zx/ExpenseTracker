@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llTransaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/widget_background"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/rlSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/margin_medium_normal">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp" />
+            <!--            android:src="@drawable/ic_moneykeeper_app"-->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_weight="1"
+                android:text="@string/app_name"
+                android:textStyle="bold" />
+            <!--                android:textSize="@dimen/font_size_normal"-->
+            <!--                android:textColor="@color/background_main_gold"-->
+
+            <RelativeLayout
+                android:id="@+id/rlSync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/ivSync"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/margin_large_small" />
+                <!--                android:src="@drawable/v2_ic_sync_widget"-->
+                <TextView
+                    android:id="@+id/tvQueue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:gravity="center"
+                    android:minWidth="15dp"
+                    android:minHeight="15dp"
+                    android:text="10"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:translationX="15dp"
+                    android:visibility="gone" />
+                <!--                android:background="@drawable/total_queue"-->
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/ivSetting"
+                android:layout_width="@dimen/v2_size_icon_large_normal"
+                android:layout_height="match_parent"
+                android:padding="2dp" />
+            <!--                android:src="@drawable/v2_ic_setting_black_widget" -->
+            <!--                android:contentDescription="@string/ContentDescriptionImageNull"-->
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/margin_normal"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginRight="@dimen/margin_normal"
+            android:gravity="center"
+            android:orientation="vertical">
+            <!--            android:background="@drawable/selector_button_number"-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="@dimen/margin_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:layout_marginRight="@dimen/margin_normal"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/gray_hint"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:id="@+id/rlExpense"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/margin_s"
+                        android:layout_weight="1">
+                        <!--                        android:background="@drawable/selector_button_number"-->
+
+                        <TextView
+                            android:id="@+id/tvExpense"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:minHeight="40dp"
+                            android:text="@string/Expenses"
+
+                            android:textStyle="bold" />
+                        <!--                        android:textColor="@color/background_main_gold"-->
+                        <!--                        android:textSize="@dimen/font_size_small"-->
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rlIncome"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/margin_s"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/tvIncome"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:minHeight="40dp"
+                            android:text="@string/Income"
+                            android:textColor="@color/gray_hint"
+                            android:textSize="@dimen/font_size_small"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rlAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/margin_medium_normal">
+
+                <ImageView
+                    android:id="@+id/ivAccountCategory"
+                    android:layout_width="@dimen/widget_icon_account"
+                    android:layout_height="@dimen/widget_icon_account"
+                    android:src="@drawable/account_master" />
+                <!--                    android:contentDescription="@string/ContentDescriptionImageNull"-->
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvAccountName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:textColor="@color/black_text"
+                        android:textSize="@dimen/font_size_normal_small"
+                        android:textStyle="bold" />
+                    <!--                        style="@style/TransactionItemLevel1"-->
+
+                    <TextView
+                        android:id="@+id/txtValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:textSize="@dimen/font_size_normal_small" />
+                    <!--                        style="@style/TextViewStyleLableSmall"-->
+                    <!--                        android:textColor="@color/color_text_dark_gray"-->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvResultNumber"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="right|center_vertical|center_horizontal|center|end"
+                        android:maxLength="18"
+                        android:maxLines="1"
+                        android:textStyle="bold" />
+                    <!--                        android:textColor="@color/v2_red"-->
+                    <!--                        android:textSize="@dimen/font_size_normal"-->
+
+                    <TextView
+                        android:id="@+id/tvCurrency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="right|center_vertical|center_horizontal|center"
+                        android:paddingLeft="@dimen/margin_small"
+                        android:paddingRight="@dimen/margin_small"
+                        android:textStyle="bold" />
+                    <!--                        style="@style/TextViewStyleBlack"-->
+                    <!--                        android:textColor="@color/v2_red"-->
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvCategoryName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:gravity="center"
+                android:visibility="gone" />
+            <!--                style="@style/TextDarkGraySmall_1Line"-->
+            <!--                android:textColor="@color/color_gray_v2"-->
+
+            <LinearLayout
+                android:id="@+id/rlDetail"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivBackward"
+                    android:layout_width="36dp"
+                    android:layout_height="40dp"
+                    android:rotation="180" />
+                <!--                    android:src="@drawable/disclosure_widget"-->
+                <!--                    android:contentDescription="@string/ContentDescriptionImageNull"-->
+                <!--                    app:tint="@color/black" -->
+
+                <GridView
+                    android:id="@+id/gvCategory"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:numColumns="4"
+                    android:scrollbars="horizontal" />
+
+                <ImageView
+                    android:id="@+id/ivForward"
+                    android:layout_width="36dp"
+                    android:layout_height="40dp" />
+                <!--                    android:contentDescription="@string/ContentDescriptionImageNull"-->
+                <!--                    android:src="@drawable/disclosure_widget"-->
+                <!--                    app:tint="@color/black" -->
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvStatusTransaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingVertical="@dimen/margin_tiny"
+                android:paddingTop="@dimen/margin_tiny"
+                android:paddingBottom="@dimen/margin_tiny" />
+            <!--                style="@style/TextDarkGraySmall_1Line"-->
+            <!--                android:textColor="@color/v2_red" -->
+        </LinearLayout>
+
+        <include
+            android:id="@+id/widget_keyboard"
+            layout="@layout/widget_layout_keyboard_v2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_weight="1"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lnSettingAll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_widget_empty_v2"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="130dp"
+                android:layout_height="130dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ivWidget"
+                android:gravity="center"
+                android:text="@string/widget_setting_guid" />
+            <!--                android:padding="@dimen/margin_medium_small"-->
+            <!--                android:textColor="@color/selector_text_black_color" -->
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

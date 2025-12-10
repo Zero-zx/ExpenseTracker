@@ -9,9 +9,7 @@ class AddLocationUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         name: String,
-        accountId: Long,
-        latitude: Double? = null,
-        longitude: Double? = null
+        accountId: Long
     ): Long {
         require(name.isNotBlank()) { "Location name cannot be blank" }
 
@@ -23,9 +21,7 @@ class AddLocationUseCase @Inject constructor(
 
         val location = Location(
             name = name,
-            accountId = accountId,
-            latitude = latitude,
-            longitude = longitude
+            accountId = accountId
         )
 
         return repository.insertLocation(location)

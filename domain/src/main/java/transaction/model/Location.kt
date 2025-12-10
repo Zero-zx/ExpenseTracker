@@ -7,8 +7,6 @@ package transaction.model
 data class Location(
     val id: Long = 0,
     val name: String,
-    val accountId: Long, // Account that owns this location
-    val latitude: Double? = null, // Optional GPS coordinates
-    val longitude: Double? = null
+    val accountId: Long
 )
 

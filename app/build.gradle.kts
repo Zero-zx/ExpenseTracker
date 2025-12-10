@@ -1,7 +1,7 @@
+import build.BuildConfig
 import deps.androidx
 import deps.hilt
 import deps.room
-import build.BuildConfig
 import release.ReleaseConfig
 import test.TestBuildConfig
 
@@ -53,8 +53,8 @@ android {
 
 dependencies {
     implementation(project(":common"))
-    implementation(project(":data"))
     implementation(project(":domain"))
+    implementation(project(":data"))
     implementation(project(":feature:statistics"))
     implementation(project(":feature:transaction"))
     implementation(project(":feature:account"))

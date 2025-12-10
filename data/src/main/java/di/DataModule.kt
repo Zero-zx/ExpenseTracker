@@ -3,6 +3,7 @@ package di
 import account.repository.AccountRepository
 import android.content.Context
 import androidx.room.Room
+import contact.repository.PhoneContactRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +16,8 @@ import dao.LocationDao
 import dao.PayeeTransactionDao
 import dao.TransactionDao
 import dao.TransactionPayeeDao
-import database.BudgetDatabase
+import datasource.BudgetDatabase
+import datasource.PhoneContactDataSource
 import transaction.repository.CategoryRepository
 import transaction.repository.EventRepository
 import transaction.repository.LocationRepository
@@ -26,6 +28,7 @@ import repository.CategoryRepositoryImpl
 import repository.EventRepositoryImpl
 import repository.LocationRepositoryImpl
 import repository.PayeeTransactionRepositoryImpl
+import repository.PhoneContactRepositoryImpl
 import repository.TransactionRepositoryImpl
 import javax.inject.Singleton
 
@@ -122,5 +125,31 @@ internal object DataModule {
     @Singleton
     fun provideLocationRepository(locationDao: LocationDao): LocationRepository {
         return LocationRepositoryImpl(locationDao)
+    }
+
+    @Provides
+    @Singleton
+    fun providePhoneContactDataSource(@ApplicationContext context: Context): PhoneContactDataSource {
+        return PhoneContactDataSource(context)
+    }
+
+    @Provides
+    @Singleton
+    fun providePhoneContactRepository(phoneContactDataSource: PhoneContactDataSource): PhoneContactRepository {
+        return PhoneContactRepositoryImpl(phoneContactDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFileProvider(fileManager: datasource.storage.FileManager): storage.FileProvider {
+        return fileManager
+    }
+
+    @Provides
+    @Singleton
+    fun provideTransactionImageRepository(
+        fileManager: datasource.storage.FileManager
+    ): transaction.repository.TransactionImageRepository {
+        return repository.TransactionImageRepositoryImpl(fileManager)
     }
 }

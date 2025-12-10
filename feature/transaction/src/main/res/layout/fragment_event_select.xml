@@ -40,7 +40,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:text="Select event" />
+                android:text="@string/text_with_whom" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 

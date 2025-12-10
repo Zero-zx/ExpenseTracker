@@ -23,7 +23,7 @@ class LocationSelectViewModel @Inject constructor(
 ) : BaseViewModel<List<Location>>() {
 
     companion object {
-        private const val ACCOUNT_ID = 1L // TODO: Get from account repository
+        private const val ACCOUNT_ID = 1L
     }
 
     init {

@@ -402,31 +402,91 @@
                         app:textSize="14sp" />
 
 
+                    <!--                    <LinearLayout-->
+                    <!--                        android:id="@+id/layout_lend"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="0dp"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:background="@drawable/rounded_background"-->
+                    <!--                        android:orientation="vertical"-->
+                    <!--                        android:paddingHorizontal="16dp"-->
+                    <!--                        app:layout_constraintDimensionRatio="9:1"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/layout_more">-->
+
+                    <!--                        <include-->
+                    <!--                            layout="@layout/text_with_toggle_button"-->
+                    <!--                            android:layout_width="match_parent"-->
+                    <!--                            android:layout_height="wrap_content" />-->
+
+                    <!--                        <View-->
+                    <!--                            android:layout_width="match_parent"-->
+                    <!--                            android:layout_height="1dp"-->
+                    <!--                            android:alpha="0.1"-->
+                    <!--                            android:background="@android:color/black"-->
+                    <!--                            app:layout_constraintTop_toBottomOf="@id/icon_category" />-->
+
+                    <!--                    </LinearLayout>-->
+
                     <LinearLayout
-                        android:id="@+id/layout_lend"
+                        android:id="@+id/layoutImage"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/rounded_background"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:orientation="vertical"
-                        android:paddingHorizontal="16dp"
-                        app:layout_constraintDimensionRatio="9:1"
-                        app:layout_constraintTop_toBottomOf="@id/layout_more">
+                        android:visibility="visible">
 
-                        <include
-                            layout="@layout/text_with_toggle_button"
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="250dp"
+                            android:padding="16dp">
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:alpha="0.1"
-                            android:background="@android:color/black"
-                            app:layout_constraintTop_toBottomOf="@id/icon_category" />
+                            <ImageView
+                                android:id="@+id/imageView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@color/blue_bg"
+                                android:scaleType="centerCrop" />
 
+                            <ImageButton
+                                android:id="@+id/buttonRemove"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="top|end"
+                                android:layout_margin="4dp"
+                                android:background="@drawable/background_icon_red_2_v2"
+                                android:contentDescription="Remove image"
+                                android:src="@drawable/ic_close_white" />
+                        </FrameLayout>
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/layoutImageButtons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <Button
+                            android:id="@+id/buttonTakePhoto"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:drawableStart="@drawable/v2_ic_camera"
+                            android:text="Take Photo" />
+
+                        <Button
+                            android:id="@+id/buttonPickImage"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawableStart="@drawable/ic_photo"
+                            android:text="Gallery" />
+                    </LinearLayout>
 
                     <!--                <LinearLayout-->
                     <!--                    android:id="@+id/layout_fee"-->

@@ -112,4 +112,15 @@
         <item name="colorPrimary">@color/blue_bg</item>
         <item name="colorSurfaceVariant">@color/blue_category_bg</item>
     </style>
+    <style name="ButtonWidgetStyle">
+        <item name="android:textSize">@dimen/font_size_normal_small</item>
+<!--        <item name="android:textColor">@color/background_main_gold</item>-->
+        <item name="android:gravity">left|center_horizontal|clip_horizontal</item>
+<!--        <item name="android:background">@drawable/selector_button_number</item>-->
+        <item name="android:layout_marginRight">0.4dp</item>
+        <item name="android:layout_marginBottom">@dimen/margin_s</item>
+        <item name="android:layout_marginEnd">@dimen/margin_s</item>
+        <item name="backgroundTint">@color/white</item>
+    </style>
+
 </resources>
