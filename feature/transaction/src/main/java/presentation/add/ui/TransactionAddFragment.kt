@@ -2,7 +2,6 @@ package presentation.add.ui
 
 import account.model.Account
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import base.BaseFragment
 import base.UIState
 import camera.CameraHandler
-import com.example.transaction.R
+import com.example.common.R
 import com.example.transaction.databinding.FragmentTransactionAddBinding
 import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
@@ -29,7 +28,6 @@ import helpers.standardize
 import permission.PermissionHandler
 import presentation.add.adapter.CategoryAdapter
 import presentation.add.adapter.CategoryDropdownAdapter
-import presentation.add.model.CategoryTypeItem
 import presentation.add.viewModel.AddTransactionViewModel
 import storage.FileProvider
 import transaction.model.Category
@@ -87,11 +85,22 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         adapter.selectedPosition = 0
         (binding.dropdownMenuTransaction.editText as? AutoCompleteTextView)?.apply {
             setAdapter(adapter)
-            // Set dropdown width - use MATCH_PARENT or specific width in pixels
-            dropDownWidth = (300 * resources.displayMetrics.density).toInt()
-            setDropDownBackgroundResource(android.R.color.white)
+            setOnItemClickListener { parent, _, position, _ ->
+                val selectedItem = parent.getItemAtPosition(position) as CategoryType
+                setText(selectedItem.label, false)
+            }
+            post {
+                val dropdownWidth = (300 * resources.displayMetrics.density).toInt()
+                dropDownWidth = dropdownWidth
+
+                val buttonWidth = this.width
+                dropDownHorizontalOffset = -(dropdownWidth - buttonWidth) / 2
+
+                setDropDownBackgroundResource(R.drawable.rounded_background)
+            }
         }
     }
+
     fun setUpRecyclerView() {
         binding.recyclerViewCategories.apply {
             layoutManager = GridLayoutManager(context, 4)
