@@ -88,6 +88,7 @@ class TransactionListAdapter(
                     CategoryType.EXPENSE -> "-"
                     CategoryType.LEND -> "→"
                     CategoryType.BORROWING -> "←"
+                    else -> ""
                 }
 //
                 textViewAmount.text = "$sign${currencyFormatter.format(transaction.amount)}"

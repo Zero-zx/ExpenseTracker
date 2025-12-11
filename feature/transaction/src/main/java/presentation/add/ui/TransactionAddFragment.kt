@@ -28,6 +28,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import helpers.standardize
 import permission.PermissionHandler
 import presentation.add.adapter.CategoryAdapter
+import presentation.add.adapter.CategoryDropdownAdapter
+import presentation.add.model.CategoryTypeItem
 import presentation.add.viewModel.AddTransactionViewModel
 import storage.FileProvider
 import transaction.model.Category
@@ -56,6 +58,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             viewModel.selectCategory(category = category)
         }
     )
+
     private lateinit var cameraHandler: CameraHandler
     private lateinit var permissionHandler: PermissionHandler
 
@@ -71,18 +74,24 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     private var selectedTimeOffsetMillis: Long? = null
 
     override fun initView() {
-        val items = CategoryType.entries
-        val dropdownAdapter = ArrayAdapter(requireContext(), R.layout.menu_item, items)
-        (binding.dropdownMenuTransaction.editText as? AutoCompleteTextView)?.setAdapter(
-            dropdownAdapter
-        )
-
+        setUpDropdownMenu()
         setUpRecyclerView()
         listenForResult()
         setupPermissionHandler()
         setupCameraHandler()
     }
 
+    fun setUpDropdownMenu() {
+        val items = CategoryType.entries
+        val adapter = CategoryDropdownAdapter(requireContext(), items)
+        adapter.selectedPosition = 0
+        (binding.dropdownMenuTransaction.editText as? AutoCompleteTextView)?.apply {
+            setAdapter(adapter)
+            // Set dropdown width - use MATCH_PARENT or specific width in pixels
+            dropDownWidth = (300 * resources.displayMetrics.density).toInt()
+            setDropDownBackgroundResource(android.R.color.white)
+        }
+    }
     fun setUpRecyclerView() {
         binding.recyclerViewCategories.apply {
             layoutManager = GridLayoutManager(context, 4)
@@ -285,12 +294,11 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             // Update UI to show/hide image
             if (image != null) {
                 // Show image in your UI
-                // You can use Glide or other image loading library
-                // binding.imageView.visible()
-//                 Glide.with(this).load(image.getFullPath(requireContext())).into(binding.imageView)
+                binding.imageView.isVisible = true
+//                Glide.with(this).load(image.getFullPath(requireContext())).into(binding.imageView)
             } else {
                 // Hide image
-                // binding.imageView.gone()
+                binding.imageView.isVisible = false
             }
         }
 
