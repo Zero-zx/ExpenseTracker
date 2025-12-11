@@ -10,7 +10,9 @@ import base.BaseFragment
 import base.UIState
 import com.example.transaction.databinding.FragmentTransactionListBinding
 import dagger.hilt.android.AndroidEntryPoint
+import navigation.Navigator
 import transaction.model.Transaction
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -18,10 +20,14 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
     FragmentTransactionListBinding::inflate
 ) {
     private val viewModel: TransactionListViewModel by viewModels()
+    
+    @Inject
+    lateinit var navigator: Navigator
+    
     private val adapter = TransactionListAdapter(
         onItemClick = { transaction ->
-            // Navigate to detail screen
-            // findNavController().navigate(...)
+            // Navigate to edit transaction screen
+            navigator.navigateToEditTransaction(transaction.id)
         }
     )
 

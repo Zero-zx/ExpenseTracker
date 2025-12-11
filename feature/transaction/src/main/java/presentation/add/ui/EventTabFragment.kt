@@ -2,19 +2,27 @@ package presentation.add.ui
 
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import base.BaseFragment
 import base.UIState
+import com.example.transaction.R as TransactionR
 import com.example.transaction.databinding.FragmentEventTabBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import presentation.add.adapter.EventAdapter
 import presentation.add.model.EventTabType
+import presentation.add.viewModel.AddTransactionViewModel
 import presentation.add.viewModel.EventSelectViewModel
+import transaction.model.Event
 
 @AndroidEntryPoint
 class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
     FragmentEventTabBinding::inflate
 ) {
     private val viewModel: EventSelectViewModel by viewModels()
+    private val addTransactionViewModel: AddTransactionViewModel by hiltNavGraphViewModels(TransactionR.id.transaction_nav_graph)
     private lateinit var adapter: EventAdapter
     private var tabType: EventTabType = EventTabType.IN_PROGRESS
     private val selectedEventId: Long by lazy {
@@ -43,32 +51,66 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
 
         binding.buttonSave.setOnClickListener {
             val eventName = binding.editTextEventName.text.toString()
-            viewModel.addEvent(eventName)
+            if (eventName.isBlank()) {
+                return@setOnClickListener
+            }
+            
+            // Create temporary event and add to AddTransactionViewModel
+            val currentTime = System.currentTimeMillis()
+            val event = Event(
+                id = 0, // Will be assigned temporary ID
+                eventName = eventName,
+                startDate = currentTime,
+                endDate = null,
+                numberOfParticipants = 1,
+                accountId = 1,
+                isActive = true
+            )
+            addTransactionViewModel.addTemporaryEvent(event)
+            
+            // Clear input
+            binding.editTextEventName.text?.clear()
+            showRecyclerView()
         }
     }
 
     override fun observeData() {
-        collectFlow(viewModel.uiState) { state ->
-            when (state) {
-                is UIState.Loading -> {}
-                is UIState.Success -> {
-                    // Clear the input field after successful add
-                    binding.editTextEventName.text?.clear()
-
-                    if (state.data.isEmpty()) {
-                        showEmptyView()
-                    } else {
-                        showRecyclerView()
-                        adapter.submitList(state.data)
-                        if (selectedEventId != -1L) {
-                            val selectedEvent = state.data.find { it.id == selectedEventId }
-                            adapter.setSelectedEvents(listOf(selectedEvent!!))
+        // Observe persisted events from EventSelectViewModel
+        viewLifecycleOwner.lifecycleScope.launch {
+            combine(
+                viewModel.uiState,
+                addTransactionViewModel.temporaryEvents
+            ) { persistedState, temporaryEvents ->
+                when (persistedState) {
+                    is UIState.Success -> {
+                        // Merge persisted and temporary events
+                        val mergedEvents = temporaryEvents + persistedState.data
+                        UIState.Success(mergedEvents)
+                    }
+                    is UIState.Loading -> UIState.Loading
+                    is UIState.Error -> persistedState
+                    else -> UIState.Idle
+                }
+            }.collect { mergedState ->
+                when (mergedState) {
+                    is UIState.Loading -> {}
+                    is UIState.Success -> {
+                        if (mergedState.data.isEmpty()) {
+                            showEmptyView()
+                        } else {
+                            showRecyclerView()
+                            adapter.submitList(mergedState.data)
+                            if (selectedEventId != -1L) {
+                                val selectedEvent = mergedState.data.find { it.id == selectedEventId }
+                                selectedEvent?.let {
+                                    adapter.setSelectedEvents(listOf(it))
+                                }
+                            }
                         }
                     }
-                }
-
-                else -> {
-                    showEmptyView()
+                    else -> {
+                        showEmptyView()
+                    }
                 }
             }
         }

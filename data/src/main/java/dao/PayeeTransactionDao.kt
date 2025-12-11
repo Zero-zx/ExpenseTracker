@@ -25,3 +25,4 @@ internal interface PayeeTransactionDao {
     suspend fun getPayeeByName(name: String, accountId: Long): PayeeTransactionEntity?
 }
 
+

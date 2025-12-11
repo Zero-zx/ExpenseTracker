@@ -17,4 +17,5 @@ object DependenciesVersions {
     const val LIFE_CYCLE = "2.10.0"
     const val FRAGMENT = "1.8.9"
     const val CARD_VIEW = "1.0.0"
+    const val HILT_NAVIGATION = "1.2.0"
 }

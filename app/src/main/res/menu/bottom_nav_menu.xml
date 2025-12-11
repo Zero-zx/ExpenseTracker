@@ -9,7 +9,7 @@
         android:icon="@drawable/ic_wallet"
         android:title="Account" />
     <item
-        android:id="@+id/transaction_graph"
+        android:id="@+id/transaction_nav_graph"
         android:icon="@drawable/ic_v2_add_transaction"
         android:title="Transaction" />
     <item

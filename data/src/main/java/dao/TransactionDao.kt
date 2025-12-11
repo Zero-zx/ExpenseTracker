@@ -38,4 +38,9 @@ internal interface TransactionDao {
         startDate: Long,
         endDate: Long
     ): Flow<List<TransactionWithDetails>>
+
+    // get transaction by id
+    @Transaction
+    @Query("SELECT * FROM tb_transaction WHERE id = :transactionId")
+    suspend fun getTransactionById(transactionId: Long): TransactionWithDetails?
 }

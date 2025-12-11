@@ -27,3 +27,4 @@ internal data class LocationEntity(
     val accountId: Long
 )
 
+

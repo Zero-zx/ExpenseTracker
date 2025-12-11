@@ -7,12 +7,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import transaction.model.CategoryType
-import transaction.model.Transaction
-import usecase.GetTransactionsByDateRangeUseCase
 import presentation.detail.model.ChartDataWithReportItems
 import presentation.detail.model.ReportItem
 import presentation.detail.model.TabType
+import transaction.model.CategoryType
+import transaction.model.Transaction
+import usecase.GetTransactionsByDateRangeUseCase
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -32,7 +32,7 @@ class ChartTabViewModel @Inject constructor(
         setLoading()
 
         val (startDate, endDate) = getDateRangeForTabType(tabType)
-        
+
         getTransactionsByDateRangeUseCase(ACCOUNT_ID, startDate, endDate)
             .onEach { transactions ->
                 val chartData = processTransactions(transactions, tabType)
@@ -53,17 +53,21 @@ class ChartTabViewModel @Inject constructor(
             TabType.MONTHLY -> {
                 calendar.add(Calendar.MONTH, -11) // Last 12 months
             }
+
             TabType.QUARTER -> {
                 calendar.add(Calendar.MONTH, -11) // Last 4 quarters (12 months)
             }
+
             TabType.YEAR -> {
                 calendar.add(Calendar.YEAR, -4) // Last 5 years
             }
+
             TabType.CUSTOM -> {
                 // For custom, we'll need to get from arguments or shared preferences
                 // For now, use last 12 months as default
                 calendar.add(Calendar.MONTH, -11)
             }
+
             else -> {
                 calendar.add(Calendar.MONTH, -11)
             }
@@ -124,9 +128,12 @@ class ChartTabViewModel @Inject constructor(
                 CategoryType.INCOME, CategoryType.LEND -> {
                     map[key] = Pair(currentIncome + transaction.amount, currentExpense)
                 }
+
                 CategoryType.EXPENSE, CategoryType.BORROWING -> {
                     map[key] = Pair(currentIncome, currentExpense + transaction.amount)
                 }
+
+                else -> {}
             }
         }
 
@@ -156,9 +163,12 @@ class ChartTabViewModel @Inject constructor(
                 CategoryType.INCOME, CategoryType.LEND -> {
                     map[key] = Pair(currentIncome + transaction.amount, currentExpense)
                 }
+
                 CategoryType.EXPENSE, CategoryType.BORROWING -> {
                     map[key] = Pair(currentIncome, currentExpense + transaction.amount)
                 }
+
+                else -> {}
             }
         }
 
@@ -180,9 +190,12 @@ class ChartTabViewModel @Inject constructor(
                 CategoryType.INCOME, CategoryType.LEND -> {
                     map[key] = Pair(currentIncome + transaction.amount, currentExpense)
                 }
+
                 CategoryType.EXPENSE, CategoryType.BORROWING -> {
                     map[key] = Pair(currentIncome, currentExpense + transaction.amount)
                 }
+
+                else -> {}
             }
         }
 
@@ -198,6 +211,7 @@ class ChartTabViewModel @Inject constructor(
             when (transaction.category.type) {
                 CategoryType.INCOME, CategoryType.LEND -> income += transaction.amount
                 CategoryType.EXPENSE, CategoryType.BORROWING -> expense += transaction.amount
+                else -> {}
             }
         }
 

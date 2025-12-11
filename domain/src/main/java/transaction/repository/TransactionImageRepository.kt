@@ -15,6 +15,12 @@ interface TransactionImageRepository {
     suspend fun saveImage(sourceUri: Uri): Result<TransactionImage>
 
     /**
+     * Insert a transaction image to the database with a transaction ID.
+     * Used to link an already-saved image file to a transaction.
+     */
+    suspend fun insertImage(image: TransactionImage): Result<Long>
+
+    /**
      * Delete a single transaction image.
      */
     suspend fun deleteImage(image: TransactionImage): Result<Unit>
@@ -24,4 +30,3 @@ interface TransactionImageRepository {
      */
     suspend fun deleteImages(images: List<TransactionImage>): Result<Unit>
 }
-

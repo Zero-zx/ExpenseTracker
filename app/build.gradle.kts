@@ -40,7 +40,6 @@ android {
 
     buildFeatures {
         viewBinding = true
-        dataBinding = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -52,6 +51,7 @@ android {
 }
 
 dependencies {
+//    implementation(libs.glide)
     implementation(project(":common"))
     implementation(project(":domain"))
     implementation(project(":data"))

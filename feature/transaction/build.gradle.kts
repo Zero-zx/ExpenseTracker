@@ -1,7 +1,8 @@
+import com.android.build.gradle.internal.tasks.databinding.DataBindingGenBaseClassesTask
 import deps.androidx
 import deps.feature
 import deps.hilt
-import deps.implementation
+import org.gradle.internal.extensions.stdlib.capitalized
 
 plugins {
     id(build.BuildPlugins.ANDROID_LIBRARY)
@@ -35,6 +36,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
 
     compileOptions {
@@ -46,11 +48,35 @@ android {
     }
 }
 
+// Configure KSP to properly integrate with data binding
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        afterEvaluate {
+            val variantName = variant.name.capitalized()
+            val kspTaskName = "ksp${variantName}Kotlin"
+            val dataBindingTaskName = "dataBindingGenBaseClasses${variantName}"
+
+            val dataBindingTask =
+                tasks.named(dataBindingTaskName, DataBindingGenBaseClassesTask::class.java)
+
+            tasks.named(kspTaskName).configure {
+                // Make KSP depend on data binding generation
+                dependsOn(dataBindingTask)
+            }
+
+            // Wire data binding output as input to KSP kotlin compilation
+            kotlin.sourceSets.getByName(variant.name) {
+                kotlin.srcDir(files(dataBindingTask.get().sourceOutFolder).builtBy(dataBindingTask))
+            }
+        }
+    }
+}
+
 dependencies {
+    implementation(libs.glide)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     androidx()
-
     hilt()
     feature()
     testImplementation(libs.junit)
@@ -59,6 +85,5 @@ dependencies {
 
     implementation(project(":common"))
     implementation(project(":domain"))
-//    implementation("com.github.bumptech.glide:glide:5.0.5")
 }
 

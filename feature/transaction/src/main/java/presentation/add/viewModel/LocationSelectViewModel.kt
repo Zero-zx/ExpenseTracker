@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import navigation.Navigator
 import transaction.model.Location
-import transaction.usecase.AddLocationUseCase
 import transaction.usecase.GetLocationsByAccountUseCase
 import transaction.usecase.SearchLocationsByAccountUseCase
 import javax.inject.Inject
@@ -18,8 +17,7 @@ import javax.inject.Inject
 class LocationSelectViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getLocationsByAccountUseCase: GetLocationsByAccountUseCase,
-    private val searchLocationsByAccountUseCase: SearchLocationsByAccountUseCase,
-    private val addLocationUseCase: AddLocationUseCase
+    private val searchLocationsByAccountUseCase: SearchLocationsByAccountUseCase
 ) : BaseViewModel<List<Location>>() {
 
     companion object {
@@ -30,7 +28,7 @@ class LocationSelectViewModel @Inject constructor(
         loadLocations()
     }
 
-    private fun loadLocations() {
+    fun loadLocations() {
         viewModelScope.launch {
             getLocationsByAccountUseCase(ACCOUNT_ID)
                 .catch { exception ->
@@ -58,26 +56,6 @@ class LocationSelectViewModel @Inject constructor(
                     setSuccess(locations)
                 }
                 .launchIn(viewModelScope)
-        }
-    }
-
-    fun addLocation(locationName: String) {
-        if (locationName.isBlank()) {
-            setError("Location name cannot be empty")
-            return
-        }
-
-        viewModelScope.launch {
-            try {
-                setLoading()
-                addLocationUseCase(
-                    name = locationName,
-                    accountId = ACCOUNT_ID
-                )
-                loadLocations() // Reload locations after adding
-            } catch (e: Exception) {
-                setError(e.message ?: "Failed to add location")
-            }
         }
     }
 }

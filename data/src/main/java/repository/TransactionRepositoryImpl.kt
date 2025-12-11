@@ -38,8 +38,25 @@ internal class TransactionRepositoryImpl @Inject constructor(
         return transactionId
     }
 
+    override suspend fun getTransactionById(transactionId: Long): Transaction? {
+        return transactionDao.getTransactionById(transactionId)?.toDomain()
+    }
+
     override suspend fun updateTransaction(transaction: Transaction) {
         transactionDao.update(transaction.toEntity())
+        
+        // Update payees - delete old ones and insert new ones
+        transactionPayeeDao.deletePayeesByTransaction(transaction.id)
+        val payeeIds = transaction.payeeIds
+        if (payeeIds.isNotEmpty()) {
+            val transactionPayees = payeeIds.map { payeeId ->
+                TransactionPayeeEntity(
+                    transactionId = transaction.id,
+                    payeeId = payeeId
+                )
+            }
+            transactionPayeeDao.insertTransactionPayees(transactionPayees)
+        }
     }
 
     override suspend fun deleteTransaction(transaction: Transaction) {

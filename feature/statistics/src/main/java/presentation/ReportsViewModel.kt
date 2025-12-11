@@ -88,6 +88,7 @@ class ReportsViewModel @Inject constructor(
                             currentExpense + transaction.amount
                         )
                     }
+                    else -> {}
                 }
             }
         }

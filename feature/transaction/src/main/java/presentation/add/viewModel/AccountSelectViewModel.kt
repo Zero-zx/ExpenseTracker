@@ -27,9 +27,7 @@ class AccountSelectViewModel @Inject constructor(
                     setError(exception.message ?: "Unknown error occurred")
                 }
                 .collect { accounts ->
-                    if (accounts.isNotEmpty()) {
-                        setSuccess(accounts)
-                    }
+                    setSuccess(accounts)
                 }
         }
     }

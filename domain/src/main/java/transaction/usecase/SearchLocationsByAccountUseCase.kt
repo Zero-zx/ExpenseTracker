@@ -13,3 +13,4 @@ class SearchLocationsByAccountUseCase @Inject constructor(
     }
 }
 
+

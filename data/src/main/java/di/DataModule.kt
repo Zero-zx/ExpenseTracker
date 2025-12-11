@@ -15,6 +15,7 @@ import dao.EventDao
 import dao.LocationDao
 import dao.PayeeTransactionDao
 import dao.TransactionDao
+import dao.TransactionImageDao
 import dao.TransactionPayeeDao
 import datasource.BudgetDatabase
 import datasource.PhoneContactDataSource
@@ -90,6 +91,12 @@ internal object DataModule {
 
     @Provides
     @Singleton
+    fun provideTransactionImageDao(appDatabase: BudgetDatabase): TransactionImageDao {
+        return appDatabase.transactionImageDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideTransactionRepository(
         transactionDao: TransactionDao,
         transactionPayeeDao: TransactionPayeeDao
@@ -148,8 +155,9 @@ internal object DataModule {
     @Provides
     @Singleton
     fun provideTransactionImageRepository(
-        fileManager: datasource.storage.FileManager
+        fileManager: datasource.storage.FileManager,
+        imageDao: TransactionImageDao
     ): transaction.repository.TransactionImageRepository {
-        return repository.TransactionImageRepositoryImpl(fileManager)
+        return repository.TransactionImageRepositoryImpl(fileManager, imageDao)
     }
 }
