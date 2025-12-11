@@ -5,24 +5,6 @@
     app:startDestination="@id/homeFragment">
 
     <include app:graph="@navigation/transaction_nav_graph" />
-    <navigation
-        android:id="@+id/transaction_graph"
-        app:startDestination="@id/transactionAddFragment">
-        <fragment
-            android:id="@+id/transactionAddFragment"
-            android:name="presentation.add.ui.TransactionAddFragment" />
-        <fragment
-            android:id="@+id/categorySelectFragment"
-            android:name="presentation.add.ui.CategorySelectFragment" />
-        <fragment
-            android:id="@+id/accountSelectFragment"
-            android:name="presentation.add.ui.AccountSelectFragment"
-            android:label="AccountSelectFragment" />
-        <fragment
-            android:id="@+id/eventSelectFragment"
-            android:name="presentation.add.ui.EventSelectFragment"
-            android:label="EventSelectFragment" />
-    </navigation>
 
     <fragment
         android:id="@+id/homeFragment"
@@ -81,12 +63,9 @@
         android:name="com.example.home.event.add.AddParticipantsFragment"
         android:label="Add Participants" />
     <fragment
-        android:id="@+id/locationSelectFragment"
-        android:name="presentation.add.ui.LocationSelectFragment"
-        android:label="LocationSelectFragment" />
-    <fragment
-        android:id="@+id/payeeSelectFragment"
-        android:name="presentation.add.ui.PayeeSelectFragment"
-        android:label="PayeeSelectFragment" />
+        android:id="@+id/transactionAddFragment"
+        android:name="presentation.add.ui.TransactionAddFragment"
+        android:label="TransactionAddFragment" />
+
 
 </navigation>

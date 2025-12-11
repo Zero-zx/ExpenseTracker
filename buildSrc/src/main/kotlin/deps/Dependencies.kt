@@ -21,4 +21,5 @@ object Dependencies {
     const val lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:${DependenciesVersions.LIFE_CYCLE}"
     const val fragment = "androidx.fragment:fragment-ktx:${DependenciesVersions.FRAGMENT}"
     const val cardView = "androidx.cardview:cardview:${DependenciesVersions.CARD_VIEW}"
+    const val hiltNavigation = "androidx.hilt:hilt-navigation-fragment:${DependenciesVersions.HILT_NAVIGATION}"
 }

@@ -27,7 +27,7 @@ fun View.visible() {
 }
 
 fun Fragment.navigateBack() {
-    findNavController().popBackStack()
+    findNavController().navigateUp()
 }
 
 /**

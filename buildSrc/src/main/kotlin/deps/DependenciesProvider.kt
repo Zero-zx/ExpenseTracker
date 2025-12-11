@@ -12,6 +12,7 @@ fun DependencyHandler.room() {
 fun DependencyHandler.hilt() {
     implementation(Dependencies.hiltAndroid)
     add("ksp", Dependencies.hiltCompiler)
+    implementation(Dependencies.hiltNavigation)
 }
 
 fun DependencyHandler.hiltFeature() {

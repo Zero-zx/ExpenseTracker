@@ -11,3 +11,4 @@ interface LocationRepository {
     suspend fun getLocationByName(name: String, accountId: Long): Location?
 }
 
+

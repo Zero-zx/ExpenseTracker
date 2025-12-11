@@ -8,6 +8,7 @@ import dao.EventDao
 import dao.LocationDao
 import dao.PayeeTransactionDao
 import dao.TransactionDao
+import dao.TransactionImageDao
 import dao.TransactionPayeeDao
 import model.AccountEntity
 import model.CategoryEntity
@@ -16,6 +17,7 @@ import model.LocationEntity
 import model.PayeeEntity
 import model.PayeeTransactionEntity
 import model.TransactionEntity
+import model.TransactionImageEntity
 import model.TransactionPayeeEntity
 
 @Database(
@@ -27,7 +29,8 @@ import model.TransactionPayeeEntity
         PayeeEntity::class,
         PayeeTransactionEntity::class,
         LocationEntity::class,
-        TransactionPayeeEntity::class
+        TransactionPayeeEntity::class,
+        TransactionImageEntity::class
     ],
     exportSchema = false,
     version = 3
@@ -40,4 +43,5 @@ internal abstract class BudgetDatabase : RoomDatabase() {
     abstract fun payeeTransactionDao(): PayeeTransactionDao
     abstract fun locationDao(): LocationDao
     abstract fun transactionPayeeDao(): TransactionPayeeDao
+    abstract fun transactionImageDao(): TransactionImageDao
 }

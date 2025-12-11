@@ -6,12 +6,14 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import base.BaseFragment
 import base.UIState
 import camera.CameraHandler
-import com.example.common.R
+import com.bumptech.glide.Glide
+import com.example.common.R as CommonR
+import com.example.transaction.R as TransactionR
 import com.example.transaction.databinding.FragmentTransactionAddBinding
 import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
@@ -36,9 +38,11 @@ import transaction.model.Event
 import ui.GridSpacingItemDecoration
 import ui.createSlideDownAnimation
 import ui.createSlideUpAnimation
+import ui.gone
 import ui.listenForSelectionResult
 import ui.openDatePicker
 import ui.openTimePicker
+import ui.visible
 import javax.inject.Inject
 
 
@@ -46,7 +50,7 @@ import javax.inject.Inject
 class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     FragmentTransactionAddBinding::inflate
 ) {
-    private val viewModel: AddTransactionViewModel by viewModels()
+    private val viewModel: AddTransactionViewModel by hiltNavGraphViewModels(TransactionR.id.transaction_nav_graph)
 
     @Inject
     lateinit var fileProvider: FileProvider
@@ -71,12 +75,22 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     private var selectedDateStartMillis: Long? = null
     private var selectedTimeOffsetMillis: Long? = null
 
+    // Get transaction ID from arguments if editing
+    private val transactionId: Long? by lazy {
+        arguments?.getLong("transaction_id", -1L)?.takeIf { it != -1L }
+    }
+
     override fun initView() {
         setUpDropdownMenu()
         setUpRecyclerView()
         listenForResult()
         setupPermissionHandler()
         setupCameraHandler()
+        
+        // Load transaction data if editing
+        transactionId?.let { id ->
+            viewModel.loadTransaction(id)
+        }
     }
 
     fun setUpDropdownMenu() {
@@ -96,7 +110,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 val buttonWidth = this.width
                 dropDownHorizontalOffset = -(dropdownWidth - buttonWidth) / 2
 
-                setDropDownBackgroundResource(R.drawable.rounded_background)
+                setDropDownBackgroundResource(CommonR.drawable.rounded_background)
             }
         }
     }
@@ -209,7 +223,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
                 viewModel.addTransaction(
                     amount = editTextAmount.text.toString().toDoubleOrNull() ?: 0.0,
-                    description = editTextAmount.text?.toString(),
+                    description = editTextNote.text?.toString(),
                     createAt = selectedDateStartMillis?.plus(selectedTimeOffsetMillis ?: 0)
                         ?: System.currentTimeMillis()
                 )
@@ -231,7 +245,6 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     }
                 )
                 permissionHandler.setup(permissionLauncher)
-                permissionHandler.checkCameraPermission()
             }
 
             // Pick from gallery
@@ -249,7 +262,6 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     }
                 )
                 permissionHandler.setup(permissionLauncher)
-                permissionHandler.checkGalleryPermission()
             }
 
         }
@@ -303,11 +315,12 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             // Update UI to show/hide image
             if (image != null) {
                 // Show image in your UI
-                binding.imageView.isVisible = true
-//                Glide.with(this).load(image.getFullPath(requireContext())).into(binding.imageView)
+                binding.layoutImage.visible()
+                binding.imageView.visible()
+                Glide.with(this).load(image.getFullPath(requireContext())).into(binding.imageView)
             } else {
                 // Hide image
-                binding.imageView.isVisible = false
+                binding.layoutImage.gone()
             }
         }
 
@@ -342,22 +355,41 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             when (state) {
                 is UIState.Loading -> {}
                 is UIState.Success -> {
+                    val message = if (transactionId != null) {
+                        "Transaction updated successfully"
+                    } else {
+                        "Transaction added successfully"
+                    }
                     Toast.makeText(
                         context,
-                        "Transaction added successfully",
+                        message,
                         Toast.LENGTH_SHORT
                     ).show()
+                    // Navigate back after successful save/update
+                    viewModel.navigateBack()
                 }
 
                 is UIState.Error -> {
+                    val message = if (transactionId != null) {
+                        "Error updating transaction: ${state.message}"
+                    } else {
+                        "Error adding transaction: ${state.message}"
+                    }
                     Toast.makeText(
                         context,
-                        "Error adding transaction: ${state.message}",
+                        message,
                         Toast.LENGTH_SHORT
                     ).show()
                 }
 
                 else -> {}
+            }
+        }
+
+        // Observe transaction data when loaded for editing
+        collectState<transaction.model.Transaction?>(viewModel.transactionLoaded) { transaction ->
+            transaction?.let {
+                populateTransactionFields(it)
             }
         }
     }
@@ -472,6 +504,39 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     override fun onResume() {
         super.onResume()
-        viewModel.resetTransactionState()
+        // Only reset state if not editing
+        if (transactionId == null) {
+            viewModel.resetTransactionState()
+        }
+    }
+
+    private fun populateTransactionFields(transaction: transaction.model.Transaction) {
+        binding.apply {
+            // Populate amount
+            editTextAmount.setText(transaction.amount.toString())
+            
+            // Populate description
+            editTextNote.setText(transaction.description ?: "")
+            
+            // Populate date and time
+            val calendar = java.util.Calendar.getInstance().apply {
+                timeInMillis = transaction.createAt
+            }
+            val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+            val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+            
+            textViewDate.text = dateFormat.format(calendar.time)
+            textViewTime.text = timeFormat.format(calendar.time)
+            
+            // Set date and time millis for submission
+            val localDate = java.time.Instant.ofEpochMilli(transaction.createAt)
+                .atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+            selectedDateStartMillis = localDate.atStartOfDay(java.time.ZoneId.systemDefault())
+                .toInstant().toEpochMilli()
+            
+            val hour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(java.util.Calendar.MINUTE)
+            selectedTimeOffsetMillis = (hour * 3_600_000L + minute * 60_000L)
+        }
     }
 }

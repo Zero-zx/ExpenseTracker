@@ -22,11 +22,11 @@ class NavigatorImpl @Inject constructor() : Navigator {
     }
 
     override fun popBackStack(): Boolean {
-        return navController?.popBackStack() ?: false
+        return navController?.navigateUp() ?: false
     }
 
     override fun navigateToTransactionRoute() {
-        navController?.navigateWithAnim(R.id.transaction_graph)
+        navController?.navigateWithAnim(R.id.transaction_nav_graph)
     }
 
 
@@ -88,5 +88,12 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun navigateToIncomeExpenseDetail() {
         navController?.navigateWithAnim(R.id.incomeExpenseDetailFragment)
+    }
+
+    override fun navigateToEditTransaction(transactionId: Long) {
+        navController?.navigateWithAnim(
+            R.id.transactionAddFragment,
+            bundleOf("transaction_id" to transactionId)
+        )
     }
 }

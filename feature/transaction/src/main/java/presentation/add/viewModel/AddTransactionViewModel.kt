@@ -2,6 +2,7 @@ package presentation.add.viewModel
 
 import account.model.Account
 import account.usecase.GetAccountByIdUseCase
+import account.usecase.GetAccountsUseCase
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import base.UIState
@@ -16,28 +17,45 @@ import transaction.model.Category
 import transaction.model.Event
 import transaction.model.Location
 import transaction.model.PayeeTransaction
+import transaction.model.Transaction
 import transaction.model.TransactionImage
+import transaction.repository.TransactionImageRepository
+import transaction.usecase.AddEventUseCase
+import transaction.usecase.AddLocationUseCase
+import transaction.usecase.AddPayeeUseCase
 import transaction.usecase.GetCategoriesUseCase
 import transaction.usecase.GetEventByIdUseCase
 import transaction.usecase.GetLocationByIdUseCase
 import transaction.usecase.GetPayeeByIdUseCase
 import transaction.usecase.SaveTransactionImageUseCase
 import transaction.usecase.DeleteTransactionImagesUseCase
+import transaction.usecase.GetTransactionByIdUseCase
 import usecase.AddTransactionUseCase
+import usecase.UpdateTransactionUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class AddTransactionViewModel @Inject constructor(
     private val navigator: Navigator,
     private val addTransactionUseCase: AddTransactionUseCase,
+    private val updateTransactionUseCase: UpdateTransactionUseCase,
+    private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getAccountByIdUseCase: GetAccountByIdUseCase,
+    private val getAccountsUseCase: GetAccountsUseCase,
     private val getEventByIdUseCase: GetEventByIdUseCase,
     private val getLocationByIdUseCase: GetLocationByIdUseCase,
     private val getPayeeByIdUseCase: GetPayeeByIdUseCase,
     private val saveTransactionImageUseCase: SaveTransactionImageUseCase,
-    private val deleteTransactionImagesUseCase: DeleteTransactionImagesUseCase
+    private val deleteTransactionImagesUseCase: DeleteTransactionImagesUseCase,
+    private val addEventUseCase: AddEventUseCase,
+    private val addPayeeUseCase: AddPayeeUseCase,
+    private val addLocationUseCase: AddLocationUseCase,
+    private val imageRepository: TransactionImageRepository
 ) : BaseViewModel<Long>() {
+
+    private val _transactionId = MutableStateFlow<Long?>(null)
+    val transactionId = _transactionId.asStateFlow()
 
     private val _categoryState = MutableStateFlow<UIState<List<Category>>>(UIState.Loading)
     val categoryState = _categoryState.asStateFlow()
@@ -63,8 +81,19 @@ class AddTransactionViewModel @Inject constructor(
     private val _imageUploadState = MutableStateFlow<UIState<TransactionImage>?>(null)
     val imageUploadState = _imageUploadState.asStateFlow()
 
+    // Temporary data storage (not yet persisted)
+    private val _temporaryEvents = MutableStateFlow<List<Event>>(emptyList())
+    val temporaryEvents = _temporaryEvents.asStateFlow()
+
+    private val _temporaryPayees = MutableStateFlow<List<PayeeTransaction>>(emptyList())
+    val temporaryPayees = _temporaryPayees.asStateFlow()
+
+    private val _temporaryLocations = MutableStateFlow<List<Location>>(emptyList())
+    val temporaryLocations = _temporaryLocations.asStateFlow()
+
     init {
         loadCategories()
+        loadDefaultAccount()
     }
 
     fun loadCategories() {
@@ -82,6 +111,21 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
+    private fun loadDefaultAccount() {
+        viewModelScope.launch {
+            getAccountsUseCase()
+                .catch { exception ->
+                    // Silently fail - user can select account manually
+                }
+                .collect { accounts ->
+                    // Select first account if no account is selected yet
+                    if (_selectedAccount.value == null && accounts.isNotEmpty()) {
+                        _selectedAccount.value = accounts.first()
+                    }
+                }
+        }
+    }
+
 
     fun addTransaction(
         amount: Double,
@@ -95,18 +139,85 @@ class AddTransactionViewModel @Inject constructor(
 
             setLoading()
             try {
-                val payeeIds = _selectedPayees.value.map { it.id }
-                val id = addTransactionUseCase(
-                    amount = amount,
-                    category = selectedCategory,
-                    account = selectedAccount,
-                    event = selectedEvent,
-                    description = description,
-                    createAt = createAt,
-                    location = _selectedLocation.value,
-                    payeeIds = payeeIds
-                )
-                setSuccess(id)
+                // Step 1: Persist temporary event if it's temporary (negative ID)
+                var finalEvent = selectedEvent
+                if (selectedEvent.id < 0) {
+                    val eventId = addEventUseCase(
+                        eventName = selectedEvent.eventName,
+                        startDate = selectedEvent.startDate,
+                        endDate = selectedEvent.endDate,
+                        numberOfParticipants = selectedEvent.numberOfParticipants,
+                        accountId = selectedEvent.accountId,
+                        participants = listOf("Me") // Default participant
+                    )
+                    finalEvent = selectedEvent.copy(id = eventId)
+                }
+
+                // Step 2: Persist temporary payees if any are temporary
+                val finalPayeeIds = _selectedPayees.value.map { payee ->
+                    if (payee.id < 0) {
+                        // Temporary payee - persist it
+                        addPayeeUseCase(
+                            name = payee.name,
+                            accountId = payee.accountId,
+                            isFromContacts = payee.isFromContacts,
+                            contactId = payee.contactId
+                        )
+                    } else {
+                        payee.id
+                    }
+                }
+
+                // Step 3: Persist temporary location if it's temporary (negative ID)
+                var finalLocation = _selectedLocation.value
+                if (finalLocation != null && finalLocation.id < 0) {
+                    val locationId = addLocationUseCase(
+                        name = finalLocation.name,
+                        accountId = finalLocation.accountId
+                    )
+                    finalLocation = finalLocation.copy(id = locationId)
+                }
+
+                // Step 4: Save or update transaction
+                val currentTransactionId = _transactionId.value
+                val finalTransactionId = if (currentTransactionId != null) {
+                    // Update existing transaction
+                    updateTransactionUseCase(
+                        transactionId = currentTransactionId,
+                        amount = amount,
+                        category = selectedCategory,
+                        account = selectedAccount,
+                        event = finalEvent,
+                        description = description,
+                        createAt = createAt,
+                        location = finalLocation,
+                        payeeIds = finalPayeeIds
+                    )
+                    currentTransactionId
+                } else {
+                    // Create new transaction
+                    addTransactionUseCase(
+                        amount = amount,
+                        category = selectedCategory,
+                        account = selectedAccount,
+                        event = finalEvent,
+                        description = description,
+                        createAt = createAt,
+                        location = finalLocation,
+                        payeeIds = finalPayeeIds
+                    )
+                }
+
+                // Step 5: Link image to transaction if exists
+                _transactionImage.value?.let { image ->
+                    val imageWithTransactionId = image.copy(transactionId = finalTransactionId)
+                    imageRepository.insertImage(imageWithTransactionId)
+                }
+
+                // Step 6: Clear temporary data after successful save
+                clearTemporaryData()
+
+                setSuccess(finalTransactionId)
             } catch (e: Exception) {
                 setError(e.message ?: "Unknown error occurred")
             }
@@ -142,7 +253,12 @@ class AddTransactionViewModel @Inject constructor(
     fun selectEventById(eventId: Long) {
         viewModelScope.launch {
             try {
-                val event = getEventByIdUseCase(eventId)
+                // Check temporary events first (negative IDs)
+                val event = if (eventId < 0) {
+                    _temporaryEvents.value.find { it.id == eventId }
+                } else {
+                    getEventByIdUseCase(eventId)
+                }
                 if (event != null) {
                     _selectedEvent.value = event
                 }
@@ -158,6 +274,10 @@ class AddTransactionViewModel @Inject constructor(
 
     fun onHistoryClick() {
         navigator.navigateToTransaction()
+    }
+
+    fun navigateBack() {
+        navigator.popBackStack()
     }
 
     fun toSelectCategory() {
@@ -185,7 +305,12 @@ class AddTransactionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val payees = payeeIds.toList().mapNotNull { payeeId ->
-                    getPayeeByIdUseCase(payeeId)
+                    // Check temporary payees first (negative IDs)
+                    if (payeeId < 0) {
+                        _temporaryPayees.value.find { it.id == payeeId }
+                    } else {
+                        getPayeeByIdUseCase(payeeId)
+                    }
                 }
                 _selectedPayees.value = payees
             } catch (e: Exception) {
@@ -197,7 +322,12 @@ class AddTransactionViewModel @Inject constructor(
     fun selectLocationById(locationId: Long) {
         viewModelScope.launch {
             try {
-                val location = getLocationByIdUseCase(locationId)
+                // Check temporary locations first (negative IDs)
+                val location = if (locationId < 0) {
+                    _temporaryLocations.value.find { it.id == locationId }
+                } else {
+                    getLocationByIdUseCase(locationId)
+                }
                 if (location != null) {
                     _selectedLocation.value = location
                 }
@@ -272,5 +402,89 @@ class AddTransactionViewModel @Inject constructor(
 
     fun resetTransactionState() {
         resetState()
+    }
+
+    // Temporary data management methods (exposed for other ViewModels)
+    fun addTemporaryEvent(event: Event): Long {
+        val temporaryId = generateTemporaryId(_temporaryEvents.value.size)
+        val eventWithId = event.copy(id = temporaryId)
+        _temporaryEvents.value = _temporaryEvents.value + eventWithId
+        return temporaryId
+    }
+
+    fun addTemporaryPayee(payee: PayeeTransaction): Long {
+        val temporaryId = generateTemporaryId(_temporaryPayees.value.size)
+        val payeeWithId = payee.copy(id = temporaryId)
+        _temporaryPayees.value = _temporaryPayees.value + payeeWithId
+        return temporaryId
+    }
+
+    fun addTemporaryLocation(location: Location): Long {
+        val temporaryId = generateTemporaryId(_temporaryLocations.value.size)
+        val locationWithId = location.copy(id = temporaryId)
+        _temporaryLocations.value = _temporaryLocations.value + locationWithId
+        return temporaryId
+    }
+
+    fun getTemporaryEvent(eventId: Long): Event? {
+        if (eventId >= 0) return null
+        return _temporaryEvents.value.find { it.id == eventId }
+    }
+
+    fun getTemporaryPayee(payeeId: Long): PayeeTransaction? {
+        if (payeeId >= 0) return null
+        return _temporaryPayees.value.find { it.id == payeeId }
+    }
+
+    fun getTemporaryLocation(locationId: Long): Location? {
+        if (locationId >= 0) return null
+        return _temporaryLocations.value.find { it.id == locationId }
+    }
+
+    private fun clearTemporaryData() {
+        _temporaryEvents.value = emptyList()
+        _temporaryPayees.value = emptyList()
+        _temporaryLocations.value = emptyList()
+    }
+
+    private fun generateTemporaryId(offset: Int): Long {
+        return -(offset + 1).toLong()
+    }
+
+    private val _transactionLoaded = MutableStateFlow<Transaction?>(null)
+    val transactionLoaded = _transactionLoaded.asStateFlow()
+
+    fun loadTransaction(transactionId: Long) {
+        viewModelScope.launch {
+            try {
+                setLoading()
+                val transaction = getTransactionByIdUseCase(transactionId)
+                if (transaction != null) {
+                    _transactionId.value = transaction.id
+                    _selectedCategory.value = transaction.category
+                    _selectedAccount.value = transaction.account
+                    _selectedEvent.value = transaction.event
+                    _selectedLocation.value = transaction.location
+                    
+                    // Load payees
+                    val payees = transaction.payeeIds.mapNotNull { payeeId ->
+                        getPayeeByIdUseCase(payeeId)
+                    }
+                    _selectedPayees.value = payees
+                    
+                    // Load image if exists
+                    transaction.images?.let { image ->
+                        _transactionImage.value = image
+                    }
+                    
+                    _transactionLoaded.value = transaction
+                    setSuccess(transactionId)
+                } else {
+                    setError("Transaction not found")
+                }
+            } catch (e: Exception) {
+                setError(e.message ?: "Failed to load transaction")
+            }
+        }
     }
 }

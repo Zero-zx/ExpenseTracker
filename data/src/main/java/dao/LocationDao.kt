@@ -25,3 +25,4 @@ internal interface LocationDao {
     suspend fun getLocationByName(name: String, accountId: Long): LocationEntity?
 }
 
+

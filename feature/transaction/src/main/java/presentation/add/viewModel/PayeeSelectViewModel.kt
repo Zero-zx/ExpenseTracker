@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import navigation.Navigator
 import transaction.model.PayeeTransaction
-import transaction.usecase.AddPayeeUseCase
 import transaction.usecase.GetPayeesByAccountUseCase
 import transaction.usecase.GetRecentPayeesByAccountUseCase
 import javax.inject.Inject
@@ -18,8 +17,7 @@ class PayeeSelectViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getPayeesByAccountUseCase: GetPayeesByAccountUseCase,
     private val getRecentPayeesByAccountUseCase: GetRecentPayeesByAccountUseCase,
-    private val getAllPhoneContactsUseCase: GetAllPhoneContactsUseCase,
-    private val addPayeeUseCase: AddPayeeUseCase
+    private val getAllPhoneContactsUseCase: GetAllPhoneContactsUseCase
 ) : BaseViewModel<List<PayeeTransaction>>() {
 
     companion object {
@@ -59,6 +57,7 @@ class PayeeSelectViewModel @Inject constructor(
             try {
                 setLoading()
                 val contacts = getAllPhoneContactsUseCase()
+                // Contacts are not temporary, they're from device
                 setSuccess(contacts.map { contact ->
                     PayeeTransaction(
                         id = contact.id,
@@ -72,24 +71,4 @@ class PayeeSelectViewModel @Inject constructor(
         }
     }
 
-    fun addPayee(payeeName: String) {
-        if (payeeName.isBlank()) {
-            setError("Payee name cannot be empty")
-            return
-        }
-
-        viewModelScope.launch {
-            try {
-                setLoading()
-                addPayeeUseCase(
-                    name = payeeName,
-                    accountId = ACCOUNT_ID,
-                    isFromContacts = false
-                )
-                loadPayees() // Reload payees after adding
-            } catch (e: Exception) {
-                setError(e.message ?: "Failed to add payee")
-            }
-        }
-    }
 }

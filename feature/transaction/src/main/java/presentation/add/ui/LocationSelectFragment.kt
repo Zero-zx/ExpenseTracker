@@ -9,15 +9,23 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import base.BaseFragment
 import base.UIState
-import com.example.common.R
+import com.example.common.R as CommonR
+import com.example.transaction.R as TransactionR
 import com.example.transaction.databinding.FragmentLocationSelectBinding
 import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
 import constants.FragmentResultKeys.RESULT_LOCATION_ID
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import presentation.add.adapter.LocationAdapter
+import presentation.add.viewModel.AddTransactionViewModel
 import presentation.add.viewModel.LocationSelectViewModel
+import transaction.model.Location
 import ui.navigateBack
 import ui.setSelectionResult
 
@@ -26,10 +34,14 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
     FragmentLocationSelectBinding::inflate
 ) {
     private val viewModel: LocationSelectViewModel by viewModels()
+    private val addTransactionViewModel: AddTransactionViewModel by hiltNavGraphViewModels(TransactionR.id.transaction_nav_graph)
     private lateinit var adapter: LocationAdapter
     private val selectedLocationId: Long by lazy {
         parentFragment?.arguments?.getLong("selected_location_id", -1L) ?: -1L
     }
+
+    // Track current search query to filter temporary locations
+    private val currentSearchQuery = MutableStateFlow<String>("")
 
     override fun initView() {
         adapter = LocationAdapter(
@@ -50,7 +62,13 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
             }
 
             override fun afterTextChanged(s: Editable?) {
-                viewModel.searchLocations(s?.toString() ?: "")
+                val query = s?.toString() ?: ""
+                currentSearchQuery.value = query
+                if (query.isBlank()) {
+                    viewModel.loadLocations()
+                } else {
+                    viewModel.searchLocations(query)
+                }
             }
         })
     }
@@ -67,29 +85,72 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
 
             buttonSave.setOnClickListener {
                 val locationName = editTextSearch.text.toString()
-                viewModel.addLocation(locationName)
+                if (locationName.isBlank()) {
+                    return@setOnClickListener
+                }
+
+                // Create temporary location and add to AddTransactionViewModel
+                val location = Location(
+                    id = 0, // Will be assigned temporary ID
+                    name = locationName,
+                    accountId = 1L // TODO: Get from account repository
+                )
+                addTransactionViewModel.addTemporaryLocation(location)
+
+                // Clear input and show list
+                editTextSearch.text?.clear()
+                showRecyclerView()
             }
         }
     }
 
     override fun observeData() {
-        collectFlow(viewModel.uiState) { state ->
-            when (state) {
-                is UIState.Loading -> {}
-                is UIState.Success -> {
+        // Observe persisted locations from LocationSelectViewModel and merge with temporary ones
+        viewLifecycleOwner.lifecycleScope.launch {
+            combine(
+                viewModel.uiState,
+                addTransactionViewModel.temporaryLocations,
+                currentSearchQuery
+            ) { persistedState, temporaryLocations, searchQuery ->
+                when (persistedState) {
+                    is UIState.Success -> {
+                        // Filter temporary locations by search query if searching
+                        val filteredTemporary = if (searchQuery.isNotBlank()) {
+                            temporaryLocations.filter {
+                                it.name.contains(searchQuery, ignoreCase = true)
+                            }
+                        } else {
+                            temporaryLocations
+                        }
+                        // Merge persisted and temporary locations (temporary first)
+                        val mergedLocations = filteredTemporary + persistedState.data
+                        UIState.Success(mergedLocations)
+                    }
 
-                    if (state.data.isNotEmpty()) {
-                        showRecyclerView()
-                        adapter.submitList(state.data)
-                        if (selectedLocationId != -1L) {
-                            val selectedLocation = state.data.find { it.id == selectedLocationId }
-                            adapter.setSelectedLocation(selectedLocation)
+                    is UIState.Loading -> UIState.Loading
+                    is UIState.Error -> persistedState
+                    else -> UIState.Idle
+                }
+            }.collect { mergedState ->
+                when (mergedState) {
+                    is UIState.Loading -> {}
+                    is UIState.Success -> {
+                        if (mergedState.data.isNotEmpty()) {
+                            showRecyclerView()
+                            adapter.submitList(mergedState.data)
+                            if (selectedLocationId != -1L) {
+                                val selectedLocation =
+                                    mergedState.data.find { it.id == selectedLocationId }
+                                adapter.setSelectedLocation(selectedLocation)
+                            }
+                        } else {
+                            showEmptyView()
                         }
                     }
-                }
 
-                else -> {
-                    showEmptyView()
+                    else -> {
+                        showEmptyView()
+                    }
                 }
             }
         }
@@ -133,7 +194,7 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
                         requireContext(),
-                        R.color.blue_bg
+                        CommonR.color.blue_bg
                     )
                 ),
                 startIndex,

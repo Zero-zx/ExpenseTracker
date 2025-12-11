@@ -49,6 +49,10 @@ dependencies {
     androidx()
     hilt()
     feature()
+    
+    // MPAndroidChart for charts
+    implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
