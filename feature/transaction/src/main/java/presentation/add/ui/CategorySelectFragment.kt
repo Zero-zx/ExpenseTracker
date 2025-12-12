@@ -1,10 +1,11 @@
 package presentation.add.ui
 
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
+import base.TabConfig
 import base.UIState
+import base.setupWithTabs
 import com.example.transaction.databinding.FragmentCategorySelectBinding
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.add.adapter.ExpandableCategoryAdapter
@@ -37,6 +38,15 @@ class CategorySelectFragment : BaseFragment<FragmentCategorySelectBinding>(
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@CategorySelectFragment.adapter
         }
+        binding.viewPager.setupWithTabs(
+            tabLayout = binding.tabLayout,
+            fragment = this,
+            tabs = listOf(
+                TabConfig("Expense", { AccountSelectFragment() }),
+                TabConfig("Income", { EventSelectFragment() }),
+                TabConfig("Lent/Borrowed", { LocationSelectFragment() })
+            )
+        )
     }
 
     override fun observeData() {

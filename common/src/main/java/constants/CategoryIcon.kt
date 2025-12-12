@@ -34,7 +34,7 @@ enum class CategoryIcon(
     WATER(R.drawable.chi_19_nuoc, "chi_19_nuoc", "water", 2),
     INTERNET(R.drawable.chi_22_internet, "chi_22_internet", "internet", 2),
     PHONE(R.drawable.chi_15_dien_thoai_di_dong, "chi_15_dien_thoai_di_dong", "phone", 2),
-    CABLE_PHONE(R.drawable.chi_15_dien_thoai_co_din, "chi_15_dien_thoai_co_din", "cable_phone", 2),
+    CABLE_PHONE(R.drawable.chi_15_dien_thoai_co_din, "chi_15_dien_thoai_co_din", "cable phone", 2),
     GAS(R.drawable.chi_19_gas, "chi_19_gas", "gas", 2),
     TELEVISION(R.drawable.chi_15_truyen_hinh, "chi_15_truyen_hinh", "television", 2),
     HOUSEMAID(R.drawable.chi_2_nguoi_giup_viec, "chi_2_nguoi_giup_viec", "housemaid", 2),
@@ -52,7 +52,7 @@ enum class CategoryIcon(
     BOOK(R.drawable.chi_5_sach_vo, "chi_5_sach_vo", "book", 4),
     MILK(R.drawable.chi_6_sua, "chi_6_sua", "milk", 4),
     TOY(R.drawable.chi_16_do_choi, "chi_16_do_choi", "toy", 4),
-    POCKET_MONEY(R.drawable.chi_7_tien_tieu_vat, "chi_7_tien_tieu_vat", "pocket_money", 4),
+    POCKET_MONEY(R.drawable.chi_7_tien_tieu_vat, "chi_7_tien_tieu_vat", "pocket money", 4),
 
     // Clothing
     CLOTHES(R.drawable.chi_7_tien_tieu_vat, "chi_7_tien_tieu_vat", "clothes", 5),
@@ -80,7 +80,7 @@ enum class CategoryIcon(
     DOMESTIC(R.drawable.chi_14_my_pham, "chi_14_my_pham", "domestic", 9),
 
     // Bank
-    TRANSFER_FEE(R.drawable.chi_phi_chuyen_khoan, "chi_phi_chuyen_khoan", "transfer_fee", 10);
+    TRANSFER_FEE(R.drawable.chi_phi_chuyen_khoan, "chi_phi_chuyen_khoan", "transfer fee", 10);
 
     // Income
 

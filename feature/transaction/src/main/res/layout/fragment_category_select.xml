@@ -16,6 +16,27 @@
         app:title="Select Category"
         app:titleTextColor="@android:color/black" />
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/app_background"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/blue_bg"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/blue_bg" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_categories"
         android:layout_width="match_parent"

@@ -33,7 +33,6 @@ class AddTransactionUseCase @Inject constructor(
             payeeIds = payeeIds
         )
         require(transaction.amount > 0) { "Amount must be greater than 0" }
-        require(transaction.description?.isNotBlank() == true) { "Description cannot be blank" }
 
         return repository.insertTransaction(transaction)
     }
