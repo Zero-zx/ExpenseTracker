@@ -11,5 +11,3 @@ class GetPayeeByIdUseCase @Inject constructor(
         return repository.getPayeeById(payeeId)
     }
 }
-
-

@@ -12,5 +12,3 @@ class GetPayeesByAccountUseCase @Inject constructor(
         return repository.getAllPayeesByAccount(accountId)
     }
 }
-
-

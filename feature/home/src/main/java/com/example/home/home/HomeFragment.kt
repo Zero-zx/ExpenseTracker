@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import base.BaseFragment
 import base.UIState
 import com.example.home.databinding.FragmentHomeBinding
+import com.example.home.home.model.HomeReportData
 import com.example.home.home.usecase.CategoryExpenseData
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -93,7 +94,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         }
     }
 
-    private fun updateUI(data: com.example.home.home.usecase.HomeTransactionData) {
+    private fun updateUI(data: HomeReportData) {
         if (!data.hasData) {
             showNoDataState()
             return

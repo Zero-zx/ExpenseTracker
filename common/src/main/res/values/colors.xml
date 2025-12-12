@@ -2,6 +2,7 @@
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="white_bg">#F9FAFB</color>
+    <color name="transparent">#00000000</color>
     <color name="app_background">#D1EBFA</color>
     <color name="mav_bar_background">#FFFFFF</color>
     <color name="blue_bg">#098FD3</color>

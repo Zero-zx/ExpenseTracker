@@ -2,8 +2,8 @@ package com.example.home.home
 
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
-import com.example.home.home.usecase.GetHomeTransactionDataUseCase
-import com.example.home.home.usecase.HomeTransactionData
+import com.example.home.home.model.HomeReportData
+import com.example.home.home.usecase.GetHomeReportDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -15,8 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getHomeTransactionDataUseCase: GetHomeTransactionDataUseCase
-) : BaseViewModel<HomeTransactionData>() {
+    private val getHomeTransactionDataUseCase: GetHomeReportDataUseCase
+) : BaseViewModel<HomeReportData>() {
 
     companion object {
         private const val ACCOUNT_ID = 1L // TODO: Get from user session/preferences
@@ -55,6 +55,7 @@ class HomeViewModel @Inject constructor(
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
             }
+
             TimePeriod.THIS_WEEK -> {
                 calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
                 calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -62,6 +63,7 @@ class HomeViewModel @Inject constructor(
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
             }
+
             TimePeriod.THIS_MONTH -> {
                 calendar.set(Calendar.DAY_OF_MONTH, 1)
                 calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -69,6 +71,7 @@ class HomeViewModel @Inject constructor(
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
             }
+
             TimePeriod.QUARTER_PRESENT -> {
                 val currentMonth = calendar.get(Calendar.MONTH)
                 val quarterStartMonth = (currentMonth / 3) * 3
@@ -79,6 +82,7 @@ class HomeViewModel @Inject constructor(
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
             }
+
             TimePeriod.THIS_YEAR -> {
                 calendar.set(Calendar.MONTH, Calendar.JANUARY)
                 calendar.set(Calendar.DAY_OF_MONTH, 1)

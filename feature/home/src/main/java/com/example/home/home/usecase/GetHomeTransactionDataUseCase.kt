@@ -1,5 +1,6 @@
 package com.example.home.home.usecase
 
+import com.example.home.home.model.HomeReportData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import transaction.model.CategoryType
@@ -8,25 +9,23 @@ import transaction.repository.TransactionRepository
 import javax.inject.Inject
 
 /**
- * Use case to get processed transaction data for home screen:
- * - Income and Expense totals
- * - Top 3 categories by expense amount
+ * Use case to get processed transaction data for home screen
  */
-class GetHomeTransactionDataUseCase @Inject constructor(
+class GetHomeReportDataUseCase @Inject constructor(
     private val transactionRepository: TransactionRepository
 ) {
     operator fun invoke(
         accountId: Long,
         startDate: Long,
         endDate: Long
-    ): Flow<HomeTransactionData> {
+    ): Flow<HomeReportData> {
         return transactionRepository.getTransactionsByDateRange(accountId, startDate, endDate)
             .map { transactions ->
                 processTransactions(transactions)
             }
     }
 
-    private fun processTransactions(transactions: List<Transaction>): HomeTransactionData {
+    private fun processTransactions(transactions: List<Transaction>): HomeReportData {
         var totalIncome = 0.0
         var totalExpense = 0.0
         
@@ -89,7 +88,7 @@ class GetHomeTransactionDataUseCase @Inject constructor(
             categoryData.copy(percentage = percentage)
         }
         
-        return HomeTransactionData(
+        return HomeReportData(
             income = totalIncome,
             expense = totalExpense,
             difference = totalIncome - totalExpense,
@@ -99,13 +98,7 @@ class GetHomeTransactionDataUseCase @Inject constructor(
     }
 }
 
-data class HomeTransactionData(
-    val income: Double,
-    val expense: Double,
-    val difference: Double,
-    val topCategories: List<CategoryExpenseData>,
-    val hasData: Boolean
-)
+
 
 data class CategoryExpenseData(
     val category: transaction.model.Category?,
