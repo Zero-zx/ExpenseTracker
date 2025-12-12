@@ -2,7 +2,6 @@ package com.example.home.home
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.PopupWindow
 import androidx.fragment.app.viewModels
 import base.BaseFragment
@@ -84,9 +83,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
                 is UIState.Loading -> {
                     // Could show loading indicator if needed
                 }
+
                 is UIState.Success -> {
                     updateUI(state.data)
                 }
+
                 is UIState.Error -> {
                     // Handle error if needed
                 }
@@ -143,15 +144,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         val xAxis = barChart.xAxis
         xAxis.isEnabled = false
 
-        // Configure Y-axis (left) - hide labels
+        // Configure Y-axis (left) - completely remove
         val leftAxis = barChart.axisLeft
+        leftAxis.isEnabled = false
         leftAxis.setDrawGridLines(false)
         leftAxis.setDrawLabels(false)
-        leftAxis.axisMinimum = 0f
+        leftAxis.setDrawAxisLine(false)
 
-        // Configure Y-axis (right) - disabled
+        // Configure Y-axis (right) - completely remove
         val rightAxis = barChart.axisRight
         rightAxis.isEnabled = false
+        rightAxis.setDrawGridLines(false)
+        rightAxis.setDrawLabels(false)
+        rightAxis.setDrawAxisLine(false)
     }
 
     private fun updateBarChart(income: Double, expense: Double) {
@@ -160,9 +165,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         // Find max value for scaling
         val maxValue = maxOf(income, expense, 1.0) // At least 1 to avoid division by zero
 
-        // Create entries - normalize to 0-1 range for display
-        val incomeEntry = BarEntry(0f, (income / maxValue).toFloat())
-        val expenseEntry = BarEntry(1f, (expense / maxValue).toFloat())
+        // Minimum visible height as percentage (e.g., 5% of max value)
+        val minVisibleHeight = 0.01f
+
+        // Create entries - normalize to 0-1 range for display, with minimum height
+        val incomeNormalized = (income / maxValue).toFloat()
+        val expenseNormalized = (expense / maxValue).toFloat()
+
+        // Apply minimum height: if value is 0, show minVisibleHeight; otherwise show actual value
+        val incomeEntry = BarEntry(
+            0f,
+            if (income == 0.0) minVisibleHeight else maxOf(incomeNormalized, minVisibleHeight)
+        )
+        val expenseEntry = BarEntry(
+            1f,
+            if (expense == 0.0) minVisibleHeight else maxOf(expenseNormalized, minVisibleHeight)
+        )
 
         // Create datasets
         val incomeDataSet = BarDataSet(listOf(incomeEntry), "").apply {
@@ -175,12 +193,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
             setDrawValues(false)
         }
 
-        // Create bar data
+        // Create bar data with spacing between bars
         val barData = BarData(incomeDataSet, expenseDataSet).apply {
-            barWidth = 0.35f
+            barWidth = 0.9f
         }
 
         barChart.data = barData
+        barChart.groupBars(-0.5f, 0.3f, 0f) // Add spacing: (fromX, groupSpace, barSpace)
         barChart.invalidate()
     }
 
@@ -222,9 +241,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
 
     private fun updateCategoryList(categories: List<CategoryExpenseData>) {
         val categoryLayouts = listOf(
-            binding.layoutCategory1 to Triple(binding.viewColor1, binding.textCategory1, binding.textPercentage1),
-            binding.layoutCategory2 to Triple(binding.viewColor2, binding.textCategory2, binding.textPercentage2),
-            binding.layoutCategory3 to Triple(binding.viewColor3, binding.textCategory3, binding.textPercentage3)
+            binding.layoutCategory1 to Triple(
+                binding.viewColor1,
+                binding.textCategory1,
+                binding.textPercentage1
+            ),
+            binding.layoutCategory2 to Triple(
+                binding.viewColor2,
+                binding.textCategory2,
+                binding.textPercentage2
+            ),
+            binding.layoutCategory3 to Triple(
+                binding.viewColor3,
+                binding.textCategory3,
+                binding.textPercentage3
+            )
         )
 
         categories.forEachIndexed { index, categoryData ->
@@ -236,7 +267,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
                     layout.visible()
                     colorView.setBackgroundColor(categoryColors[index])
                     nameView.text = categoryData.category.title
-                    percentageView.text = String.format(Locale.getDefault(), "%.2f %%", categoryData.percentage)
+                    percentageView.text =
+                        String.format(Locale.getDefault(), "%.2f %%", categoryData.percentage)
                 } else {
                     // Show category with 0%
                     layout.visible()
@@ -278,6 +310,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         val nextIndex = (currentIndex + 1) % timePeriods.size
         selectedTimePeriod = timePeriods[nextIndex]
         binding.textTimePeriod.text = selectedTimePeriod.displayName
+        viewModel.loadTransactionData(selectedTimePeriod)
+    }
+
+    override fun onResume() {
+        super.onResume()
         viewModel.loadTransactionData(selectedTimePeriod)
     }
 }

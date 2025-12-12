@@ -50,7 +50,6 @@ dependencies {
     hilt()
     feature()
     
-    // MPAndroidChart for charts
     implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
     
     testImplementation(libs.junit)

@@ -87,6 +87,19 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <!-- Title text: 12sp -->
+    <style name="TextAppearance.App.Small" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextAppearance.App.Small.Black" parent="TextAppearance.App.Small">
+        <item name="android:textColor">@color/black_text</item>
+    </style>
+
+    <style name="TextAppearance.App.Small.White" parent="TextAppearance.App.Small">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <!-- Hint text: 14sp + gray color -->
     <style name="TextAppearance.App.Hint" parent="TextAppearance.Material3.BodySmall">
         <item name="android:textSize">14sp</item>

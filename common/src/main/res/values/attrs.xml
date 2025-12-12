@@ -15,4 +15,8 @@
         <attr name="src" />
         <attr name="text" />
     </declare-styleable>
+
+    <declare-styleable name="RoundedBarChart">
+        <attr name="radius" format="dimension" />
+    </declare-styleable>
 </resources>

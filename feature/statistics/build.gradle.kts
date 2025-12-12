@@ -52,10 +52,7 @@ dependencies {
     hilt()
     feature()
     
-    // MPAndroidChart for line charts
     implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
-    
-    // ViewPager2 for tabs
     implementation("androidx.viewpager2:viewpager2:1.1.0")
 
     testImplementation(libs.junit)

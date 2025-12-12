@@ -135,13 +135,13 @@ class AddTransactionViewModel @Inject constructor(
         viewModelScope.launch {
             val selectedCategory = _selectedCategory.value ?: return@launch
             val selectedAccount = _selectedAccount.value ?: return@launch
-            val selectedEvent = _selectedEvent.value ?: return@launch
+            val selectedEvent = _selectedEvent.value
 
             setLoading()
             try {
                 // Step 1: Persist temporary event if it's temporary (negative ID)
                 var finalEvent = selectedEvent
-                if (selectedEvent.id < 0) {
+                if (selectedEvent != null) {
                     val eventId = addEventUseCase(
                         eventName = selectedEvent.eventName,
                         startDate = selectedEvent.startDate,

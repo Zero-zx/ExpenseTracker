@@ -6,14 +6,13 @@
     android:layout_margin="4dp"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true"
-    android:paddingHorizontal="16dp"
-    android:paddingStart="40dp">
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/image_icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="52dp"
         android:scaleType="centerCrop"
         android:src="@drawable/chi_1_an_uong"
         app:layout_constraintBottom_toBottomOf="parent"

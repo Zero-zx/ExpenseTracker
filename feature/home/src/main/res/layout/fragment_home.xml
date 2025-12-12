@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".home.HomeFragment">
 
-    <View
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/back_ground_tab_more_account_namal_light"
-        app:layout_constraintHeight_percent="0.3" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/back_ground_tab_more_account_namal_light"
+        app:layout_constraintHeight_percent="0.55" />
 
-    <!-- AppBarLayout wrapping both header and collapsible balance report -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
@@ -22,7 +22,6 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Toolbar: Fixed Header (Avatar, Greeting, Icons) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/header_layout"
             android:layout_width="match_parent"
@@ -31,7 +30,6 @@
             android:paddingTop="@dimen/dimen_padding_top"
             android:paddingBottom="16dp">
 
-            <!-- Avatar -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/avatar_card"
                 android:layout_width="60dp"
@@ -55,7 +53,6 @@
                     android:textStyle="bold" />
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Greeting and Username -->
             <TextView
                 android:id="@+id/text_view_hello"
                 android:layout_width="wrap_content"
@@ -80,25 +77,23 @@
                 app:layout_constraintStart_toEndOf="@id/avatar_card"
                 app:layout_constraintTop_toBottomOf="@id/text_view_hello" />
 
-            <!-- Refresh Icon -->
             <ImageView
                 android:id="@+id/icon_refresh"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="12dp"
                 android:contentDescription="Refresh"
-                android:src="@drawable/v2_ic_refresh_white"
+                android:src="@drawable/ic_sync_data_v2"
                 app:layout_constraintEnd_toStartOf="@id/icon_notification"
                 app:layout_constraintTop_toTopOf="@id/avatar_card"
                 app:tint="@android:color/white" />
 
-            <!-- Notification Icon -->
             <ImageView
                 android:id="@+id/icon_notification"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:contentDescription="Notification"
-                android:src="@drawable/icon_calender_today"
+                android:src="@drawable/v2_ic_notify_white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/avatar_card"
                 app:tint="@android:color/white" />
@@ -107,7 +102,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Main Content with ScrollView -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -130,34 +124,30 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
                 android:paddingTop="8dp"
-                android:paddingBottom="24dp"
+                android:paddingBottom="16dp"
                 app:layout_collapseMode="parallax">
 
                 <TextView
                     android:id="@+id/text_view_balance_label"
+                    style="@style/TextAppearance.App.Small.White"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:text="Total balance"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <!-- Balance Amount -->
                 <TextView
                     android:id="@+id/text_view_balance"
+                    style="@style/TextAppearance.App.Title.White"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="-222 $"
-                    android:textColor="@android:color/white"
-                    android:textSize="36sp"
+                    android:text="1000 $"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_view_balance_label" />
 
-                <!-- Eye Icon -->
                 <ImageView
                     android:id="@+id/icon_eye"
                     android:layout_width="28dp"
@@ -170,7 +160,6 @@
                     app:layout_constraintTop_toTopOf="@id/text_view_balance"
                     app:tint="@android:color/white" />
 
-                <!-- Arrow Button -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/button_arrow"
                     android:layout_width="32dp"
@@ -179,8 +168,9 @@
                     app:cardBackgroundColor="#4DFFFFFF"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/text_view_balance"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_view_balance_label">
+                    app:layout_constraintTop_toTopOf="@id/text_view_balance_label">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -195,7 +185,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-16dp"
+                android:paddingTop="16dp"
                 android:background="@drawable/rounded_16dp_background"
                 android:orientation="vertical"
                 android:paddingHorizontal="16dp">
@@ -205,23 +195,21 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:paddingHorizontal="8dp"
                     android:paddingBottom="16dp">
 
                     <TextView
+                        style="@style/TextAppearance.App.Small.Black"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Expense vs Income"
-                        android:textColor="@color/black_text"
-                        android:textSize="20sp"
                         android:textStyle="bold" />
 
-                    <!-- Settings Icon -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/button_settings"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         app:cardBackgroundColor="@android:color/white"
                         app:cardCornerRadius="8dp"
@@ -233,16 +221,16 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
+                            android:layout_margin="4dp"
                             android:contentDescription="Settings"
                             android:src="@drawable/custom_ic_setting_v2"
                             app:tint="@color/gray_text" />
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Time Period Dropdown -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/button_time_period"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
                         app:cardBackgroundColor="@android:color/white"
@@ -253,18 +241,18 @@
 
                         <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
+                            android:padding="4dp"
                             android:paddingHorizontal="12dp">
 
                             <TextView
                                 android:id="@+id/text_time_period"
+                                style="@style/TextAppearance.App.Normal.Black"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="This Month"
-                                android:textColor="@color/black_text"
-                                android:textSize="14sp" />
+                                android:text="This Month" />
 
                             <ImageView
                                 android:layout_width="16dp"
@@ -277,7 +265,6 @@
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
-                <!-- No Data State -->
                 <TextView
                     android:id="@+id/text_no_data"
                     android:layout_width="match_parent"
@@ -289,25 +276,25 @@
                     android:textSize="16sp"
                     android:visibility="gone" />
 
-                <!-- Charts and Data Section -->
                 <LinearLayout
                     android:id="@+id/layout_charts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingVertical="16dp">
+                    android:paddingTop="16dp">
 
-                    <!-- Bar Chart -->
-                    <com.github.mikephil.charting.charts.BarChart
+                    <ui.RoundedBarChart
                         android:id="@+id/bar_chart"
                         android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_marginEnd="24dp" />
+                        android:layout_height="180dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginEnd="24dp"
+                        app:radius="4dp" />
 
-                    <!-- Income, Expense, Difference -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -336,7 +323,6 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-                        <!-- Expense Row -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -361,7 +347,6 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-                        <!-- Difference Row -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -387,21 +372,18 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Category Breakdown -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingVertical="16dp">
 
-                    <!-- Pie Chart -->
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/pie_chart"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_marginEnd="24dp" />
 
-                    <!-- Category List -->
                     <LinearLayout
                         android:id="@+id/layout_category_list"
                         android:layout_width="0dp"
@@ -476,7 +458,6 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-                        <!-- Category 3 -->
                         <LinearLayout
                             android:id="@+id/layout_category_3"
                             android:layout_width="match_parent"
@@ -510,7 +491,6 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Record History Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_record_history"
                     style="@style/TextAppearance.App.Normal.Black"
@@ -518,18 +498,17 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginTop="8dp"
-                    android:backgroundTint="@android:color/white"
+                    android:background="@drawable/background_outline_rounded_ripple"
                     android:paddingHorizontal="24dp"
                     android:text="Record history"
                     android:textAllCaps="false"
                     android:textStyle="bold"
-                    app:cornerRadius="8dp"
-                    app:strokeColor="#CACDD3"
-                    app:strokeWidth="1dp" />
+                    app:backgroundTint="@null" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -578,6 +557,48 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_saving" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TextAppearance.App.Normal.Black"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Saving Account"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            style="@style/TextAppearance.App.Normal.Gray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Savings books are managed here" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/background_image_cyan_circle"
+                        android:padding="8dp"
+                        android:src="@drawable/v2_ic_add_while"
+                        android:tint="@color/blue_bg" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/v2_ic_tien_vay" />
 
                     <LinearLayout
                         android:layout_width="0dp"
