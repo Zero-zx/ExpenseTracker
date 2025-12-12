@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import base.BaseFragment
 import base.UIState
 import camera.CameraHandler
-import com.bumptech.glide.Glide
+//import com.bumptech.glide.Glide
 import com.example.common.R as CommonR
 import com.example.transaction.R as TransactionR
 import com.example.transaction.databinding.FragmentTransactionAddBinding
@@ -317,7 +317,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 // Show image in your UI
                 binding.layoutImage.visible()
                 binding.imageView.visible()
-                Glide.with(this).load(image.getFullPath(requireContext())).into(binding.imageView)
+//                Glide.with(this).load(image.getFullPath(requireContext())).into(binding.imageView)
             } else {
                 // Hide image
                 binding.layoutImage.gone()

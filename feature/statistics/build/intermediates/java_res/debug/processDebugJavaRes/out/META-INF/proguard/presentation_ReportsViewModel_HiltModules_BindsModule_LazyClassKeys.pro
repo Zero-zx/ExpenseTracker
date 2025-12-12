@@ -1,1 +1,0 @@
--keep,allowobfuscation,allowshrinking class presentation.ReportsViewModel

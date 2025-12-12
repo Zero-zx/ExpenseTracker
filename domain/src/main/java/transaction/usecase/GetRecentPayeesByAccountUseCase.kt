@@ -12,5 +12,3 @@ class GetRecentPayeesByAccountUseCase @Inject constructor(
         return repository.getRecentPayeesByAccount(accountId)
     }
 }
-
-

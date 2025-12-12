@@ -31,5 +31,3 @@ class AddPayeeUseCase @Inject constructor(
         return repository.insertPayee(payee)
     }
 }
-
-

@@ -37,5 +37,3 @@ internal class PayeeTransactionRepositoryImpl @Inject constructor(
         return payeeTransactionDao.getPayeeByName(name, accountId)?.toDomain()
     }
 }
-
-

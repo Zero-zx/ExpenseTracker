@@ -7,5 +7,3 @@ data class PayeeTransaction(
     val isFromContacts: Boolean = false, // Whether this payee is from device contacts
     val contactId: Long? = null // Contact ID if from device contacts
 )
-
-

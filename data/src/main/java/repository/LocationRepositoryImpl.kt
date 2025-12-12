@@ -38,5 +38,3 @@ internal class LocationRepositoryImpl @Inject constructor(
         return locationDao.getLocationByName(name, accountId)?.toDomain()
     }
 }
-
-

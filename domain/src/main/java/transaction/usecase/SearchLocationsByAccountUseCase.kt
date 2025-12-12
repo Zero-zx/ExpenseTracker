@@ -12,5 +12,3 @@ class SearchLocationsByAccountUseCase @Inject constructor(
         return repository.searchLocationsByAccount(accountId, query)
     }
 }
-
-

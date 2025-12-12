@@ -10,5 +10,3 @@ interface PayeeTransactionRepository {
     suspend fun insertPayee(payee: PayeeTransaction): Long
     suspend fun getPayeeByName(name: String, accountId: Long): PayeeTransaction?
 }
-
-

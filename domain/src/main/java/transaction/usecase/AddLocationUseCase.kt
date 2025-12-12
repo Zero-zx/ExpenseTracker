@@ -27,5 +27,3 @@ class AddLocationUseCase @Inject constructor(
         return repository.insertLocation(location)
     }
 }
-
-
