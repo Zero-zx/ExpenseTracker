@@ -5,8 +5,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import storage.FileProvider as AppFileProvider
 import java.io.File
+import storage.FileProvider as AppFileProvider
 
 /**
  * Handles camera and gallery image selection.
@@ -21,6 +21,7 @@ class CameraHandler(
 ) {
 
     private var tempImageFile: File? = null
+    private var cameraImageUri: Uri? = null // Lưu FileProvider URI để sử dụng sau
     private lateinit var cameraLauncher: ActivityResultLauncher<Uri>
     private lateinit var galleryLauncher: ActivityResultLauncher<String>
 
@@ -29,11 +30,19 @@ class CameraHandler(
         cameraLauncher = fragment.registerForActivityResult(
             ActivityResultContracts.TakePicture()
         ) { success ->
-            if (success && tempImageFile != null) {
-                val uri = Uri.fromFile(tempImageFile)
-                onImageCaptured(uri)
+            if (success && cameraImageUri != null) {
+                // Sử dụng FileProvider URI đã lưu, không dùng Uri.fromFile()
+                onImageCaptured(cameraImageUri!!)
+                // Cleanup temp file sau khi đã sử dụng
+                tempImageFile?.delete()
+                tempImageFile = null
+                cameraImageUri = null
             } else {
                 onError("Failed to capture image")
+                // Cleanup nếu thất bại
+                tempImageFile?.delete()
+                tempImageFile = null
+                cameraImageUri = null
             }
         }
 
@@ -54,18 +63,25 @@ class CameraHandler(
             // Create temp file using interface
             tempImageFile = fileProvider.createTempImageFile()
 
-            // Get URI using FileProvider
+            // Get URI using FileProvider (an toàn từ Android 7.0+)
             val uri = FileProvider.getUriForFile(
                 fragment.requireContext(),
                 "${fragment.requireContext().packageName}.fileprovider",
                 tempImageFile!!
             )
 
+            // Lưu URI để sử dụng trong callback
+            cameraImageUri = uri
+
             // Launch camera
             cameraLauncher.launch(uri)
 
         } catch (e: Exception) {
             onError("Failed to open camera: ${e.message}")
+            // Cleanup nếu có lỗi
+            tempImageFile?.delete()
+            tempImageFile = null
+            cameraImageUri = null
         }
     }
 

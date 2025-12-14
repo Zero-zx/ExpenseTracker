@@ -98,7 +98,7 @@ fun Fragment.openDatePicker(target: TextView, onSelected: (Long) -> Unit = {}) {
                 SimpleDateFormat("EEEE", Locale.getDefault()).format(Date(selection))
             }
 
-            target.setText("$dayLabel - $formattedDate")
+            target.text = "$dayLabel - $formattedDate"
 
             // compute epoch millis at start of selected day in system zone and call callback
             try {
@@ -165,7 +165,7 @@ fun Fragment.openTimePicker(target: TextView, onSelected: (Long) -> Unit = {}) {
                 }
                 SimpleDateFormat("hh:mm a", Locale.getDefault()).format(cal.time)
             }
-            target.setText(formatted)
+            target.text = formatted
 
             // return offset millis from midnight
             val offsetMillis = h * 3_600_000L + m * 60_000L
@@ -179,4 +179,66 @@ fun Fragment.openTimePicker(target: TextView, onSelected: (Long) -> Unit = {}) {
     dialog.setOnCancelListener { target.clearFocus() }
     dialog.setOnDismissListener { target.clearFocus() }
     dialog.show()
+}
+
+/**
+ * Open a month picker and write the selected month into [target] in format MM/yyyy.
+ * Calls [onSelected] with epoch millis at the start of the selected month (system zone).
+ * Uses MaterialDatePicker month picker under the hood.
+ */
+fun Fragment.openMonthPicker(target: TextView, onSelected: (Long) -> Unit = {}) {
+    val monthPickerBuilder = MaterialDatePicker.Builder.datePicker()
+    monthPickerBuilder.setTitleText("Select Month")
+    monthPickerBuilder.setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+
+    if (target.text.toString().isNotEmpty()) {
+        try {
+            val dateFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val parsedDate = try {
+                dateFormat.parse(target.text.toString())
+            } catch (_: Exception) {
+                null
+            }
+            parsedDate?.let {
+                monthPickerBuilder.setSelection(it.time)
+            }
+        } catch (_: Exception) {
+            // ignore
+        }
+    }
+
+    val monthPicker = monthPickerBuilder.build()
+    monthPicker.addOnPositiveButtonClickListener { selection ->
+        try {
+            val dateFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val formattedDate = dateFormat.format(Date(selection))
+            target.text = formattedDate
+
+            // compute epoch millis at start of selected month in system zone
+            try {
+                val localDate =
+                    Instant.ofEpochMilli(selection).atZone(ZoneId.systemDefault()).toLocalDate()
+                val startOfMonth =
+                    localDate.withDayOfMonth(1)
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant()
+                        .toEpochMilli()
+                onSelected(startOfMonth)
+            } catch (_: Exception) {
+                // fallback: use selection as-is
+                onSelected(selection)
+            }
+        } catch (_: Exception) {
+            // ignore
+        }
+    }
+    monthPicker.addOnNegativeButtonClickListener {
+        target.clearFocus()
+    }
+    monthPicker.addOnDismissListener {
+        target.clearFocus()
+    }
+    monthPicker.show(parentFragmentManager, "material_month_picker")
 }

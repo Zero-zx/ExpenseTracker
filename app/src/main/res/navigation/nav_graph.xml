@@ -67,5 +67,10 @@
         android:name="presentation.add.ui.TransactionAddFragment"
         android:label="TransactionAddFragment" />
 
+    <fragment
+        android:id="@+id/dataSettingFragment"
+        android:name="presentation.datasetting.DataSettingFragment"
+        android:label="Data Setting" />
+
 
 </navigation>

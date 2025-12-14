@@ -1,108 +1,99 @@
 package presentation.list
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.common.R
 import com.example.transaction.databinding.ItemTransactionBinding
-import transaction.model.CategoryType
 import transaction.model.Transaction
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class TransactionListAdapter(
     private val onItemClick: (Transaction) -> Unit
-) : ListAdapter<Transaction, TransactionListAdapter.TransactionViewHolder>(TransactionDiffCallback()) {
+) : ListAdapter<TransactionListItem, RecyclerView.ViewHolder>(TransactionListItemDiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val binding = ItemTransactionBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return TransactionViewHolder(binding)
+    private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
+    private val viewPool = RecyclerView.RecycledViewPool()
+
+    override fun getItemViewType(position: Int): Int {
+        // We only expect DateHeader items now
+        return 0
     }
 
-    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val binding =
+            ItemTransactionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return DateGroupViewHolder(binding)
     }
 
-    inner class TransactionViewHolder(
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = getItem(position)
+        if (item is TransactionListItem.DateHeader) {
+            (holder as DateGroupViewHolder).bind(item)
+        }
+    }
+
+    inner class DateGroupViewHolder(
         private val binding: ItemTransactionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val currencyFormatter = NumberFormat.getCurrencyInstance()
-        private val dateFormatter = SimpleDateFormat("MMM dd, yyyy - HH:mm", Locale.getDefault())
+        private val childAdapter = TransactionCategoryAdapter(onItemClick)
 
         init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onItemClick(getItem(position))
-                }
+            binding.recyclerViewCategories.apply {
+                layoutManager = LinearLayoutManager(binding.root.context)
+                adapter = childAdapter
+                setRecycledViewPool(viewPool)
+                isNestedScrollingEnabled = false
             }
         }
 
-        fun bind(transaction: Transaction) {
+        fun bind(header: TransactionListItem.DateHeader) {
             binding.apply {
-                // Category
-                textViewCategory.text = transaction.category.title
-                textViewCategoryIcon.setImageResource(transaction.category.iconRes)
+                textViewDate.text = header.date
+                textViewDayLabel.text = header.dayName
+                val formattedAmount = currencyFormatter.format(header.totalAmount)
+                textViewDayAmount.text = formattedAmount.replace("$", "₫")
 
-                // Description
-                if (!transaction.description.isNullOrEmpty()) {
-                    textViewDescription.text = transaction.description
-                    textViewDescription.visibility = View.VISIBLE
-                } else {
-                    textViewDescription.visibility = View.GONE
-                }
+                textViewDayAmount.setTextColor(
+                    if (header.totalAmount < 0) {
+                        binding.root.context.getColor(com.example.common.R.color.red_expense)
+                    } else {
+                        binding.root.context.getColor(com.example.common.R.color.green_income)
+                    }
+                )
 
-                // Date
-                textViewDate.text = dateFormatter.format(Date(transaction.createAt))
-
-                // Partner
-//                transaction.partner?.let { partner ->
-//                    textViewPartner.text = "Partner: ${partner.partnerName}"
-//                    textViewPartner.visibility = View.VISIBLE
-//                } ?: run {
-//                    textViewPartner.visibility = View.GONE
-//                }
-
-                // Event
-//                transaction.event?.let { event ->
-//                    textViewEvent.text = "Event: ${event.eventName}"
-//                    textViewEvent.visibility = View.VISIBLE
-//                } ?: run {
-//                    textViewEvent.visibility = View.GONE
-//                }
-//
-//                // Amount and Type
-                val sign = when (transaction.category.type) {
-                    CategoryType.INCOME -> "+"
-                    CategoryType.EXPENSE -> "-"
-                    CategoryType.LEND -> "→"
-                    CategoryType.BORROWING -> "←"
-                    else -> ""
-                }
-//
-                textViewAmount.text = "$sign${currencyFormatter.format(transaction.amount)}"
-                textViewType.text = transaction.category.type.toString()
+                // Submit child list
+                childAdapter.submitList(header.transactions)
             }
         }
     }
 
-    private class TransactionDiffCallback : DiffUtil.ItemCallback<Transaction>() {
-        override fun areItemsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
-            return oldItem.createAt == newItem.createAt
+    private class TransactionListItemDiffCallback : DiffUtil.ItemCallback<TransactionListItem>() {
+        override fun areItemsTheSame(
+            oldItem: TransactionListItem,
+            newItem: TransactionListItem
+        ): Boolean {
+            return when {
+                oldItem is TransactionListItem.DateHeader && newItem is TransactionListItem.DateHeader -> {
+                    oldItem.date == newItem.date
+                }
+
+                oldItem is TransactionListItem.TransactionItem && newItem is TransactionListItem.TransactionItem -> {
+                    oldItem.transaction.id == newItem.transaction.id
+                }
+
+                else -> false
+            }
         }
 
-        override fun areContentsTheSame(oldItem: Transaction, newItem: Transaction): Boolean {
+        override fun areContentsTheSame(
+            oldItem: TransactionListItem,
+            newItem: TransactionListItem
+        ): Boolean {
             return oldItem == newItem
         }
     }

@@ -12,7 +12,7 @@ import presentation.detail.model.ReportItem
 import presentation.detail.model.TabType
 import transaction.model.CategoryType
 import transaction.model.Transaction
-import usecase.GetTransactionsByDateRangeUseCase
+import transaction.usecase.GetTransactionsByDateRangeUseCase
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -148,8 +148,7 @@ class ChartTabViewModel @Inject constructor(
                 timeInMillis = transaction.createAt
             }
             val month = cal.get(Calendar.MONTH)
-            val quarter = (month / 3) + 1
-            val quarterRoman = when (quarter) {
+            val quarterRoman = when (val quarter = (month / 3) + 1) {
                 1 -> "I"
                 2 -> "II"
                 3 -> "III"

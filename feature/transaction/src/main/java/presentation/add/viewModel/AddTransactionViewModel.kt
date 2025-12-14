@@ -23,13 +23,13 @@ import transaction.repository.TransactionImageRepository
 import transaction.usecase.AddEventUseCase
 import transaction.usecase.AddLocationUseCase
 import transaction.usecase.AddPayeeUseCase
+import transaction.usecase.DeleteTransactionImagesUseCase
 import transaction.usecase.GetCategoriesUseCase
 import transaction.usecase.GetEventByIdUseCase
 import transaction.usecase.GetLocationByIdUseCase
 import transaction.usecase.GetPayeeByIdUseCase
-import transaction.usecase.SaveTransactionImageUseCase
-import transaction.usecase.DeleteTransactionImagesUseCase
 import transaction.usecase.GetTransactionByIdUseCase
+import transaction.usecase.SaveTransactionImageUseCase
 import usecase.AddTransactionUseCase
 import usecase.UpdateTransactionUseCase
 import javax.inject.Inject
@@ -465,18 +465,18 @@ class AddTransactionViewModel @Inject constructor(
                     _selectedAccount.value = transaction.account
                     _selectedEvent.value = transaction.event
                     _selectedLocation.value = transaction.location
-                    
+
                     // Load payees
                     val payees = transaction.payeeIds.mapNotNull { payeeId ->
                         getPayeeByIdUseCase(payeeId)
                     }
                     _selectedPayees.value = payees
-                    
+
                     // Load image if exists
                     transaction.images?.let { image ->
                         _transactionImage.value = image
                     }
-                    
+
                     _transactionLoaded.value = transaction
                     setSuccess(transactionId)
                 } else {

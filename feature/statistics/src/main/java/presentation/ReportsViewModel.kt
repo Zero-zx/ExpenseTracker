@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import transaction.model.CategoryType
 import transaction.model.Transaction
-import usecase.GetTransactionsByDateRangeUseCase
+import transaction.usecase.GetTransactionsByDateRangeUseCase
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -30,14 +30,14 @@ class ReportsViewModel @Inject constructor(
 
     private fun loadTransactions() {
         setLoading()
-        
+
         // Calculate date range for last 5 months
         val calendar = Calendar.getInstance()
         val endDate = calendar.timeInMillis
-        
+
         calendar.add(Calendar.MONTH, -MONTHS_TO_SHOW)
         val startDate = calendar.timeInMillis
-        
+
         getTransactionsByDateRangeUseCase(ACCOUNT_ID, startDate, endDate)
             .onEach { transactions ->
                 val chartData = processTransactions(transactions)
@@ -68,11 +68,11 @@ class ReportsViewModel @Inject constructor(
                 timeInMillis = transaction.createAt
             }
             val monthKey = getMonthKey(transactionCalendar)
-            
+
             // Only process transactions from last 5 months
             if (monthlyDataMap.containsKey(monthKey)) {
                 val (currentIncome, currentExpense) = monthlyDataMap[monthKey] ?: Pair(0.0, 0.0)
-                
+
                 when (transaction.category.type) {
                     CategoryType.INCOME, CategoryType.LEND -> {
                         // Income: IN and LEND
@@ -81,6 +81,7 @@ class ReportsViewModel @Inject constructor(
                             currentExpense
                         )
                     }
+
                     CategoryType.EXPENSE, CategoryType.BORROWING -> {
                         // Expense: OUT and LOAN
                         monthlyDataMap[monthKey] = Pair(
@@ -88,6 +89,7 @@ class ReportsViewModel @Inject constructor(
                             currentExpense + transaction.amount
                         )
                     }
+
                     else -> {}
                 }
             }
