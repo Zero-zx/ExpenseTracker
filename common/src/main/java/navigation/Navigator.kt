@@ -17,4 +17,5 @@ interface Navigator {
     fun navigateToAddParticipants()
     fun navigateToIncomeExpenseDetail()
     fun navigateToEditTransaction(transactionId: Long)
+    fun navigateToDataSetting()
 }

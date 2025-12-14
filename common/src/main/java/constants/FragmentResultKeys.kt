@@ -9,6 +9,7 @@ object FragmentResultKeys {
     const val REQUEST_SELECT_EVENT_ID = "request_select_event_id"
     const val REQUEST_SELECT_PAYEE_IDS = "request_select_payee_ids"
     const val REQUEST_SELECT_LOCATION_ID = "request_select_location_id"
+    const val REQUEST_DATA_SETTING = "request_data_setting"
 
     // Result keys
     const val RESULT_ID = "result_id"
@@ -20,4 +21,7 @@ object FragmentResultKeys {
     const val RESULT_EVENT_ID = "result_event_id"
     const val RESULT_PAYEE_IDS = "result_payee_ids"
     const val RESULT_LOCATION_ID = "result_location_id"
+    const val RESULT_START_DATE = "result_start_date"
+    const val RESULT_END_DATE = "result_end_date"
+    const val RESULT_PERIOD_LABEL = "result_period_label"
 }

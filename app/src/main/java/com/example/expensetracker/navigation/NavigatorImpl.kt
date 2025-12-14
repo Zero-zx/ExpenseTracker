@@ -29,7 +29,6 @@ class NavigatorImpl @Inject constructor() : Navigator {
         navController?.navigateWithAnim(R.id.transaction_nav_graph)
     }
 
-
     override fun navigateToTransaction() {
         navController?.navigateWithAnim(R.id.transactionListFragment)
     }
@@ -95,5 +94,9 @@ class NavigatorImpl @Inject constructor() : Navigator {
             R.id.transactionAddFragment,
             bundleOf("transaction_id" to transactionId)
         )
+    }
+
+    override fun navigateToDataSetting() {
+        navController?.navigateWithAnim(R.id.dataSettingFragment)
     }
 }

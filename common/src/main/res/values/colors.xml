@@ -6,6 +6,7 @@
     <color name="app_background">#D1EBFA</color>
     <color name="mav_bar_background">#FFFFFF</color>
     <color name="blue_bg">#098FD3</color>
+    <color name="gray_bg">#FAFAFA</color>
     <color name="blue_category_bg">#DCECFB</color>
     <color name="blue_fab_icon">#E0F3FE</color>
     <color name="blue_spinner">#0992D4</color>
@@ -20,6 +21,11 @@
     <color name="black_chevron">#4B5563</color>
     <color name="blue_fab">#E0F3FE</color>
     <color name="blue_item_bg">#F0F9FF</color>
+    <color name="blue_primary">#098FD3</color>
+    <color name="green_income">#10B981</color>
+    <color name="red_expense">#EF4444</color>
+    <color name="divider_color">#E5E7EB</color>
+    <color name="text_secondary">#6B7280</color>
 
     <!--    material 3 colors -->
     <color name="my_app_background">#D1EBFA</color>

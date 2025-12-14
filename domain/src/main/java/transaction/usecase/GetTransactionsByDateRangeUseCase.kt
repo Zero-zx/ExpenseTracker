@@ -1,4 +1,4 @@
-package usecase
+package transaction.usecase
 
 import kotlinx.coroutines.flow.Flow
 import transaction.model.Transaction
