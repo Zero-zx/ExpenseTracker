@@ -7,6 +7,7 @@ import transaction.model.Transaction
 import transaction.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import mapper.toDomain
 import mapper.toEntity
 import javax.inject.Inject
@@ -17,7 +18,18 @@ internal class TransactionRepositoryImpl @Inject constructor(
 ) : TransactionRepository {
     override fun getAllTransactionByAccount(accountId: Long): Flow<List<Transaction>> {
         return transactionDao.getAccountWithTransactions(accountId)
-            .map { list -> list.map { it.toDomain() } }
+            .mapLatest { list ->
+                if (list.isEmpty()) return@mapLatest emptyList()
+                val transactionIds = list.map { it.transactionEntity.id }
+                val payeeMap = transactionPayeeDao.getPayeeIdsByTransactions(transactionIds)
+                    .groupBy { it.transactionId }
+                    .mapValues { (_, entities) -> entities.map { it.payeeId } }
+                
+                list.map { transactionWithDetails ->
+                    val payeeIds = payeeMap[transactionWithDetails.transactionEntity.id] ?: emptyList()
+                    transactionWithDetails.toDomain(payeeIds)
+                }
+            }
     }
 
     override suspend fun insertTransaction(transaction: Transaction): Long {
@@ -39,7 +51,9 @@ internal class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTransactionById(transactionId: Long): Transaction? {
-        return transactionDao.getTransactionById(transactionId)?.toDomain()
+        val transactionWithDetails = transactionDao.getTransactionById(transactionId) ?: return null
+        val payeeIds = transactionPayeeDao.getPayeeIdsByTransaction(transactionId)
+        return transactionWithDetails.toDomain(payeeIds)
     }
 
     override suspend fun updateTransaction(transaction: Transaction) {
@@ -69,8 +83,17 @@ internal class TransactionRepositoryImpl @Inject constructor(
         endDate: Long
     ): Flow<List<Transaction>> {
         return transactionDao.getTransactionsByDateRange(accountId, startDate, endDate)
-            .map { list ->
-                list.map { it.toDomain() }
+            .mapLatest { list ->
+                if (list.isEmpty()) return@mapLatest emptyList()
+                val transactionIds = list.map { it.transactionEntity.id }
+                val payeeMap = transactionPayeeDao.getPayeeIdsByTransactions(transactionIds)
+                    .groupBy { it.transactionId }
+                    .mapValues { (_, entities) -> entities.map { it.payeeId } }
+                
+                list.map { transactionWithDetails ->
+                    val payeeIds = payeeMap[transactionWithDetails.transactionEntity.id] ?: emptyList()
+                    transactionWithDetails.toDomain(payeeIds)
+                }
             }
     }
 }

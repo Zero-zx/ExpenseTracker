@@ -25,6 +25,10 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
         binding.constraintLayoutIncomeAndOutcome.setOnClickListener {
             viewModel.navigateToIncomeExpenseDetail()
         }
+        
+        binding.constraintLayoutCurrentFinance.setOnClickListener {
+            viewModel.navigateToReportDetailContainer()
+        }
     }
 
     override fun observeData() {

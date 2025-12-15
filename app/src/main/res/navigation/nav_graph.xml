@@ -5,6 +5,7 @@
     app:startDestination="@id/homeFragment">
 
     <include app:graph="@navigation/transaction_nav_graph" />
+    <include app:graph="@navigation/statistics_nav_graph" />
 
     <fragment
         android:id="@+id/homeFragment"
@@ -25,20 +26,6 @@
     <fragment
         android:id="@+id/addAccountFragment"
         android:name="add.AddAccountFragment" />
-
-    <fragment
-        android:id="@+id/ReportsFragment"
-        android:name="presentation.ReportsFragment"
-        android:label="Statistics">
-        <action
-            android:id="@+id/action_statisticsFragment_to_incomeExpenseDetailFragment"
-            app:destination="@id/incomeExpenseDetailFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/incomeExpenseDetailFragment"
-        android:name="presentation.detail.IncomeExpenseDetailFragment"
-        android:label="Income vs Expense Detail" />
 
     <fragment
         android:id="@+id/eventListFragment"

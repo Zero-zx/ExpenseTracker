@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Tabs: Date, Month, Year -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_background"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/blue_bg"
+            app:tabIndicatorFullWidth="true"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/blue_bg" />
+
+        <!-- Date Range Filter -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_date_range"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/icon_date_range"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_v2_calendar"
+                android:tint="@color/gray_big_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_view_date_range"
+                style="@style/TextAppearance.App.Normal.Black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="01/2025 - 12/2025"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/icon_date_range"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Expense Category Filter -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_category_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/icon_category"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/v2_ic_outcome_analysic_report"
+                android:tint="@color/gray_big_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/icon_arrow_category"
+                app:layout_constraintStart_toEndOf="@id/icon_category"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    style="@style/TextAppearance.App.Small.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Expense category" />
+
+                <TextView
+                    android:id="@+id/text_view_category"
+                    style="@style/TextAppearance.App.Normal.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All expense categories" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/icon_arrow_category"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_next_double"
+                android:tint="@color/gray_big_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Accounts Filter -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_account_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/icon_account"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_wallet"
+                android:tint="@color/gray_big_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/icon_arrow_account"
+                app:layout_constraintStart_toEndOf="@id/icon_account"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    style="@style/TextAppearance.App.Small.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tài khoản" />
+
+                <TextView
+                    android:id="@+id/text_view_account"
+                    style="@style/TextAppearance.App.Normal.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All accounts" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/icon_arrow_account"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_next_double"
+                android:tint="@color/gray_big_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Chart Section -->
+        <TextView
+            android:id="@+id/text_view_chart_unit"
+            style="@style/TextAppearance.App.Small.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="(Unit: Million)" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:padding="16dp" />
+
+        <!-- Summary Section -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_background"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/label_total_expense"
+                style="@style/TextAppearance.App.Normal.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total expense"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_view_total_expense"
+                style="@style/TextAppearance.App.Normal.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1,064,644 ₫"
+                android:textColor="@color/red_expense"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/label_average_expense"
+                style="@style/TextAppearance.App.Normal.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Average spending/month"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/label_total_expense" />
+
+            <TextView
+                android:id="@+id/text_view_average_expense"
+                style="@style/TextAppearance.App.Normal.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="532,322 ₫"
+                android:textColor="@color/red_expense"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_total_expense" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Monthly Breakdown List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_monthly_breakdown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:nestedScrollingEnabled="false" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
+

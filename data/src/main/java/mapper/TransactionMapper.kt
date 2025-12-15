@@ -19,7 +19,7 @@ internal fun Transaction.toEntity(): TransactionEntity {
     )
 }
 
-internal fun TransactionWithDetails.toDomain(): Transaction {
+internal fun TransactionWithDetails.toDomain(payeeIds: List<Long> = emptyList()): Transaction {
     return Transaction(
         id = transactionEntity.id,
         description = transactionEntity.description,
@@ -29,6 +29,7 @@ internal fun TransactionWithDetails.toDomain(): Transaction {
         event = eventEntity?.toDomain(),
         partnerId = 1,
         createAt = transactionEntity.createAt,
-        location = locationEntity?.toDomain()
+        location = locationEntity?.toDomain(),
+        payeeIds = payeeIds
     )
 }

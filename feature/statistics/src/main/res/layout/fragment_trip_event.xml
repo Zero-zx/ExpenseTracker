@@ -3,26 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_background"
-    android:paddingTop="@dimen/dimen_padding_top">
+    android:background="@color/app_background">
 
+    <!-- Search Button (top right) -->
+    <ImageButton
+        android:id="@+id/button_search"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/icon_search"
+        android:tint="@color/gray_big_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Tabs: In progress, In Completed -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:background="@color/app_background"
-        app:layout_constraintTop_toTopOf="parent"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/blue_bg"
         app:tabIndicatorFullWidth="true"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/blue_bg" />
 
+    <!-- Content Container -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
