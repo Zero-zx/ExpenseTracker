@@ -89,6 +89,13 @@ class NavigatorImpl @Inject constructor() : Navigator {
         navController?.navigateWithAnim(R.id.incomeExpenseDetailFragment)
     }
 
+    override fun navigateToReportDetailContainer(reportType: String) {
+        navController?.navigateWithAnim(
+            R.id.reportDetailContainerFragment,
+            bundleOf("report_type" to reportType)
+        )
+    }
+
     override fun navigateToEditTransaction(transactionId: Long) {
         navController?.navigateWithAnim(
             R.id.transactionAddFragment,

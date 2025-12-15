@@ -149,5 +149,9 @@ class ReportsViewModel @Inject constructor(
     fun navigateToIncomeExpenseDetail() {
         navigator.navigateToIncomeExpenseDetail()
     }
+
+    fun navigateToReportDetailContainer() {
+        navigator.navigateToReportDetailContainer("FINANCIAL_STATEMENT")
+    }
 }
 

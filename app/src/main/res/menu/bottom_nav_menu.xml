@@ -13,7 +13,7 @@
         android:icon="@drawable/ic_v2_add_transaction"
         android:title="Transaction" />
     <item
-        android:id="@+id/ReportsFragment"
+        android:id="@+id/statistics_nav_graph"
         android:icon="@drawable/ic_exclude_report"
         android:title="Report" />
     <item

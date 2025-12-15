@@ -16,6 +16,7 @@ interface Navigator {
     fun navigateToAddEvent()
     fun navigateToAddParticipants()
     fun navigateToIncomeExpenseDetail()
+    fun navigateToReportDetailContainer(reportType: String = "FINANCIAL_STATEMENT")
     fun navigateToEditTransaction(transactionId: Long)
     fun navigateToDataSetting()
 }
