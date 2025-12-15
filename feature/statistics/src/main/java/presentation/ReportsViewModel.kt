@@ -62,6 +62,10 @@ class ReportsViewModel @Inject constructor(
             monthlyDataMap[monthKey] = Pair(0.0, 0.0)
         }
 
+        // Variables to track total income and expense
+        var totalIncome = 0.0
+        var totalExpense = 0.0
+
         // Process transactions
         transactions.forEach { transaction ->
             val transactionCalendar = Calendar.getInstance().apply {
@@ -69,7 +73,18 @@ class ReportsViewModel @Inject constructor(
             }
             val monthKey = getMonthKey(transactionCalendar)
 
-            // Only process transactions from last 5 months
+            // Calculate totals regardless of month (for all transactions in range)
+            when (transaction.category.type) {
+                CategoryType.INCOME, CategoryType.LEND -> {
+                    totalIncome += transaction.amount
+                }
+                CategoryType.EXPENSE, CategoryType.BORROWING -> {
+                    totalExpense += transaction.amount
+                }
+                else -> {}
+            }
+
+            // Only process transactions from last 5 months for chart
             if (monthlyDataMap.containsKey(monthKey)) {
                 val (currentIncome, currentExpense) = monthlyDataMap[monthKey] ?: Pair(0.0, 0.0)
 
@@ -107,7 +122,11 @@ class ReportsViewModel @Inject constructor(
                 )
             }
 
-        return IncomeExpenseChartData(monthlyData)
+        return IncomeExpenseChartData(
+            monthlyData = monthlyData,
+            totalIncome = totalIncome,
+            totalExpense = totalExpense
+        )
     }
 
     private fun getMonthKey(calendar: Calendar): String {

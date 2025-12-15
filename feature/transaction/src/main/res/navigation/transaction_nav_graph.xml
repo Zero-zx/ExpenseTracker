@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/transactionAddFragment"
-        android:name="presentation.add.ui.TransactionAddFragment" />
+        android:name="presentation.add.ui.AddTransactionFragment" />
     <fragment
         android:id="@+id/categorySelectFragment"
         android:name="presentation.add.ui.CategorySelectFragment" />

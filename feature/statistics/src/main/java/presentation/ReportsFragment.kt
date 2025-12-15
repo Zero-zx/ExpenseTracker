@@ -11,12 +11,15 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.NumberFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class ReportsFragment : BaseFragment<FragmentReportsBinding>(
     FragmentReportsBinding::inflate
 ) {
     private val viewModel: ReportsViewModel by viewModels()
+    private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
 
     override fun initListener() {
         binding.constraintLayoutIncomeAndOutcome.setOnClickListener {
@@ -34,12 +37,26 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
                     // Show loading if needed
                 }
                 is UIState.Success -> {
+                    updateFinancialSummary(state.data)
                     setupBarChart(state.data)
                 }
                 is UIState.Error -> {
                     // Handle error if needed
                 }
             }
+        }
+    }
+
+    private fun updateFinancialSummary(chartData: IncomeExpenseChartData) {
+        binding.apply {
+            // Update total income
+            textViewTotalIncome.text = currencyFormatter.format(chartData.totalIncome)
+
+            // Update total expense
+            textViewTotalOutcome.text = currencyFormatter.format(chartData.totalExpense)
+
+            // Update balance (income - expense)
+            textViewBalance.text = currencyFormatter.format(chartData.balance)
         }
     }
 

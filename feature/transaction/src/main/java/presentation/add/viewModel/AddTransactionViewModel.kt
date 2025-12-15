@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import navigation.Navigator
 import transaction.model.Category
+import transaction.model.CategoryType
 import transaction.model.Event
 import transaction.model.Location
 import transaction.model.PayeeTransaction
@@ -24,7 +25,8 @@ import transaction.usecase.AddEventUseCase
 import transaction.usecase.AddLocationUseCase
 import transaction.usecase.AddPayeeUseCase
 import transaction.usecase.DeleteTransactionImagesUseCase
-import transaction.usecase.GetCategoriesUseCase
+import transaction.usecase.GetCategoriesByTypeUseCase
+import transaction.usecase.GetCategoryByIdUseCase
 import transaction.usecase.GetEventByIdUseCase
 import transaction.usecase.GetLocationByIdUseCase
 import transaction.usecase.GetPayeeByIdUseCase
@@ -40,7 +42,8 @@ class AddTransactionViewModel @Inject constructor(
     private val addTransactionUseCase: AddTransactionUseCase,
     private val updateTransactionUseCase: UpdateTransactionUseCase,
     private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
-    private val getCategoriesUseCase: GetCategoriesUseCase,
+    private val getCategoriesByTypeUseCase: GetCategoriesByTypeUseCase,
+    private val getCategoryById: GetCategoryByIdUseCase,
     private val getAccountByIdUseCase: GetAccountByIdUseCase,
     private val getAccountsUseCase: GetAccountsUseCase,
     private val getEventByIdUseCase: GetEventByIdUseCase,
@@ -92,13 +95,13 @@ class AddTransactionViewModel @Inject constructor(
     val temporaryLocations = _temporaryLocations.asStateFlow()
 
     init {
-        loadCategories()
+        loadCategoriesByType(CategoryType.EXPENSE)
         loadDefaultAccount()
     }
 
-    fun loadCategories() {
+    fun loadCategoriesByType(type: CategoryType) {
         viewModelScope.launch {
-            getCategoriesUseCase()
+            getCategoriesByTypeUseCase(type)
                 .onStart { _categoryState.value = UIState.Loading }
                 .catch { exception ->
                     _categoryState.value = UIState.Error(
@@ -226,13 +229,23 @@ class AddTransactionViewModel @Inject constructor(
 
     fun selectCategory(category: Category) {
         _selectedCategory.value = category
+        // Load categories of the same type if different from current
+        if (_categoryState.value is UIState.Success) {
+            val currentCategories = (_categoryState.value as UIState.Success).data
+            if (currentCategories.firstOrNull()?.type != category.type) {
+                loadCategoriesByType(category.type)
+            }
+        }
     }
 
     fun selectCategoryById(categoryId: Long) {
-        val currentState = categoryState.value
-        if (currentState is UIState.Success) {
-            currentState.data.find { it.id == categoryId }?.let { category ->
-                _selectedCategory.value = category
+        viewModelScope.launch {
+            try {
+                val category = getCategoryById(categoryId)
+                if (category != null) {
+                    _selectedCategory.value = category
+                }
+            } catch (e: Exception) {
             }
         }
     }

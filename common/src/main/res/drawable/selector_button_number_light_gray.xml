@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt">
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="@color/color_number_press"/>
+            <stroke android:width="@dimen/width_stroke_number_keyboard" android:color="@color/color_number_separator"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@color/color_number_light_gray"/>
+            <stroke android:width="@dimen/width_stroke_number_keyboard" android:color="@color/color_number_separator"/>
+        </shape>
+    </item>
+</selector>

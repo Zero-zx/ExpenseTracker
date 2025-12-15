@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:clickable="false"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/lnSuggesstion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/color_fill_gray"
+        android:clickable="false"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingTop="6dp"
+                android:paddingRight="@dimen/margin_normal"
+                android:paddingBottom="6dp">
+
+                <LinearLayout
+                    android:id="@+id/lnTemplate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginRight="@dimen/margin_medium_normal"
+                    android:background="@drawable/selector_gray_radius_v2"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/padding_medium"
+                    android:paddingTop="4dp"
+                    android:paddingRight="@dimen/padding_medium"
+                    android:paddingBottom="4dp">
+
+                    <ImageView
+                        android:id="@+id/ivTemplate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/empty_description"
+                        android:src="@drawable/ic_transaction_template" />
+
+                    <TextView
+                        android:id="@+id/tvChooseTemplate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginLeft="3dp"
+                        android:text="@string/template_recording"
+                        android:textColor="@color/text_color_gray"
+                        android:textSize="@dimen/text_size_s" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnScanBill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginRight="@dimen/margin_medium_normal"
+                    android:background="@drawable/selector_gray_radius_v2"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/padding_medium"
+                    android:paddingTop="4dp"
+                    android:paddingRight="@dimen/padding_medium"
+                    android:paddingBottom="4dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/ivScanBill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/empty_description"
+                        android:src="@drawable/ic_scan_bill_v2" />
+
+                    <TextView
+                        android:id="@+id/tvScanBill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginLeft="3dp"
+                        android:text="@string/scan_bill"
+                        android:textColor="@color/text_color_gray"
+                        android:textSize="@dimen/text_size_s" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnScanMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginRight="@dimen/margin_medium_normal"
+                    android:background="@drawable/selector_gray_radius_v2"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/padding_medium"
+                    android:paddingTop="4dp"
+                    android:paddingRight="@dimen/padding_medium"
+                    android:paddingBottom="4dp">
+
+                    <ImageView
+                        android:id="@+id/ivScanMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/empty_description"
+                        android:src="@drawable/ic_scan_message" />
+
+                    <TextView
+                        android:id="@+id/tvScanMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginLeft="3dp"
+                        android:text="@string/scan_message"
+                        android:textColor="@color/text_color_gray"
+                        android:textSize="@dimen/text_size_s" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:id="@+id/lnTemplateTransaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:visibility="visible">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvTemplate"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:layout_gravity="center"
+                    android:paddingTop="@dimen/padding_normal"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/lnEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/lnItemEmpty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/dash_line_round_blue"
+                            android:contentDescription="@string/empty_description"
+                            android:padding="@dimen/margin_medium_normal"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_add_v2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginTop="@dimen/margin_normal"
+                            android:gravity="center"
+                            android:text="@string/add_new_template"
+                            android:textColor="@color/gray_text"
+                            android:textSize="@dimen/font_size_small" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingTop="@dimen/margin_normal"
+                android:paddingBottom="@dimen/margin_normal">
+
+                <ImageView
+                    android:id="@+id/ivEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:contentDescription="@string/empty_description"
+                    android:paddingLeft="@dimen/margin_medium"
+                    android:paddingRight="@dimen/margin_medium"
+                    android:src="@drawable/v2_ic_edit_gray_dark" />
+
+                <TextView
+                    android:id="@+id/tvExpense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_gray_radius"
+                    android:paddingLeft="@dimen/margin_setting_medium"
+                    android:paddingTop="5dp"
+                    android:paddingRight="@dimen/margin_setting_medium"
+                    android:paddingBottom="5dp"
+                    android:text="@string/expense_template"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/text_size_s" />
+
+                <TextView
+                    android:id="@+id/tvIncome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_normal"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:background="@drawable/selector_gray_radius"
+                    android:paddingLeft="@dimen/margin_setting_medium"
+                    android:paddingTop="5dp"
+                    android:paddingRight="@dimen/margin_setting_medium"
+                    android:paddingBottom="5dp"
+                    android:text="@string/income_template"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/text_size_s" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lnKeyboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:weightSum="4">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnKeyC"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selecter_button_number_new_light_gray"
+                    android:gravity="center"
+                    android:text="@string/KeyC"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <Button
+                    android:id="@+id/btnKeyDivide"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selecter_button_number_new_light_gray"
+                    android:gravity="center"
+                    android:text="@string/KeyDivide"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <Button
+                    android:id="@+id/btnKeyMulti"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selecter_button_number_new_light_gray"
+                    android:gravity="center"
+                    android:text="@string/KeyMulti"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey7"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key7"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size"
+                    android:textStyle="normal"
+                    app:strokeColor="@color/gray_text" />
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey8"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key8"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey9"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key9"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey4"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key4"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey5"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key5"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey6"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key6"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey1"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key1"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey2"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key2"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey3"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key3"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey0"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key0"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <ui.CustomButton
+                    android:id="@+id/btnKey000"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/Key000"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <ui.CustomButton
+                    android:id="@+id/btnKeyDot"
+                    style="@style/KeyboardNumberBold"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_button_number_v2"
+                    android:gravity="center"
+                    android:text="@string/KeyDot"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/keyboard_number_min_height"
+                    android:layout_gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/btnKeyBack"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/selecter_button_number_new_light_gray"
+                        android:contentDescription="@string/NoImage" />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_delete" />
+                </FrameLayout>
+
+                <Button
+                    android:id="@+id/btnKeyMinus"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selecter_button_number_new_light_gray"
+                    android:gravity="center"
+                    android:text="@string/KeyMinus"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="30sp" />
+
+                <Button
+                    android:id="@+id/btnKeyAdd"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selecter_button_number_new_light_gray"
+                    android:gravity="center"
+                    android:text="@string/KeyAdd"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size" />
+
+                <Button
+                    android:id="@+id/btnKeyNegative"
+                    style="@style/KeyboardNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selecter_button_number_new_light_gray"
+                    android:gravity="center"
+                    android:text="@string/KeyNegative"
+                    android:textColor="@color/color_text_main"
+                    android:textSize="@dimen/keyboard_number_text_size"
+                    android:visibility="gone" />
+
+                <FrameLayout
+                    android:id="@+id/frHide"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/keyboard_number_min_height"
+                    android:layout_gravity="center"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:id="@+id/btnKeyEqual"
+                        style="@style/KeyboardNumberBold"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/selector_button_save_done" />
+
+                    <ImageView
+                        android:id="@+id/imgMarkEqual"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
+                        android:src="@drawable/hide_keyboard_amount_white"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tvDone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/Done"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_size_medium" />
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

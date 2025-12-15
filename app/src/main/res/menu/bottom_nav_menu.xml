@@ -3,7 +3,7 @@
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home"
-        android:title="Home" />
+        android:title="Dashboard" />
     <item
         android:id="@+id/accountListFragment"
         android:icon="@drawable/ic_wallet"
@@ -13,9 +13,9 @@
         android:icon="@drawable/ic_v2_add_transaction"
         android:title="Transaction" />
     <item
-        android:id="@+id/statisticsFragment"
+        android:id="@+id/ReportsFragment"
         android:icon="@drawable/ic_exclude_report"
-        android:title="Statistics" />
+        android:title="Report" />
     <item
         android:id="@+id/transactionListFragment"
         android:icon="@drawable/ic_more"

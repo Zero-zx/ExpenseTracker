@@ -46,9 +46,12 @@ class ExpandableCategoryAdapter(
         val item = getItem(position)
         when (holder) {
             is ParentCategoryViewHolder -> {
-                holder.bind(item.category, expandedParentIds.contains(item.category.id)) {
-                    toggleExpansion(item.category.id)
-                }
+                holder.bind(
+                    category = item.category,
+                    isExpanded = expandedParentIds.contains(item.category.id),
+                    onToggle = { toggleExpansion(item.category.id) },
+                    hasChildren = item.hasChildren
+                )
             }
 
             is ChildCategoryViewHolder -> {
@@ -84,10 +87,19 @@ class ExpandableCategoryAdapter(
         val result = mutableListOf<CategoryItem>()
 
         parentCategories.forEach { parent ->
-            result.add(CategoryItem(parent, isParent = true))
             val childCategories = categories.filter { it.parentId == parent.id }
-            childCategories.forEach { child ->
-                result.add(CategoryItem(child, isParent = false))
+            result.add(
+                CategoryItem(
+                    parent,
+                    isParent = true,
+                    hasChildren = childCategories.isNotEmpty()
+                )
+            )
+
+            if (expandedParentIds.contains(parent.id)) {
+                childCategories.forEach { child ->
+                    result.add(CategoryItem(child, isParent = false, hasChildren = false))
+                }
             }
         }
 
@@ -120,7 +132,12 @@ class ExpandableCategoryAdapter(
             }
         }
 
-        fun bind(category: Category, isExpanded: Boolean, onToggle: () -> Unit) {
+        fun bind(
+            category: Category,
+            isExpanded: Boolean,
+            onToggle: () -> Unit,
+            hasChildren: Boolean
+        ) {
             binding.apply {
                 // Set icon
                 imageIcon.setImageResource(category.iconRes)
@@ -128,10 +145,21 @@ class ExpandableCategoryAdapter(
                 // Set category name
                 textViewCategoryName.text = category.title.standardize()
 
-                // Set chevron rotation
-                iconChevron.setOnClickListener {
-                    onToggle()
-                    it.rotation = if (isExpanded) 180f else 0f
+                // Show/hide chevron based on whether category has children
+                if (hasChildren) {
+                    iconChevron.visibility = android.view.View.VISIBLE
+                    iconChevron.rotation = if (isExpanded) 90f else 0f
+                    iconChevron.setOnClickListener {
+                        // Toggle rotation animation
+                        val targetRotation = if (iconChevron.rotation == 0f) 90f else 0f
+                        iconChevron.animate()
+                            .rotation(targetRotation)
+                            .setDuration(200)
+                            .start()
+                        onToggle()
+                    }
+                } else {
+                    iconChevron.visibility = android.view.View.INVISIBLE
                 }
 
 
@@ -164,6 +192,7 @@ class ExpandableCategoryAdapter(
             binding.apply {
                 imageIcon.setImageResource(category.iconRes)
                 textViewCategoryName.text = category.title.standardize()
+
             }
         }
     }
@@ -181,7 +210,8 @@ class ExpandableCategoryAdapter(
 
     data class CategoryItem(
         val category: Category,
-        val isParent: Boolean
+        val isParent: Boolean,
+        val hasChildren: Boolean = false
     )
 
     companion object {

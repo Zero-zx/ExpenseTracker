@@ -80,9 +80,15 @@ enum class CategoryIcon(
     DOMESTIC(R.drawable.chi_14_my_pham, "chi_14_my_pham", "domestic", 9),
 
     // Bank
-    TRANSFER_FEE(R.drawable.chi_phi_chuyen_khoan, "chi_phi_chuyen_khoan", "transfer fee", 10);
+    TRANSFER_FEE(R.drawable.chi_phi_chuyen_khoan, "chi_phi_chuyen_khoan", "transfer fee", 10),
 
     // Income
+    SALARY(R.drawable.thu_luong, "thu_luong", "salary"),
+    BONUS(R.drawable.thu_thuong, "thu_thuong", "bonus"),
+    INTEREST(R.drawable.thu_tien_lai, "thu_tien_lai", "interest"),
+    OTHER(R.drawable.thu_khac, "thu_khac", "other"),
+    SAVING_INTEREST(R.drawable.thu_lai_tiet_kiem, "thu_lai_tiet_kiem", "saving interest"),
+    INCOME(R.drawable.thu_tien_vao, "thu_tien_vao", "income");
 
     companion object {
         fun fromName(name: String): CategoryIcon {

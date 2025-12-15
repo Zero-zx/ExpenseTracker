@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:elevation="1dp"
+        android:elevation="8dp"
         android:theme="@style/Theme.MaterialComponents.DayNight"
         app:itemIconTint="@color/navigation_item_color"
         app:itemTextColor="@color/navigation_item_color"
@@ -35,5 +35,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
+    <!-- Calculator View - Acts like a bottom sheet -->
+    <ui.CalculatorView
+        android:id="@+id/calculator_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:elevation="16dp"
+        android:focusable="true"
+        android:paddingBottom="16dp"
+        android:translationZ="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

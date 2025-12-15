@@ -26,8 +26,25 @@
     <string name="Key9">9</string>
     <string name="Key0">0</string>
     <string name="Key000">000</string>
-    <string name="KeyDot">.</string>
+    <string name="KeyDot">,</string>
     <string name="save_transaction">Save transaction</string>
     <string name="widget_setting_guid">Setting guide</string>
-    <string name="KeyC">C</string>
+    <string name="KeyC">AC</string>
+    <string name="empty_description">Description must not be empty</string>
+    <string name="template_recording">Template record</string>
+    <string name="scan_bill">Scan bill</string>
+    <string name="scan_message">Message scanning</string>
+    <string name="add_new_template">Create a template to input data faster</string>
+    <string name="expense_template">Expense template</string>
+    <string name="income_template">Income template</string>
+    <string name="KeyDivide">÷</string>
+    <string name="KeyMulti">x</string>
+    <string name="KeyMinus">-</string>
+    <string name="KeyAdd">+</string>
+    <string name="NoImage">No image</string>
+    <string name="KeyNegative">±</string>
+    <string name="KeyEqual">=</string>
+    <string name="Done">Done</string>
+    <string name="text_0">0</string>
+    <string name="text_vnd">đ</string>
 </resources>

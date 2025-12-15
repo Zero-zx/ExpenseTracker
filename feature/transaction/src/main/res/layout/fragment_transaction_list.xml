@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_bg">
+    android:background="@color/white_bg">
 
     <!-- Top Bar -->
     <androidx.appcompat.widget.Toolbar
@@ -13,10 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:elevation="4dp"
-        android:paddingStart="16dp"
         android:paddingTop="@dimen/dimen_padding_top"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,7 +31,8 @@
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Back"
-                android:src="@drawable/icon_back" />
+                android:src="@drawable/icon_back"
+                app:tint="@color/black_chevron" />
 
             <!-- Title -->
             <TextView
@@ -56,7 +54,8 @@
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Search"
-                android:src="@drawable/ic_search_black_24" />
+                android:src="@drawable/icon_search"
+                app:tint="@color/black_chevron" />
 
             <!-- Menu Icon -->
             <ImageButton
@@ -66,7 +65,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Menu"
                 android:rotation="90"
-                android:src="@drawable/icon_other" />
+                android:src="@drawable/icon_other"
+                app:tint="@color/black_chevron" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -93,7 +93,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingStart="12dp"
-            android:paddingTop="@dimen/dimen_padding_top"
+            android:paddingTop="16dp"
             android:paddingBottom="16dp">
 
             <TextView
@@ -106,9 +106,8 @@
                 tools:text="This month" />
 
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="8dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/icon_chevron"
                 app:tint="@color/blue_bg" />
         </LinearLayout>

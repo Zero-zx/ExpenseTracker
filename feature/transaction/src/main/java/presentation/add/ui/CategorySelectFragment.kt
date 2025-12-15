@@ -1,15 +1,11 @@
 package presentation.add.ui
 
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.TabConfig
-import base.UIState
 import base.setupWithTabs
 import com.example.transaction.databinding.FragmentCategorySelectBinding
 import dagger.hilt.android.AndroidEntryPoint
-import presentation.add.adapter.ExpandableCategoryAdapter
-import presentation.add.viewModel.CategorySelectViewModel
+import transaction.model.CategoryType
 import ui.navigateBack
 import ui.setCategoryIdSelectionResult
 
@@ -17,52 +13,48 @@ import ui.setCategoryIdSelectionResult
 class CategorySelectFragment : BaseFragment<FragmentCategorySelectBinding>(
     FragmentCategorySelectBinding::inflate
 ) {
-    // Use own ViewModel for category data instead of shared ViewModel
-    private val viewModel: CategorySelectViewModel by viewModels()
+    private var selectedCategoryId: Long? = null
 
-    private val adapter = ExpandableCategoryAdapter(
-        onCategoryClick = { category ->
-            // Set the result using the simplified extension function (ID only)
-            setCategoryIdSelectionResult(category.id)
-            // Navigate back using NavController directly
-            navigateBack()
-        }
-    )
+    fun getSelectedCategoryId(): Long? = selectedCategoryId
 
     override fun initView() {
-        binding.toolbar.setNavigationOnClickListener {
-            navigateBack()
+        // Get initially selected category ID from arguments
+        arguments?.getLong("selected_category_id", -1L)?.takeIf { it != -1L }?.let {
+            selectedCategoryId = it
         }
 
-        binding.recyclerViewCategories.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@CategorySelectFragment.adapter
+        setupViewPager()
+    }
+
+    override fun initListener() {
+        binding.buttonBack.setOnClickListener {
+            navigateBack()
         }
+    }
+
+    fun onCategorySelected(categoryId: Long) {
+        selectedCategoryId = categoryId
+        onConfirmSelection()
+    }
+
+    private fun onConfirmSelection() {
+        selectedCategoryId?.let { categoryId ->
+            setCategoryIdSelectionResult(categoryId)
+            navigateBack()
+        }
+    }
+
+    private fun setupViewPager() {
+        val tabs = listOf(
+            TabConfig("Expense") { CategoryTabFragment.newInstance(CategoryType.EXPENSE) },
+            TabConfig("Income") { CategoryTabFragment.newInstance(CategoryType.INCOME) },
+            TabConfig("Lent/Borrowed") { CategoryTabFragment.newInstance(CategoryType.LEND) }
+        )
+
         binding.viewPager.setupWithTabs(
             tabLayout = binding.tabLayout,
             fragment = this,
-            tabs = listOf(
-                TabConfig("Expense", { AccountSelectFragment() }),
-                TabConfig("Income", { EventSelectFragment() }),
-                TabConfig("Lent/Borrowed", { LocationSelectFragment() })
-            )
+            tabs = tabs
         )
-    }
-
-    override fun observeData() {
-        collectFlow(viewModel.uiState) { state ->
-            when (state) {
-                is UIState.Loading -> {
-                    // show loading if needed
-                }
-
-                is UIState.Success -> adapter.submitCategories(state.data)
-                is UIState.Error -> {
-                    // handle error if needed
-                }
-
-                else -> {}
-            }
-        }
     }
 }

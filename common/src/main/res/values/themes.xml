@@ -141,4 +141,24 @@
         <item name="backgroundTint">@color/white</item>
     </style>
 
+    <style name="KeyboardNumber">
+        <item name="android:theme">@style/Platform.MaterialComponents.Light</item>
+        <item name="android:textSize">@dimen/keyboard_number_text_size</item>
+        <item name="android:textColor">@color/color_text_main</item>
+        <item name="android:background">@drawable/selector_button_number_light_gray</item>
+        <item name="android:height">@dimen/keyboard_number_min_height</item>
+    </style>
+
+    <style name="KeyboardNumberBold">
+        <item name="android:theme">@style/Platform.MaterialComponents.Light</item>
+        <item name="android:textSize">@dimen/keyboard_number_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/color_text_main</item>
+        <item name="android:background">@drawable/selector_button_number_light_gray</item>
+        <item name="android:height">@dimen/keyboard_number_min_height</item>
+    </style>
+
+
+    <dimen name="keyboard_number_text_size">20sp</dimen>
+    <dimen name="keyboard_number_min_height">45dp</dimen>
 </resources>
