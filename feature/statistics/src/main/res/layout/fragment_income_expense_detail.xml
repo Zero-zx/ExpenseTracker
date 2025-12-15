@@ -3,16 +3,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_background"
     android:paddingTop="@dimen/dimen_padding_top">
+
+    <ImageButton
+        android:id="@+id/button_list_transaction"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/ripple_image_button"
+        android:scaleType="fitXY"
+        android:src="@drawable/icon_history"
+        android:tint="@color/gray_big_icon"
+        app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dropdown_menu_transaction"
+        style="@style/Widget.App.ExposedDropdownMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:padding="0dp"
+        app:layout_constraintEnd_toStartOf="@+id/button_submit"
+        app:layout_constraintStart_toEndOf="@id/button_list_transaction"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <AutoCompleteTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/blue_outline_rounded_background"
+            android:gravity="center"
+            android:inputType="none"
+            android:paddingVertical="0dp"
+            android:textAlignment="center"
+            android:paddingStart="4dp"
+            android:text="Expense vs Income"
+            android:textColor="@color/blue_bg"
+            android:textStyle="bold" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/button_submit"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/ripple_image_button"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_share_code"
+        android:tint="@color/gray_big_icon"
+        app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/app_background"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dropdown_menu_transaction"
         app:tabGravity="fill"
         app:tabIndicatorColor="@color/blue_bg"
+        app:tabIndicatorFullWidth="true"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/blue_bg" />
 

@@ -11,4 +11,11 @@
     <dimen name="font_size_normal_small">16sp</dimen>
     <dimen name="margin_small">4dp</dimen>
     <dimen name="margin_tiny">2dp</dimen>
+    <dimen name="text_size_s">14sp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="margin_setting_medium">14dp</dimen>
+    <dimen name="width_stroke_number_keyboard">0.3dp</dimen>
+    <dimen name="padding_normal">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="font_size_medium">19sp</dimen>
 </resources>

@@ -13,8 +13,8 @@
     <!-- Left icon (rounded background can be provided by drawable if available) -->
     <ImageView
         android:id="@+id/imageIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:src="@android:drawable/ic_menu_gallery" />
@@ -58,7 +58,7 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:contentDescription="@null"
-                android:src="@android:drawable/ic_menu_info_details" />
+                android:src="@drawable/account_wallet" />
 
             <TextView
                 android:id="@+id/textSource"

@@ -1,5 +1,6 @@
 package presentation.add.ui
 
+//import com.bumptech.glide.Glide
 import account.model.Account
 import android.view.View
 import android.widget.AutoCompleteTextView
@@ -11,9 +12,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import base.BaseFragment
 import base.UIState
 import camera.CameraHandler
-//import com.bumptech.glide.Glide
-import com.example.common.R as CommonR
-import com.example.transaction.R as TransactionR
 import com.example.transaction.databinding.FragmentTransactionAddBinding
 import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
@@ -35,6 +33,8 @@ import storage.FileProvider
 import transaction.model.Category
 import transaction.model.CategoryType
 import transaction.model.Event
+import ui.CalculatorManager
+import ui.CalculatorProvider
 import ui.GridSpacingItemDecoration
 import ui.createSlideDownAnimation
 import ui.createSlideUpAnimation
@@ -44,10 +44,12 @@ import ui.openDatePicker
 import ui.openTimePicker
 import ui.visible
 import javax.inject.Inject
+import com.example.common.R as CommonR
+import com.example.transaction.R as TransactionR
 
 
 @AndroidEntryPoint
-class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
+class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
     FragmentTransactionAddBinding::inflate
 ) {
     private val viewModel: AddTransactionViewModel by hiltNavGraphViewModels(TransactionR.id.transaction_nav_graph)
@@ -63,6 +65,8 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     private lateinit var cameraHandler: CameraHandler
     private lateinit var permissionHandler: PermissionHandler
+    private lateinit var calculatorManager: CalculatorManager
+    private lateinit var categoryDropdownAdapter: CategoryDropdownAdapter
 
     // Permission launcher
     private val permissionLauncher = registerForActivityResult(
@@ -86,7 +90,8 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         listenForResult()
         setupPermissionHandler()
         setupCameraHandler()
-        
+        setupCalculator()
+
         // Load transaction data if editing
         transactionId?.let { id ->
             viewModel.loadTransaction(id)
@@ -95,13 +100,15 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     fun setUpDropdownMenu() {
         val items = CategoryType.entries
-        val adapter = CategoryDropdownAdapter(requireContext(), items)
-        adapter.selectedPosition = 0
+        categoryDropdownAdapter = CategoryDropdownAdapter(requireContext(), items)
+        categoryDropdownAdapter.selectedPosition = 0
         (binding.dropdownMenuTransaction.editText as? AutoCompleteTextView)?.apply {
-            setAdapter(adapter)
+            setAdapter(categoryDropdownAdapter)
             setOnItemClickListener { parent, _, position, _ ->
                 val selectedItem = parent.getItemAtPosition(position) as CategoryType
                 setText(selectedItem.label, false)
+                // Load categories when user manually changes type
+                viewModel.loadCategoriesByType(selectedItem)
             }
             post {
                 val dropdownWidth = (300 * resources.displayMetrics.density).toInt()
@@ -221,8 +228,15 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     return@setOnClickListener
                 }
 
+                // Parse amount by removing thousand separators (commas, spaces, etc.)
+                val amountText = editTextAmount.text.toString()
+                    .replace(",", "")  // Remove commas
+                    .replace(" ", "")  // Remove spaces
+                    .trim()
+                val amount = amountText.toDoubleOrNull() ?: 0.0
+
                 viewModel.addTransaction(
-                    amount = editTextAmount.text.toString().toDoubleOrNull() ?: 0.0,
+                    amount = amount,
                     description = editTextNote.text?.toString(),
                     createAt = selectedDateStartMillis?.plus(selectedTimeOffsetMillis ?: 0)
                         ?: System.currentTimeMillis()
@@ -234,7 +248,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 permissionHandler.checkCameraPermission()
                 // After permission granted, launch camera
                 permissionHandler = PermissionHandler(
-                    fragment = this@TransactionAddFragment,
+                    fragment = this@AddTransactionFragment,
                     onGranted = { cameraHandler.launchCamera() },
                     onDenied = {
                         Toast.makeText(
@@ -251,7 +265,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             buttonPickImage.setOnClickListener {
                 permissionHandler.checkGalleryPermission()
                 permissionHandler = PermissionHandler(
-                    fragment = this@TransactionAddFragment,
+                    fragment = this@AddTransactionFragment,
                     onGranted = { cameraHandler.launchGallery() },
                     onDenied = {
                         Toast.makeText(
@@ -292,7 +306,11 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
         collectState(viewModel.selectedCategory) { category ->
             adapter.setSelectedCategory(category)
-            category?.let { updateSelectedCategory(it) }
+            category?.let {
+                updateSelectedCategory(it)
+                // Update dropdown menu to show the correct category type
+                updateDropdownForCategoryType(it.type)
+            }
         }
 
         collectState(viewModel.selectedAccount) { account ->
@@ -400,6 +418,19 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             iconCategory.setImageResource(category.iconRes)
             // Update category name
             textViewCategory.text = category.title.standardize()
+        }
+    }
+
+    private fun updateDropdownForCategoryType(categoryType: CategoryType) {
+        // Find the position of the category type in the dropdown
+        val position = CategoryType.entries.indexOf(categoryType)
+        if (position != -1) {
+            categoryDropdownAdapter.selectedPosition = position
+
+            // Update the dropdown text without triggering the listener
+            (binding.dropdownMenuTransaction.editText as? AutoCompleteTextView)?.apply {
+                setText(categoryType.label, false)
+            }
         }
     }
 
@@ -514,29 +545,48 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         binding.apply {
             // Populate amount
             editTextAmount.setText(transaction.amount.toString())
-            
+
             // Populate description
             editTextNote.setText(transaction.description ?: "")
-            
+
             // Populate date and time
             val calendar = java.util.Calendar.getInstance().apply {
                 timeInMillis = transaction.createAt
             }
             val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
             val timeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
-            
+
             textViewDate.text = dateFormat.format(calendar.time)
             textViewTime.text = timeFormat.format(calendar.time)
-            
+
             // Set date and time millis for submission
             val localDate = java.time.Instant.ofEpochMilli(transaction.createAt)
                 .atZone(java.time.ZoneId.systemDefault()).toLocalDate()
             selectedDateStartMillis = localDate.atStartOfDay(java.time.ZoneId.systemDefault())
                 .toInstant().toEpochMilli()
-            
+
             val hour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
             val minute = calendar.get(java.util.Calendar.MINUTE)
             selectedTimeOffsetMillis = (hour * 3_600_000L + minute * 60_000L)
         }
+    }
+
+    private fun setupCalculator() {
+        // Get calculator view from activity that implements CalculatorProvider
+        val calculatorProvider = activity as? CalculatorProvider
+        val calculatorView = calculatorProvider?.getCalculatorView()
+
+        if (calculatorView != null) {
+            calculatorManager = CalculatorManager(
+                calculatorView = calculatorView,
+                amountEditText = binding.editTextAmount,
+                context = requireContext()
+            )
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        calculatorManager.hide()
     }
 }

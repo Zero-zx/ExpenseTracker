@@ -27,7 +27,7 @@
         android:name="add.AddAccountFragment" />
 
     <fragment
-        android:id="@+id/statisticsFragment"
+        android:id="@+id/ReportsFragment"
         android:name="presentation.ReportsFragment"
         android:label="Statistics">
         <action
@@ -64,7 +64,7 @@
         android:label="Add Participants" />
     <fragment
         android:id="@+id/transactionAddFragment"
-        android:name="presentation.add.ui.TransactionAddFragment"
+        android:name="presentation.add.ui.AddTransactionFragment"
         android:label="TransactionAddFragment" />
 
     <fragment

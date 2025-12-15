@@ -9,12 +9,14 @@ import com.example.expensetracker.databinding.ActivityMainBinding
 import com.example.expensetracker.navigation.NavigatorImpl
 import dagger.hilt.android.AndroidEntryPoint
 import navigation.Navigator
+import ui.CalculatorProvider
+import ui.CalculatorView
 import ui.gone
 import ui.visible
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CalculatorProvider {
     private lateinit var binding: ActivityMainBinding
 
     @Inject
@@ -60,5 +62,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navigator.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    /**
+     * Implementation of CalculatorProvider interface
+     * Provides calculator view to feature modules
+     */
+    override fun getCalculatorView(): CalculatorView {
+        return binding.calculatorView
     }
 }
