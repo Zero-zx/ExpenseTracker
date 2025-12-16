@@ -63,7 +63,7 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
                 startDate = currentTime,
                 endDate = null,
                 numberOfParticipants = 1,
-                accountId = 1,
+                accountId = addTransactionViewModel.getCurrentAccountId() ?: 1L,
                 isActive = true
             )
             addTransactionViewModel.addTemporaryEvent(event)

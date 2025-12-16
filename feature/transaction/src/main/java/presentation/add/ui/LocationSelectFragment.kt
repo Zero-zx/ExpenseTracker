@@ -93,7 +93,7 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
                 val location = Location(
                     id = 0, // Will be assigned temporary ID
                     name = locationName,
-                    accountId = 1L // TODO: Get from account repository
+                    accountId = addTransactionViewModel.getCurrentAccountId() ?: 1L
                 )
                 addTransactionViewModel.addTemporaryLocation(location)
 

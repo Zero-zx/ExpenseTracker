@@ -16,15 +16,22 @@ class AccountTabFragment : BaseFragment<FragmentTabAccountBinding>(
 
     private val viewModel: AccountListViewModel by viewModels()
 
-    private val adapter = AccountListAdapter(
-        onItemClick = { account ->
-            // Navigate to detail screen if needed
-            // findNavController().navigate(...)
-        }
-    )
+    private lateinit var adapter: AccountListAdapter
 
     override fun initView() {
+        // Initialize adapter here to avoid recursive type inference
+        adapter = AccountListAdapter(
+            onItemClick = { account ->
+                // Select this account
+                viewModel.selectAccount(account.id)
+                adapter.updateSelectedAccount(account.id)
+            }
+        )
+
         setupRecyclerView()
+        // Set initial selected account
+        val currentAccountId = viewModel.getCurrentAccountId()
+        adapter.updateSelectedAccount(currentAccountId)
     }
 
     override fun initListener() {

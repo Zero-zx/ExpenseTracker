@@ -32,7 +32,7 @@ class TripEventViewModel @Inject constructor(
         // Load all events and transactions
         combine(
             getEventsByAccountUseCase(ACCOUNT_ID),
-            getAllTransactions()
+            getAllTransactions(ACCOUNT_ID)
         ) { events, transactions ->
             // Filter events by active status
             val filteredEvents = events.filter { it.isActive == isActive }
@@ -68,7 +68,7 @@ class TripEventViewModel @Inject constructor(
         .launchIn(viewModelScope)
     }
 
-    private fun getAllTransactions(): kotlinx.coroutines.flow.Flow<List<Transaction>> {
+    private fun getAllTransactions(accountId: Long): kotlinx.coroutines.flow.Flow<List<Transaction>> {
         // Get transactions from a wide date range (last 2 years)
         val calendar = Calendar.getInstance()
         val endDate = calendar.timeInMillis
@@ -81,7 +81,7 @@ class TripEventViewModel @Inject constructor(
         calendar.set(Calendar.MILLISECOND, 0)
         val startDate = calendar.timeInMillis
         
-        return getTransactionsByDateRangeUseCase(ACCOUNT_ID, startDate, endDate)
+        return getTransactionsByDateRangeUseCase(accountId, startDate, endDate)
     }
 }
 

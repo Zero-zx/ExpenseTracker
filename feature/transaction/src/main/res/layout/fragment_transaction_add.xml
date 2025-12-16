@@ -55,10 +55,10 @@
         android:background="@drawable/ripple_image_button"
         android:scaleType="fitXY"
         android:src="@drawable/icon_submit"
-        android:tint="@color/gray_big_icon"
         app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/gray_big_icon" />
 
     <ScrollView
         android:layout_width="match_parent"

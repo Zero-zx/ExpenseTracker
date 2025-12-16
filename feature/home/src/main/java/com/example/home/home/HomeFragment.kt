@@ -195,14 +195,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
             setDrawValues(false)
         }
 
-        // Create bar data with spacing between bars
+        val barWidth = 0.9f
+        val barSpace = 0.2f
+        val groupSpace = 0f
+
         val barData = BarData(incomeDataSet, expenseDataSet).apply {
-            barWidth = 0.9f
+            this.barWidth = barWidth
         }
 
         barChart.data = barData
-        barChart.groupBars(-0.5f, 0.3f, 0f) // Add spacing: (fromX, groupSpace, barSpace)
-        barChart.invalidate()
+        barChart.groupBars(-0.6f, groupSpace, barSpace)
     }
 
     private fun setupPieChart() {

@@ -15,6 +15,9 @@ internal interface AccountDao {
     @Query("SELECT * FROM tb_account ORDER BY createAt DESC")
     fun getAllAccounts(): Flow<List<AccountEntity>>
 
+    @Query("SELECT * FROM tb_account WHERE user_id = :userId ORDER BY createAt DESC")
+    fun getAccountsByUserId(userId: Long): Flow<List<AccountEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(account: AccountEntity): Long
 

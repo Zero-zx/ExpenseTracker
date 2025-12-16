@@ -1,7 +1,7 @@
 package list
 
 import account.model.Account
-import account.usecase.GetAccountsUseCase
+import account.usecase.GetUserAccountsUseCase
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,14 +9,17 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import navigation.Navigator
+import session.usecase.GetCurrentAccountIdUseCase
+import session.usecase.SelectAccountUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class AccountListViewModel @Inject constructor(
-    private val getAccountsUseCase: GetAccountsUseCase,
+    private val getUserAccountsUseCase: GetUserAccountsUseCase,
+    private val selectAccountUseCase: SelectAccountUseCase,
+    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase,
     private val navigator: Navigator
 ) : BaseViewModel<List<Account>>() {
-
 
     init {
         loadAccounts()
@@ -24,7 +27,7 @@ class AccountListViewModel @Inject constructor(
 
     private fun loadAccounts() {
         viewModelScope.launch {
-            getAccountsUseCase()
+            getUserAccountsUseCase()
                 .onStart {
                     setLoading()
                 }
@@ -41,6 +44,15 @@ class AccountListViewModel @Inject constructor(
         navigator.navigateToAddAccount()
     }
 
+    fun selectAccount(accountId: Long) {
+        viewModelScope.launch {
+            selectAccountUseCase(accountId)
+        }
+    }
+
+    fun getCurrentAccountId(): Long? {
+        return getCurrentAccountIdUseCase()
+    }
 
     fun refresh() {
         resetState()
