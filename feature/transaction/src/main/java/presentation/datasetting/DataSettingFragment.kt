@@ -7,6 +7,7 @@ import base.TabConfig
 import base.UIState
 import base.setupWithTabs
 import com.example.transaction.databinding.FragmentDataSettingBinding
+import com.google.android.material.tabs.TabLayoutMediator
 import constants.FragmentResultKeys
 import dagger.hilt.android.AndroidEntryPoint
 import navigation.Navigator
@@ -21,6 +22,8 @@ class DataSettingFragment : BaseFragment<FragmentDataSettingBinding>(
 
     @Inject
     lateinit var navigator: Navigator
+    
+    private var tabMediator: TabLayoutMediator? = null
 
     override fun initView() {
         setupViewPager()
@@ -45,11 +48,12 @@ class DataSettingFragment : BaseFragment<FragmentDataSettingBinding>(
             TabConfig("Custom") { CustomTabFragment() }
         )
 
-        binding.viewPager.setupWithTabs(
+        val (_, mediator) = binding.viewPager.setupWithTabs(
             tabLayout = binding.tabLayout,
             fragment = this,
             tabs = tabs
         )
+        tabMediator = mediator
 
         // Set default tab to Q (index 3)
         binding.viewPager.setCurrentItem(3, false)
@@ -115,4 +119,11 @@ class DataSettingFragment : BaseFragment<FragmentDataSettingBinding>(
 
         navigator.navigateUp()
     }
+
+    override fun onDestroyView() {
+        tabMediator?.detach()
+        tabMediator = null
+        super.onDestroyView()
+    }
 }
+

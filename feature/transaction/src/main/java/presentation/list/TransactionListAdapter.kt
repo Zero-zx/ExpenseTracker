@@ -12,11 +12,24 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class TransactionListAdapter(
-    private val onItemClick: (Transaction) -> Unit
+    private val onItemClick: (Transaction) -> Unit,
+    private val onItemSelect: ((Transaction) -> Unit)? = null
 ) : ListAdapter<TransactionListItem, RecyclerView.ViewHolder>(TransactionListItemDiffCallback()) {
 
     private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
     private val viewPool = RecyclerView.RecycledViewPool()
+    private var isSelectionMode: Boolean = false
+    private var selectedTransactionIds: Set<Long> = emptySet()
+
+    fun setSelectionMode(isSelectionMode: Boolean) {
+        this.isSelectionMode = isSelectionMode
+        notifyDataSetChanged()
+    }
+
+    fun setSelectedTransactions(selectedIds: Set<Long>) {
+        this.selectedTransactionIds = selectedIds
+        notifyDataSetChanged()
+    }
 
     override fun getItemViewType(position: Int): Int {
         // We only expect DateHeader items now
@@ -40,7 +53,10 @@ class TransactionListAdapter(
         private val binding: ItemTransactionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val childAdapter = TransactionCategoryAdapter(onItemClick)
+        private val childAdapter = TransactionCategoryAdapter(
+            onItemClick = onItemClick,
+            onItemSelect = onItemSelect
+        )
 
         init {
             binding.recyclerViewCategories.apply {
@@ -65,6 +81,10 @@ class TransactionListAdapter(
                         binding.root.context.getColor(com.example.common.R.color.green_income)
                     }
                 )
+
+                // Update child adapter selection state
+                childAdapter.setSelectionMode(this@TransactionListAdapter.isSelectionMode)
+                childAdapter.setSelectedTransactions(this@TransactionListAdapter.selectedTransactionIds)
 
                 // Submit child list
                 childAdapter.submitList(header.transactions)

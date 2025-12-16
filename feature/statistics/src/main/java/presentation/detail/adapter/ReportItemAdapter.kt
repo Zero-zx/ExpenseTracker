@@ -1,6 +1,7 @@
 package presentation.detail.adapter
 
-import base.BaseAdapter
+import androidx.recyclerview.widget.DiffUtil
+import base.BaseListAdapter
 import com.example.statistics.databinding.ItemReportBinding
 import presentation.detail.model.ReportItem
 import java.text.NumberFormat
@@ -8,11 +9,20 @@ import java.util.Locale
 
 class ReportItemAdapter(
     onClick: ((ReportItem) -> Unit)? = null
-) : BaseAdapter<ReportItem, ItemReportBinding>(
-    { inflater, parent, _ ->
+) : BaseListAdapter<ReportItem, ItemReportBinding>(
+    inflateMethod = { inflater, parent, _ ->
         ItemReportBinding.inflate(inflater, parent, false)
     },
-    onClick
+    diffCallback = object : DiffUtil.ItemCallback<ReportItem>() {
+        override fun areItemsTheSame(oldItem: ReportItem, newItem: ReportItem): Boolean {
+            return oldItem.typeName == newItem.typeName
+        }
+
+        override fun areContentsTheSame(oldItem: ReportItem, newItem: ReportItem): Boolean {
+            return oldItem == newItem
+        }
+    },
+    onClick = onClick
 ) {
     private val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault()).apply {
         maximumFractionDigits = 0

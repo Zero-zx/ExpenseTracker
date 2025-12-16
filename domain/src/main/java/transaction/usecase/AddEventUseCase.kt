@@ -1,7 +1,6 @@
 package transaction.usecase
 
 import transaction.model.Event
-import transaction.model.Payee
 import transaction.repository.EventRepository
 import javax.inject.Inject
 
@@ -16,38 +15,52 @@ class AddEventUseCase @Inject constructor(
         accountId: Long,
         participants: List<String>
     ): Long {
-        require(eventName.isNotBlank()) { "Event name cannot be blank" }
-        require(numberOfParticipants > 0) { "Number of participants must be greater than 0" }
+        // Validate event name
+        require(eventName.isNotBlank()) { 
+            "Event name cannot be blank" 
+        }
+        
+        // Validate participants
+        require(participants.isNotEmpty()) { 
+            "Event must have at least one participant" 
+        }
+        
+        // Validate number of participants matches
         require(participants.size == numberOfParticipants) {
             "Number of participants must match the actual list size"
         }
-
-        if (endDate != null) {
-            require(endDate >= startDate) { "End date must be after or equal to start date" }
+        
+        // Validate no duplicate participants
+        require(participants.size == participants.distinct().size) {
+            "Participant names must be unique"
+        }
+        
+        // Validate no blank participant names
+        require(participants.all { it.isNotBlank() }) {
+            "Participant names cannot be blank"
         }
 
+        // Validate dates
+        if (endDate != null) {
+            require(endDate >= startDate) { 
+                "End date must be after or equal to start date" 
+            }
+        }
+
+        // Sanitize and create event
+        val sanitizedParticipants = participants.map { it.trim() }
+        
         val event = Event(
-            eventName = eventName,
+            eventName = eventName.trim(),
             startDate = startDate,
             endDate = endDate,
             numberOfParticipants = numberOfParticipants,
             accountId = accountId,
-            isActive = true
+            isActive = true,
+            participants = sanitizedParticipants
         )
 
-        val eventId = repository.insertEvent(event)
-
-        val eventParticipants = participants.map { name ->
-            Payee(
-                eventId = eventId,
-                participantName = name,
-                account = null
-            )
-        }
-
-        repository.insertParticipants(eventParticipants)
-
-        return eventId
+        return repository.insertEvent(event)
     }
 }
 

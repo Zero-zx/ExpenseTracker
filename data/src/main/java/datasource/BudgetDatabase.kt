@@ -2,6 +2,8 @@ package datasource
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import converter.StringListConverter
 import dao.AccountDao
 import dao.CategoryDao
 import dao.EventDao
@@ -16,7 +18,6 @@ import model.CategoryEntity
 import model.EventEntity
 import model.LocationEntity
 import model.PayeeEntity
-import model.PayeeTransactionEntity
 import model.TransactionEntity
 import model.TransactionImageEntity
 import model.TransactionPayeeEntity
@@ -30,14 +31,14 @@ import model.UserEntity
         CategoryEntity::class,
         EventEntity::class,
         PayeeEntity::class,
-        PayeeTransactionEntity::class,
         LocationEntity::class,
         TransactionPayeeEntity::class,
         TransactionImageEntity::class
     ],
     exportSchema = false,
-    version = 4
+    version = 5
 )
+@TypeConverters(StringListConverter::class)
 internal abstract class BudgetDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun transactionDao(): TransactionDao

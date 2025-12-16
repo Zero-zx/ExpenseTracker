@@ -1,6 +1,7 @@
 package presentation.list
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,10 +13,23 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class TransactionCategoryAdapter(
-    private val onItemClick: (Transaction) -> Unit
+    private val onItemClick: (Transaction) -> Unit,
+    private val onItemSelect: ((Transaction) -> Unit)? = null,
+    private var isSelectionMode: Boolean = false,
+    private var selectedTransactionIds: Set<Long> = emptySet()
 ) : ListAdapter<Transaction, TransactionCategoryAdapter.CategoryViewHolder>(TransactionDiffCallback()) {
 
     private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
+
+    fun setSelectionMode(isSelectionMode: Boolean) {
+        this.isSelectionMode = isSelectionMode
+        notifyDataSetChanged()
+    }
+
+    fun setSelectedTransactions(selectedIds: Set<Long>) {
+        this.selectedTransactionIds = selectedIds
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val binding = ItemTransactionCategoryBinding.inflate(
@@ -36,7 +50,12 @@ class TransactionCategoryAdapter(
             binding.root.setOnClickListener {
                 val pos = bindingAdapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
-                    onItemClick(getItem(pos))
+                    val transaction = getItem(pos)
+                    if (isSelectionMode && onItemSelect != null) {
+                        onItemSelect(transaction)
+                    } else {
+                        onItemClick(transaction)
+                    }
                 }
             }
         }
@@ -65,6 +84,14 @@ class TransactionCategoryAdapter(
                 textAmount.setTextColor(amountColor)
 
                 textSource.text = transaction.account.username
+
+                // Show/hide checkbox based on selection mode
+                if (isSelectionMode) {
+                    checkboxSelection.visibility = View.VISIBLE
+                    checkboxSelection.isChecked = selectedTransactionIds.contains(transaction.id)
+                } else {
+                    checkboxSelection.visibility = View.GONE
+                }
             }
         }
     }

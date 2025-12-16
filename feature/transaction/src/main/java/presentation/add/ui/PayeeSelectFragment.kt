@@ -5,6 +5,7 @@ import base.BaseFragment
 import base.TabConfig
 import base.setupWithTabs
 import com.example.transaction.databinding.FragmentEventSelectBinding
+import com.google.android.material.tabs.TabLayoutMediator
 import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS
 import constants.FragmentResultKeys.RESULT_PAYEE_IDS
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,6 +18,7 @@ class PayeeSelectFragment : BaseFragment<FragmentEventSelectBinding>(
     FragmentEventSelectBinding::inflate
 ) {
     private val selectedPayeeIds: MutableSet<Long> = mutableSetOf()
+    private var tabMediator: TabLayoutMediator? = null
 
     fun getSelectedPayeeIds(): Set<Long> = selectedPayeeIds.toSet()
 
@@ -69,10 +71,17 @@ class PayeeSelectFragment : BaseFragment<FragmentEventSelectBinding>(
             TabConfig("Contact") { PayeeTabFragment.newInstance(PayeeTabType.CONTACTS) }
         )
 
-        binding.viewPager.setupWithTabs(
+        val (_, mediator) = binding.viewPager.setupWithTabs(
             tabLayout = binding.tabLayout,
             fragment = this,
             tabs = tabs
         )
+        tabMediator = mediator
+    }
+
+    override fun onDestroyView() {
+        tabMediator?.detach()
+        tabMediator = null
+        super.onDestroyView()
     }
 }

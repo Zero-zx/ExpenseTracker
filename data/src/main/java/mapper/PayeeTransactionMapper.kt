@@ -1,10 +1,10 @@
 package mapper
 
-import model.PayeeTransactionEntity
+import model.PayeeEntity
 import transaction.model.PayeeTransaction
 
-internal fun PayeeTransaction.toEntity(): PayeeTransactionEntity {
-    return PayeeTransactionEntity(
+internal fun PayeeTransaction.toEntity(): PayeeEntity {
+    return PayeeEntity(
         id = id,
         name = name,
         accountId = accountId,
@@ -13,7 +13,7 @@ internal fun PayeeTransaction.toEntity(): PayeeTransactionEntity {
     )
 }
 
-internal fun PayeeTransactionEntity.toDomain(): PayeeTransaction {
+internal fun PayeeEntity.toDomain(): PayeeTransaction {
     return PayeeTransaction(
         id = id,
         name = name,

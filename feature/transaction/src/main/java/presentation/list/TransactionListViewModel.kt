@@ -3,10 +3,14 @@ package presentation.list
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import transaction.model.CategoryType
 import transaction.model.Transaction
+import transaction.usecase.DeleteTransactionUseCase
 import transaction.usecase.GetTransactionsByDateRangeUseCase
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -23,12 +27,20 @@ data class TransactionListData(
 
 @HiltViewModel
 class TransactionListViewModel @Inject constructor(
-    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase
+    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
+    private val deleteTransactionUseCase: DeleteTransactionUseCase
 ) : BaseViewModel<TransactionListData>() {
     private val currentAccountId = 1L
     private var currentStartDate: Long = 0L
     private var currentEndDate: Long = System.currentTimeMillis()
     private var currentPeriod: String = "Quarter IV"
+
+    // Selection mode state
+    private val _isSelectionMode = MutableStateFlow(false)
+    val isSelectionMode: StateFlow<Boolean> = _isSelectionMode.asStateFlow()
+
+    private val _selectedTransactions = MutableStateFlow<Set<Long>>(emptySet())
+    val selectedTransactions: StateFlow<Set<Long>> = _selectedTransactions.asStateFlow()
 
     init {
         loadTransactionsForQuarter(4)
@@ -169,5 +181,75 @@ class TransactionListViewModel @Inject constructor(
 
     fun refresh() {
         loadTransactions()
+    }
+
+    // Selection mode functions
+    fun enterSelectionMode() {
+        _isSelectionMode.value = true
+        _selectedTransactions.value = emptySet()
+    }
+
+    fun exitSelectionMode() {
+        _isSelectionMode.value = false
+        _selectedTransactions.value = emptySet()
+    }
+
+    fun toggleTransactionSelection(transactionId: Long) {
+        val currentSelected = _selectedTransactions.value.toMutableSet()
+        if (currentSelected.contains(transactionId)) {
+            currentSelected.remove(transactionId)
+        } else {
+            currentSelected.add(transactionId)
+        }
+        _selectedTransactions.value = currentSelected
+    }
+
+    fun selectAllTransactions() {
+        val allTransactionIds = getAllTransactionIds()
+        _selectedTransactions.value = allTransactionIds.toSet()
+    }
+
+    fun clearSelection() {
+        _selectedTransactions.value = emptySet()
+    }
+
+    private fun getAllTransactionIds(): List<Long> {
+        val currentData = uiState.value
+        if (currentData is base.UIState.Success) {
+            return currentData.data.items.flatMap { item ->
+                if (item is TransactionListItem.DateHeader) {
+                    item.transactions.map { it.id }
+                } else {
+                    emptyList()
+                }
+            }
+        }
+        return emptyList()
+    }
+
+    fun deleteSelectedTransactions() {
+        val selectedIds = _selectedTransactions.value
+        if (selectedIds.isEmpty()) return
+
+        viewModelScope.launch {
+            val currentData = uiState.value
+            if (currentData is base.UIState.Success) {
+                val transactionsToDelete = currentData.data.items.flatMap { item ->
+                    if (item is TransactionListItem.DateHeader) {
+                        item.transactions.filter { selectedIds.contains(it.id) }
+                    } else {
+                        emptyList()
+                    }
+                }
+
+                val result = deleteTransactionUseCase.deleteTransactions(transactionsToDelete)
+                if (result.isSuccess) {
+                    exitSelectionMode()
+                    loadTransactions() // Reload to refresh the list
+                } else {
+                    setError(result.exceptionOrNull()?.message ?: "Failed to delete transactions")
+                }
+            }
+        }
     }
 }

@@ -18,8 +18,15 @@ class CategoryDropdownAdapter(
     // Track the currently selected index
     var selectedPosition: Int = 0
         set(value) {
-            field = value
-            notifyDataSetChanged() // refresh dropdown to update tick visibility
+            val oldPosition = field
+            if (oldPosition != value) {
+                field = value
+                // ArrayAdapter doesn't have notifyItemChanged(), so we use notifyDataSetChanged()
+                // but only when position actually changes and is valid
+                if (value >= 0 && value < items.size) {
+                    notifyDataSetChanged()
+                }
+            }
         }
 
     override fun getCount(): Int = items.size

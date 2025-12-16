@@ -53,7 +53,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
 
     override fun onResume() {
         super.onResume()
-        setupDropdownMenu(preserveCurrentText = true)
+        // No need to recreate adapter on resume
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -62,29 +62,37 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
     }
 
     private fun setupDropdownMenu(preserveCurrentText: Boolean = false) {
-        val reportTypes = ReportType.entries.toTypedArray()
-        val reportTypeNames = reportTypes.map { it.getDisplayName() }.toTypedArray()
+        // Only create adapter once
+        if (dropdownAdapter == null) {
+            val reportTypes = ReportType.entries.toTypedArray()
+            val reportTypeNames = reportTypes.map { it.getDisplayName() }.toTypedArray()
 
-        dropdownAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            reportTypeNames
-        )
+            dropdownAdapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                reportTypeNames
+            )
 
-        val autoCompleteTextView = binding.autoCompleteReportType as MaterialAutoCompleteTextView
-        autoCompleteTextView.setAdapter(dropdownAdapter)
-        autoCompleteTextView.threshold = 0 // Show all options immediately
+            val autoCompleteTextView = binding.autoCompleteReportType as MaterialAutoCompleteTextView
+            autoCompleteTextView.setAdapter(dropdownAdapter)
+            autoCompleteTextView.threshold = 0 // Show all options immediately
 
-        if (!preserveCurrentText || autoCompleteTextView.text.isNullOrEmpty()) {
-            autoCompleteTextView.setText(currentReportType.getDisplayName(), false)
+            // Set click listener once
+            autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
+                if (position in reportTypes.indices) {
+                    val selectedType = reportTypes[position]
+                    if (selectedType != currentReportType) {
+                        currentReportType = selectedType
+                        switchFragment(selectedType)
+                    }
+                }
+            }
         }
 
-        autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
-            val selectedType = reportTypes[position]
-            if (selectedType != currentReportType) {
-                currentReportType = selectedType
-                switchFragment(selectedType)
-            }
+        // Update text if needed
+        val autoCompleteTextView = binding.autoCompleteReportType as MaterialAutoCompleteTextView
+        if (!preserveCurrentText || autoCompleteTextView.text.isNullOrEmpty()) {
+            autoCompleteTextView.setText(currentReportType.getDisplayName(), false)
         }
     }
 
