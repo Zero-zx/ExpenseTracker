@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
- * Junction table for many-to-many relationship between Transaction and PayeeTransaction
+ * Junction table for many-to-many relationship between Transaction and Payee
  */
 @Entity(
     tableName = "tb_transaction_payee",
@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = PayeeTransactionEntity::class,
+            entity = PayeeEntity::class,
             parentColumns = ["id"],
             childColumns = ["payeeId"],
             onDelete = ForeignKey.CASCADE

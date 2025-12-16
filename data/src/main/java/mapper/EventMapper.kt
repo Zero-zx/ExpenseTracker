@@ -1,11 +1,7 @@
 package mapper
 
 import model.EventEntity
-import model.PayeeEntity
-import model.EventWithPayeesEntity
 import transaction.model.Event
-import transaction.model.Payee
-import transaction.model.EventWithPayees
 
 internal fun Event.toEntity(): EventEntity {
     return EventEntity(
@@ -15,7 +11,8 @@ internal fun Event.toEntity(): EventEntity {
         endDate = endDate,
         numberOfParticipants = numberOfParticipants,
         accountId = accountId,
-        isActive = isActive
+        isActive = isActive,
+        participants = participants
     )
 }
 
@@ -27,31 +24,8 @@ internal fun EventEntity.toDomain(): Event {
         endDate = endDate,
         numberOfParticipants = numberOfParticipants,
         accountId = accountId,
-        isActive = isActive
-    )
-}
-
-internal fun Payee.toEntity(): PayeeEntity {
-    return PayeeEntity(
-        id = id,
-        eventId = eventId,
-        participantName = participantName
-    )
-}
-
-internal fun PayeeEntity.toDomain(): Payee {
-    return Payee(
-        id = id,
-        eventId = eventId,
-        participantName = participantName,
-        account = null
-    )
-}
-
-internal fun EventWithPayeesEntity.toDomain(): EventWithPayees {
-    return EventWithPayees(
-        event = event.toDomain(),
-        participants = participants.map { it.toDomain() }
+        isActive = isActive,
+        participants = participants
     )
 }
 

@@ -7,19 +7,35 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 /**
  * Extension function to easily set up TabLayout with ViewPager2
+ * Returns Pair of adapter and mediator for proper lifecycle management
+ * 
+ * Usage:
+ * ```
+ * val (adapter, mediator) = binding.viewPager.setupWithTabs(
+ *     tabLayout = binding.tabLayout,
+ *     fragment = this,
+ *     tabs = tabs
+ * )
+ * tabMediator = mediator
+ * 
+ * // In onDestroyView():
+ * tabMediator?.detach()
+ * tabMediator = null
+ * ```
  */
 fun ViewPager2.setupWithTabs(
     tabLayout: TabLayout,
     fragment: Fragment,
     tabs: List<TabConfig>
-): GenericTabPagerAdapter {
+): Pair<GenericTabPagerAdapter, TabLayoutMediator> {
     val adapter = GenericTabPagerAdapter(fragment, tabs)
     this.adapter = adapter
 
-    TabLayoutMediator(tabLayout, this) { tab, position ->
+    val mediator = TabLayoutMediator(tabLayout, this) { tab, position ->
         tab.text = adapter.getTabTitle(position)
-    }.attach()
+    }
+    mediator.attach()
 
-    return adapter
+    return adapter to mediator
 }
 

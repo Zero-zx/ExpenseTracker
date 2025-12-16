@@ -5,6 +5,7 @@ import base.BaseFragment
 import base.TabConfig
 import base.setupWithTabs
 import com.example.transaction.databinding.FragmentEventSelectBinding
+import com.google.android.material.tabs.TabLayoutMediator
 import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_ID
 import constants.FragmentResultKeys.RESULT_EVENT_ID
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,6 +18,7 @@ import ui.setEventIdSelectionResult
 class EventSelectFragment : BaseFragment<FragmentEventSelectBinding>(
     FragmentEventSelectBinding::inflate
 ) {
+    private var tabMediator: TabLayoutMediator? = null
 
     override fun initView() {
         setupViewPager()
@@ -41,10 +43,17 @@ class EventSelectFragment : BaseFragment<FragmentEventSelectBinding>(
             TabConfig("In Complete") { EventTabFragment.newInstance(EventTabType.IN_COMPLETE) }
         )
 
-        binding.viewPager.setupWithTabs(
+        val (_, mediator) = binding.viewPager.setupWithTabs(
             tabLayout = binding.tabLayout,
             fragment = this,
             tabs = tabs
         )
+        tabMediator = mediator
+    }
+
+    override fun onDestroyView() {
+        tabMediator?.detach()
+        tabMediator = null
+        super.onDestroyView()
     }
 }

@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import converter.StringListConverter
 
 @Entity(
     tableName = "tb_event",
@@ -32,5 +34,8 @@ internal data class EventEntity(
     @ColumnInfo(name = "accountId")
     val accountId: Long,
     @ColumnInfo(name = "isActive")
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    @TypeConverters(StringListConverter::class)
+    @ColumnInfo(name = "participants")
+    val participants: List<String> = emptyList()
 )

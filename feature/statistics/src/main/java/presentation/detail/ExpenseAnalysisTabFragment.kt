@@ -37,6 +37,7 @@ class ExpenseAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
     )
 
     private var tabType: TabType = TabType.MONTHLY
+    private var isChartInitialized = false
 
     companion object {
         private const val ARG_TAB_TYPE = "tab_type"
@@ -61,7 +62,9 @@ class ExpenseAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
 
     private fun setupRecyclerView() {
         binding.recyclerViewMonthlyBreakdown.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            if (layoutManager == null) {
+                layoutManager = LinearLayoutManager(requireContext())
+            }
             adapter = monthlyAdapter
         }
     }
@@ -120,18 +123,34 @@ class ExpenseAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
             textViewTotalExpense.text = currencyFormatter.format(data.totalAmount)
             textViewAverageExpense.text = currencyFormatter.format(data.averagePerMonth)
 
-            // Setup chart
-            setupChart(data.monthlyData)
+            // Update chart
+            updateChart(data.monthlyData)
 
             // Update monthly breakdown list
             monthlyAdapter.submitList(data.monthlyData)
         }
     }
 
-    private fun setupChart(monthlyData: List<MonthlyAnalysisItem>) {
+    private fun updateChart(monthlyData: List<MonthlyAnalysisItem>) {
         val barChart = binding.barChart
 
-        // Configure chart appearance
+        // Only setup config once
+        if (!isChartInitialized) {
+            configureChart()
+            isChartInitialized = true
+        }
+
+        // Update data
+        val barData = prepareBarData(monthlyData)
+        barChart.data = barData
+        barChart.animateY(500) // Animate when data changes
+        barChart.invalidate()
+    }
+
+    private fun configureChart() {
+        val barChart = binding.barChart
+
+        // Configure chart appearance - only once
         barChart.description.isEnabled = false
         barChart.setDrawGridBackground(false)
         barChart.setTouchEnabled(true)
@@ -162,12 +181,25 @@ class ExpenseAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
         // Configure Y-axis (right)
         val rightAxis = barChart.axisRight
         rightAxis.isEnabled = false
+    }
+
+    private fun prepareBarData(monthlyData: List<MonthlyAnalysisItem>): BarData {
+        val barChart = binding.barChart
+
+        // Show "No Data" message if no data
+        if (monthlyData.isEmpty()) {
+            barChart.setNoDataText("No Data")
+            barChart.setNoDataTextColor(Color.GRAY)
+        }
 
         // Prepare data entries - convert to millions and map to month indices
         val entries = mutableListOf<BarEntry>()
         val monthDataMap = monthlyData.associate {
             val parts = it.monthLabel.split("/")
-            val month = parts[0].toIntOrNull() ?: 0
+            val month = parts.getOrNull(0)?.toIntOrNull() ?: run {
+                android.util.Log.w("ExpenseAnalysis", "Invalid monthLabel format: ${it.monthLabel}")
+                0
+            }
             month to it.amount
         }
 
@@ -177,24 +209,22 @@ class ExpenseAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
             entries.add(BarEntry((month - 1).toFloat(), (amount / 1_000_000).toFloat()))
         }
 
-        // Create dataset
+        // Create dataset with color constant
         val dataSet = BarDataSet(entries, "").apply {
             color = Color.parseColor("#F44336") // Red color for expense bars
             setDrawValues(false)
         }
 
-        // Show "No Data" message if no data
-        if (monthlyData.isEmpty()) {
-            barChart.setNoDataText("No Data")
-            barChart.setNoDataTextColor(Color.GRAY)
-        }
-
-        val barData = BarData(dataSet).apply {
+        return BarData(dataSet).apply {
             barWidth = 0.6f
         }
+    }
 
-        barChart.data = barData
-        barChart.invalidate()
+    override fun onDestroyView() {
+        binding.barChart.clear()
+        binding.barChart.data = null
+        binding.recyclerViewMonthlyBreakdown.adapter = null
+        super.onDestroyView()
     }
 }
 

@@ -7,6 +7,7 @@ import base.TabConfig
 import base.UIState
 import base.setupWithTabs
 import com.example.statistics.databinding.FragmentTripEventBinding
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.TripEventAdapter
 import presentation.detail.model.TripEventData
@@ -19,6 +20,7 @@ class TripEventFragment : BaseFragment<FragmentTripEventBinding>(
     private val adapter = TripEventAdapter { tripEventData ->
         // TODO: Navigate to event detail
     }
+    private var tabMediator: TabLayoutMediator? = null
 
     override fun initView() {
         setupTabs()
@@ -31,14 +33,21 @@ class TripEventFragment : BaseFragment<FragmentTripEventBinding>(
             TabConfig("In Completed") { TripEventTabFragment.newInstance(false) }
         )
 
-        binding.viewPager.setupWithTabs(
+        val (_, mediator) = binding.viewPager.setupWithTabs(
             tabLayout = binding.tabLayout,
             fragment = this,
             tabs = tabs
         )
+        tabMediator = mediator
         
         // Set default selected tab to "In progress"
         binding.viewPager.setCurrentItem(0, false)
+    }
+
+    override fun onDestroyView() {
+        tabMediator?.detach()
+        tabMediator = null
+        super.onDestroyView()
     }
 
     private fun setupSearch() {

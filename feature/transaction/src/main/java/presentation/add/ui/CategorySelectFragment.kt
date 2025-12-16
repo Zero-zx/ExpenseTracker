@@ -4,6 +4,7 @@ import base.BaseFragment
 import base.TabConfig
 import base.setupWithTabs
 import com.example.transaction.databinding.FragmentCategorySelectBinding
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import transaction.model.CategoryType
 import ui.navigateBack
@@ -14,6 +15,7 @@ class CategorySelectFragment : BaseFragment<FragmentCategorySelectBinding>(
     FragmentCategorySelectBinding::inflate
 ) {
     private var selectedCategoryId: Long? = null
+    private var tabMediator: TabLayoutMediator? = null
 
     fun getSelectedCategoryId(): Long? = selectedCategoryId
 
@@ -51,10 +53,17 @@ class CategorySelectFragment : BaseFragment<FragmentCategorySelectBinding>(
             TabConfig("Lent/Borrowed") { CategoryTabFragment.newInstance(CategoryType.LEND) }
         )
 
-        binding.viewPager.setupWithTabs(
+        val (_, mediator) = binding.viewPager.setupWithTabs(
             tabLayout = binding.tabLayout,
             fragment = this,
             tabs = tabs
         )
+        tabMediator = mediator
+    }
+
+    override fun onDestroyView() {
+        tabMediator?.detach()
+        tabMediator = null
+        super.onDestroyView()
     }
 }

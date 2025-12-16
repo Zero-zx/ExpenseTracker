@@ -25,8 +25,14 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
 
     private val adapter = TransactionListAdapter(
         onItemClick = { transaction ->
-            // Navigate to edit transaction screen
-            navigator.navigateToEditTransaction(transaction.id)
+            // Navigate to edit transaction screen only if not in selection mode
+            if (!viewModel.isSelectionMode.value) {
+                navigator.navigateToEditTransaction(transaction.id)
+            }
+        },
+        onItemSelect = { transaction ->
+            // Toggle selection when in selection mode
+            viewModel.toggleTransactionSelection(transaction.id)
         }
     )
 
@@ -46,7 +52,27 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
         }
 
         binding.buttonMenu.setOnClickListener {
-            // TODO: Implement menu functionality
+            showMenuBottomSheet()
+        }
+
+        binding.checkboxSelectAll.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                viewModel.selectAllTransactions()
+            } else {
+                viewModel.clearSelection()
+            }
+        }
+
+        binding.buttonCancel.setOnClickListener {
+            viewModel.exitSelectionMode()
+        }
+
+        binding.buttonDelete.setOnClickListener {
+            viewModel.deleteSelectedTransactions()
+        }
+
+        binding.textViewDelete.setOnClickListener {
+            viewModel.deleteSelectedTransactions()
         }
 
         binding.layoutQuarterSelection.setOnClickListener {
@@ -62,6 +88,16 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
                 is UIState.Success -> showTransactions(state.data)
                 is UIState.Error -> showError(state.message)
             }
+        }
+
+        // Observe selection mode
+        collectState(viewModel.isSelectionMode) { isSelectionMode ->
+            updateSelectionModeUI(isSelectionMode)
+        }
+
+        // Observe selected transactions
+        collectState(viewModel.selectedTransactions) { selectedIds ->
+            updateSelectionUI(selectedIds)
         }
 
         // Listen for data setting result
@@ -112,17 +148,23 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
     private fun showTransactions(data: TransactionListData) {
         binding.apply {
             progressBar.visibility = View.GONE
-            headerLayout.visibility = View.VISIBLE
             recyclerViewTransactions.visibility = View.VISIBLE
             layoutEmpty.visibility = View.GONE
             layoutError.visibility = View.GONE
 
-            // Update header
-            textViewQuarter.text = data.selectedPeriod
-            val formattedIncome = currencyFormatter.format(data.totalIncome).replace("$", "₫")
-            val formattedExpense = currencyFormatter.format(data.totalExpense).replace("$", "₫")
-            textViewTotalIncome.text = formattedIncome
-            textViewTotalExpense.text = formattedExpense
+            // Update header only if not in selection mode
+            if (!viewModel.isSelectionMode.value) {
+                headerLayout.visibility = View.VISIBLE
+                textViewQuarter.text = data.selectedPeriod
+                val formattedIncome = currencyFormatter.format(data.totalIncome).replace("$", "₫")
+                val formattedExpense = currencyFormatter.format(data.totalExpense).replace("$", "₫")
+                textViewTotalIncome.text = formattedIncome
+                textViewTotalExpense.text = formattedExpense
+            }
+
+            // Update adapter selection state
+            adapter.setSelectionMode(viewModel.isSelectionMode.value)
+            adapter.setSelectedTransactions(viewModel.selectedTransactions.value)
         }
         adapter.submitList(data.items)
     }
@@ -138,6 +180,86 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
             buttonRetry.setOnClickListener {
                 viewModel.refresh()
             }
+        }
+    }
+
+    private fun showMenuBottomSheet() {
+        val bottomSheet = TransactionMenuBottomSheet(
+            onSelectTransaction = {
+                viewModel.enterSelectionMode()
+            },
+            onDisplaySettings = {
+                // TODO: Implement display settings
+            },
+            onFilterOption = {
+                // TODO: Implement filter option
+            }
+        )
+        bottomSheet.show(parentFragmentManager, "TransactionMenuBottomSheet")
+    }
+
+    private fun updateSelectionModeUI(isSelectionMode: Boolean) {
+        binding.apply {
+            if (isSelectionMode) {
+                // Update toolbar
+                textViewTitle.text = if (viewModel.selectedTransactions.value.isEmpty()) {
+                    "Select transaction"
+                } else {
+                    "${viewModel.selectedTransactions.value.size} selected"
+                }
+                buttonSearch.visibility = View.GONE
+                buttonMenu.visibility = View.GONE
+                textViewDelete.visibility = View.VISIBLE
+                
+                // Hide header layout
+                headerLayout.visibility = View.GONE
+                
+                // Show action bar
+                layoutActionBar.visibility = View.VISIBLE
+            } else {
+                // Restore normal UI
+                textViewTitle.text = "Transaction history"
+                buttonSearch.visibility = View.VISIBLE
+                buttonMenu.visibility = View.VISIBLE
+                textViewDelete.visibility = View.GONE
+                
+                // Show header layout
+                headerLayout.visibility = View.VISIBLE
+                
+                // Hide action bar
+                layoutActionBar.visibility = View.GONE
+                checkboxSelectAll.isChecked = false
+            }
+            
+            // Update adapter
+            adapter.setSelectionMode(isSelectionMode)
+        }
+    }
+
+    private fun updateSelectionUI(selectedIds: Set<Long>) {
+        binding.apply {
+            // Update title
+            if (viewModel.isSelectionMode.value) {
+                textViewTitle.text = if (selectedIds.isEmpty()) {
+                    "Select transaction"
+                } else {
+                    "${selectedIds.size} selected"
+                }
+            }
+            
+            // Update select all checkbox
+            val allTransactionIds = adapter.currentList.flatMap { item ->
+                if (item is TransactionListItem.DateHeader) {
+                    item.transactions.map { it.id }
+                } else {
+                    emptyList()
+                }
+            }
+            checkboxSelectAll.isChecked = selectedIds.isNotEmpty() && 
+                selectedIds.containsAll(allTransactionIds)
+            
+            // Update adapter
+            adapter.setSelectedTransactions(selectedIds)
         }
     }
 }

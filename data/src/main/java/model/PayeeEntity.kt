@@ -6,24 +6,32 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ * Entity for Payee/Payer in Transactions
+ * Represents a person who receives or pays money in a transaction
+ */
 @Entity(
-    tableName = "tb_event_participant",
+    tableName = "tb_payee",
     foreignKeys = [
         ForeignKey(
-            entity = EventEntity::class,
+            entity = AccountEntity::class,
             parentColumns = ["id"],
-            childColumns = ["eventId"],
+            childColumns = ["accountId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("eventId")]
+    indices = [Index("accountId")]
 )
 internal data class PayeeEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = "eventId")
-    val eventId: Long,
-    @ColumnInfo(name = "participantName")
-    val participantName: String
+    @ColumnInfo(name = "name")
+    val name: String,
+    @ColumnInfo(name = "accountId")
+    val accountId: Long,
+    @ColumnInfo(name = "isFromContacts")
+    val isFromContacts: Boolean = false,
+    @ColumnInfo(name = "contactId")
+    val contactId: Long? = null
 )
 
