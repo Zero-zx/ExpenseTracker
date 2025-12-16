@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import navigation.Navigator
+import session.usecase.GetCurrentAccountIdUseCase
 import transaction.model.Category
 import transaction.model.CategoryType
 import transaction.model.Event
@@ -54,7 +55,8 @@ class AddTransactionViewModel @Inject constructor(
     private val addEventUseCase: AddEventUseCase,
     private val addPayeeUseCase: AddPayeeUseCase,
     private val addLocationUseCase: AddLocationUseCase,
-    private val imageRepository: TransactionImageRepository
+    private val imageRepository: TransactionImageRepository,
+    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<Long>() {
 
     private val _transactionId = MutableStateFlow<Long?>(null)
@@ -499,5 +501,12 @@ class AddTransactionViewModel @Inject constructor(
                 setError(e.message ?: "Failed to load transaction")
             }
         }
+    }
+
+    /**
+     * Get current account ID from session
+     */
+    fun getCurrentAccountId(): Long? {
+        return getCurrentAccountIdUseCase()
     }
 }

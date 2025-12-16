@@ -6,6 +6,7 @@ import model.AccountEntity
 internal fun Account.toEntity(): AccountEntity {
     return AccountEntity(
         id = id,
+        userId = userId,
         username = username,
         type = type,
         balance = balance,
@@ -16,6 +17,7 @@ internal fun Account.toEntity(): AccountEntity {
 internal fun AccountEntity.toDomain(): Account {
     return Account(
         id = id,
+        userId = userId,
         username = username,
         type = type,
         balance = balance,

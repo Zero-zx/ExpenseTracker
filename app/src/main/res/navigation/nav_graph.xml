@@ -2,14 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/home_nav_graph">
 
     <include app:graph="@navigation/transaction_nav_graph" />
     <include app:graph="@navigation/statistics_nav_graph" />
-
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.example.home.home.HomeFragment" />
+    <include app:graph="@navigation/home_nav_graph" />
+    <include app:graph="@navigation/account_nav_graph" />
 
     <fragment
         android:id="@+id/transactionListFragment"

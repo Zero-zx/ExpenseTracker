@@ -383,8 +383,6 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
                         message,
                         Toast.LENGTH_SHORT
                     ).show()
-                    // Navigate back after successful save/update
-                    viewModel.navigateBack()
                 }
 
                 is UIState.Error -> {

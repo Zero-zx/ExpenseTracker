@@ -17,6 +17,7 @@ import dao.PayeeTransactionDao
 import dao.TransactionDao
 import dao.TransactionImageDao
 import dao.TransactionPayeeDao
+import dao.UserDao
 import datasource.BudgetDatabase
 import datasource.PhoneContactDataSource
 import transaction.repository.CategoryRepository
@@ -30,7 +31,12 @@ import repository.EventRepositoryImpl
 import repository.LocationRepositoryImpl
 import repository.PayeeTransactionRepositoryImpl
 import repository.PhoneContactRepositoryImpl
+import repository.SessionRepositoryImpl
 import repository.TransactionRepositoryImpl
+import repository.UserRepositoryImpl
+import session.UserSessionManager
+import session.repository.SessionRepository
+import user.repository.UserRepository
 import javax.inject.Singleton
 
 @Module
@@ -97,6 +103,18 @@ internal object DataModule {
 
     @Provides
     @Singleton
+    fun provideUserDao(appDatabase: BudgetDatabase): UserDao {
+        return appDatabase.userDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserSessionManager(@ApplicationContext context: Context): UserSessionManager {
+        return UserSessionManager(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideTransactionRepository(
         transactionDao: TransactionDao,
         transactionPayeeDao: TransactionPayeeDao
@@ -114,6 +132,18 @@ internal object DataModule {
     @Singleton
     fun provideAccountRepository(accountDao: AccountDao): AccountRepository {
         return AccountRepositoryImpl(accountDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(userDao: UserDao): UserRepository {
+        return UserRepositoryImpl(userDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSessionRepository(sessionManager: UserSessionManager): SessionRepository {
+        return SessionRepositoryImpl(sessionManager)
     }
 
     @Provides

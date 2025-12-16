@@ -3,6 +3,7 @@ package com.example.expensetracker
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 import account.usecase.InitializeAdminUseCase
+import session.usecase.InitializeSessionUseCase
 import transaction.usecase.InitializeCategoriesUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,8 @@ class MainApplication : Application() {
     lateinit var initializeCategoriesUseCase: InitializeCategoriesUseCase
     @Inject
     lateinit var initializeAdminUseCase: InitializeAdminUseCase
+    @Inject
+    lateinit var initializeSessionUseCase: InitializeSessionUseCase
 
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -33,7 +36,10 @@ class MainApplication : Application() {
 
         applicationScope.launch {
             try {
+                // Initialize user and admin account
                 initializeAdminUseCase()
+                // Then initialize session with first account
+                initializeSessionUseCase()
             } catch (e: Exception) {
                 // Log error
                 e.printStackTrace()

@@ -19,6 +19,7 @@ class NowTabViewModel @Inject constructor(
     private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase
 ) : BaseViewModel<List<ReportItem>>() {
 
+    val accountId = 1L
     companion object {
         private const val ACCOUNT_ID = 1L
     }
@@ -43,31 +44,31 @@ class NowTabViewModel @Inject constructor(
         val reportItems = mutableListOf<ReportItem>()
 
         // Load Today
-        loadTransactionsForRange(todayStart, now) { income, expense ->
+        loadTransactionsForRange(accountId, todayStart, now) { income, expense ->
             reportItems.add(ReportItem("Today", income, expense))
             checkAndSetSuccess(reportItems)
         }
 
         // Load This Week
-        loadTransactionsForRange(thisWeekStart, now) { income, expense ->
+        loadTransactionsForRange(accountId, thisWeekStart, now) { income, expense ->
             reportItems.add(ReportItem("This Week", income, expense))
             checkAndSetSuccess(reportItems)
         }
 
         // Load This Month
-        loadTransactionsForRange(thisMonthStart, now) { income, expense ->
+        loadTransactionsForRange(accountId, thisMonthStart, now) { income, expense ->
             reportItems.add(ReportItem("This Month", income, expense))
             checkAndSetSuccess(reportItems)
         }
 
         // Load This Quarter
-        loadTransactionsForRange(thisQuarterStart, now) { income, expense ->
+        loadTransactionsForRange(accountId, thisQuarterStart, now) { income, expense ->
             reportItems.add(ReportItem("This Quarter", income, expense))
             checkAndSetSuccess(reportItems)
         }
 
         // Load This Year
-        loadTransactionsForRange(thisYearStart, now) { income, expense ->
+        loadTransactionsForRange(accountId, thisYearStart, now) { income, expense ->
             reportItems.add(ReportItem("This Year", income, expense))
             checkAndSetSuccess(reportItems)
         }
@@ -84,11 +85,12 @@ class NowTabViewModel @Inject constructor(
     }
 
     private fun loadTransactionsForRange(
+        accountId: Long,
         startDate: Long,
         endDate: Long,
         onResult: (Double, Double) -> Unit
     ) {
-        getTransactionsByDateRangeUseCase(ACCOUNT_ID, startDate, endDate)
+        getTransactionsByDateRangeUseCase(accountId, startDate, endDate)
             .onEach { transactions ->
                 val (income, expense) = calculateIncomeExpense(transactions)
                 onResult(income, expense)

@@ -8,12 +8,24 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.login.databinding.ItemAccountBinding
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class AccountListAdapter(
     private val onItemClick: (Account) -> Unit
 ) : ListAdapter<Account, AccountListAdapter.AccountViewHolder>(AccountDiffCallback()) {
+
+    private var selectedAccountId: Long? = null
+
+    fun updateSelectedAccount(accountId: Long?) {
+        val oldSelectedId = selectedAccountId
+        selectedAccountId = accountId
+
+        // Notify changes for old and new selected items
+        currentList.forEachIndexed { index, account ->
+            if (account.id == oldSelectedId || account.id == accountId) {
+                notifyItemChanged(index)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountViewHolder {
         val binding = ItemAccountBinding.inflate(
@@ -48,6 +60,11 @@ class AccountListAdapter(
                 textViewUsername.text = account.username
                 iconAccount.setImageResource(account.type.iconRes)
                 textViewBalance.text = currencyFormatter.format(account.balance)
+
+                // Show selection indicator
+                val isSelected = account.id == selectedAccountId
+                root.isSelected = isSelected
+                root.alpha = if (isSelected) 1.0f else 0.7f
             }
         }
     }

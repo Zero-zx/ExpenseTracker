@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.onEach
 import presentation.detail.model.ChartDataWithReportItems
 import presentation.detail.model.ReportItem
 import presentation.detail.model.TabType
+import session.usecase.GetCurrentAccountIdUseCase
 import transaction.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
@@ -18,12 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChartTabViewModel @Inject constructor(
-    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase
+    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
+    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<ChartDataWithReportItems>() {
-
-    companion object {
-        private const val ACCOUNT_ID = 1L
-    }
 
     private var tabType: TabType = TabType.MONTHLY
 
@@ -31,9 +29,14 @@ class ChartTabViewModel @Inject constructor(
         this.tabType = tabType
         setLoading()
 
+        val accountId = getCurrentAccountIdUseCase() ?: run {
+            setError("No account selected. Please select an account.")
+            return
+        }
+
         val (startDate, endDate) = getDateRangeForTabType(tabType)
 
-        getTransactionsByDateRangeUseCase(ACCOUNT_ID, startDate, endDate)
+        getTransactionsByDateRangeUseCase(accountId, startDate, endDate)
             .onEach { transactions ->
                 val chartData = processTransactions(transactions, tabType)
                 setSuccess(chartData)

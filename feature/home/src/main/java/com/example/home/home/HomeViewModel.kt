@@ -9,18 +9,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import navigation.Navigator
+import session.usecase.GetCurrentAccountIdUseCase
 import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getHomeTransactionDataUseCase: GetHomeReportDataUseCase
+    private val getHomeTransactionDataUseCase: GetHomeReportDataUseCase,
+    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<HomeReportData>() {
-
-    companion object {
-        private const val ACCOUNT_ID = 1L // TODO: Get from user session/preferences
-    }
 
     private var currentTimePeriod: TimePeriod = TimePeriod.THIS_MONTH
 
@@ -32,9 +30,14 @@ class HomeViewModel @Inject constructor(
         currentTimePeriod = timePeriod
         setLoading()
 
+        val accountId = getCurrentAccountIdUseCase() ?: run {
+            setError("No account selected. Please select an account.")
+            return
+        }
+
         val (startDate, endDate) = getDateRangeForPeriod(timePeriod)
 
-        getHomeTransactionDataUseCase(ACCOUNT_ID, startDate, endDate)
+        getHomeTransactionDataUseCase(accountId, startDate, endDate)
             .onEach { data ->
                 setSuccess(data)
             }

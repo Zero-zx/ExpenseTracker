@@ -24,6 +24,12 @@ internal class AccountRepositoryImpl @Inject constructor(private val accountDao:
         }
     }
 
+    override fun getUserAccounts(userId: Long): Flow<List<Account>> {
+        return accountDao.getAccountsByUserId(userId).map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
     override suspend fun getAccountById(accountId: Long): Account? {
         return accountDao.getAccountById(accountId)?.toDomain()
     }

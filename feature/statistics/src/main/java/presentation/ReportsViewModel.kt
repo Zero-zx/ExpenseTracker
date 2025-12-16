@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import session.usecase.GetCurrentAccountIdUseCase
 import transaction.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
@@ -16,11 +17,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ReportsViewModel @Inject constructor(
     private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
+    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase,
     private val navigator: navigation.Navigator
 ) : BaseViewModel<IncomeExpenseChartData>() {
 
     companion object {
-        private const val ACCOUNT_ID = 1L
         private const val MONTHS_TO_SHOW = 5
     }
 
@@ -31,6 +32,11 @@ class ReportsViewModel @Inject constructor(
     private fun loadTransactions() {
         setLoading()
 
+        val accountId = getCurrentAccountIdUseCase() ?: run {
+            setError("No account selected. Please select an account.")
+            return
+        }
+
         // Calculate date range for last 5 months
         val calendar = Calendar.getInstance()
         val endDate = calendar.timeInMillis
@@ -38,7 +44,7 @@ class ReportsViewModel @Inject constructor(
         calendar.add(Calendar.MONTH, -MONTHS_TO_SHOW)
         val startDate = calendar.timeInMillis
 
-        getTransactionsByDateRangeUseCase(ACCOUNT_ID, startDate, endDate)
+        getTransactionsByDateRangeUseCase(accountId, startDate, endDate)
             .onEach { transactions ->
                 val chartData = processTransactions(transactions)
                 setSuccess(chartData)

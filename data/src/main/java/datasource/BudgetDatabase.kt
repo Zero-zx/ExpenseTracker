@@ -10,6 +10,7 @@ import dao.PayeeTransactionDao
 import dao.TransactionDao
 import dao.TransactionImageDao
 import dao.TransactionPayeeDao
+import dao.UserDao
 import model.AccountEntity
 import model.CategoryEntity
 import model.EventEntity
@@ -19,9 +20,11 @@ import model.PayeeTransactionEntity
 import model.TransactionEntity
 import model.TransactionImageEntity
 import model.TransactionPayeeEntity
+import model.UserEntity
 
 @Database(
     entities = [
+        UserEntity::class,
         TransactionEntity::class,
         AccountEntity::class,
         CategoryEntity::class,
@@ -33,9 +36,10 @@ import model.TransactionPayeeEntity
         TransactionImageEntity::class
     ],
     exportSchema = false,
-    version = 3
+    version = 4
 )
 internal abstract class BudgetDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
     abstract fun transactionDao(): TransactionDao
     abstract fun accountDao(): AccountDao
     abstract fun categoryDao(): CategoryDao

@@ -1,8 +1,11 @@
 package com.example.expensetracker
 
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.expensetracker.databinding.ActivityMainBinding
@@ -14,20 +17,19 @@ import ui.CalculatorView
 import ui.gone
 import ui.visible
 import javax.inject.Inject
+import com.example.common.R as CommonR
+import com.example.expensetracker.R as MainR
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CalculatorProvider {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
 
     @Inject
     lateinit var navigator: Navigator
-    private val destinationWithoutBottomBar = setOf(
-        R.id.eventSelectFragment,
-        R.id.categorySelectFragment,
-        R.id.accountSelectFragment,
-        R.id.payeeSelectFragment,
-        R.id.locationSelectFragment
-    )
+
+    private var backPressedTime: Long = 0
+    private val backPressInterval: Long = 2000 // 2 seconds
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,29 +37,74 @@ class MainActivity : AppCompatActivity(), CalculatorProvider {
         setContentView(binding.root)
 
         setupNavigation()
+        setupBackPress()
     }
 
     private fun setupNavigation() {
         val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            .findFragmentById(MainR.id.nav_host_fragment) as NavHostFragment
 
-        val navController = navHostFragment.navController
-
-        // Set NavController to Navigator
+        navController = navHostFragment.navController
         (navigator as NavigatorImpl).setNavController(navController)
+
+        // Setup bottom navigation
         binding.bottomNavigationView.setupWithNavController(navController)
 
-        setUpHideShowBottomBar(navController)
-    }
+        // Override default behavior to clear back stack and save state
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            if (item.itemId != binding.bottomNavigationView.selectedItemId) {
+                val options = NavOptions.Builder()
+                    .setPopUpTo(navController.graph.startDestinationId, false, true)
+                    .setLaunchSingleTop(true)
+                    .setRestoreState(true)
+                    .build()
+                navController.navigate(item.itemId, null, options)
+            }
+            true
+        }
 
-    private fun setUpHideShowBottomBar(navController: NavController) {
+        // Hide bottom bar for specific fragments
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destinationWithoutBottomBar.contains(destination.id)) {
+            val hideBottomBar = destination.label?.toString()?.contains("Select") ?: false
+
+            if (hideBottomBar) {
                 binding.bottomNavigationView.gone()
             } else {
                 binding.bottomNavigationView.visible()
             }
         }
+    }
+
+    private fun setupBackPress() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val isStartDestination = navController.currentDestination?.id ==
+                        navController.currentDestination?.parent?.startDestinationId
+
+                if (isStartDestination) {
+                    // On root destination - check for double back press
+                    val currentTime = System.currentTimeMillis()
+
+                    if (currentTime - backPressedTime < backPressInterval) {
+                        // Second press within interval - exit app
+                        finish()
+                    } else {
+                        // First press - show toast and update timestamp
+                        backPressedTime = currentTime
+                        Toast.makeText(
+                            this@MainActivity,
+                            CommonR.string.text_press_back_again_to_exit,
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    // Not on root - navigate back normally
+                    if (!navController.popBackStack()) {
+                        finish()
+                    }
+                }
+            }
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {

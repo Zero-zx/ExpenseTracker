@@ -109,7 +109,7 @@ class PayeeTabFragment : BaseFragment<FragmentEventTabBinding>(
             val payee = PayeeTransaction(
                 id = 0, // Will be assigned temporary ID
                 name = payeeName,
-                accountId = 1L, // TODO: Get from account repository
+                accountId = addTransactionViewModel.getCurrentAccountId() ?: 1L,
                 isFromContacts = false,
                 contactId = null
             )

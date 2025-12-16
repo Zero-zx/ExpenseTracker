@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.onEach
 import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
+import session.usecase.GetCurrentAccountIdUseCase
 import transaction.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
@@ -17,12 +18,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExpenseAnalysisViewModel @Inject constructor(
-    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase
+    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
+    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<AnalysisData>() {
 
-    companion object {
-        private const val ACCOUNT_ID = 1L
-    }
 
     private var currentStartDate: Long = 0L
     private var currentEndDate: Long = System.currentTimeMillis()
@@ -98,7 +97,12 @@ class ExpenseAnalysisViewModel @Inject constructor(
         
         setLoading()
 
-        getTransactionsByDateRangeUseCase(ACCOUNT_ID, currentStartDate, currentEndDate)
+        val accountId = getCurrentAccountIdUseCase() ?: run {
+            setError("No account selected. Please select an account.")
+            return
+        }
+
+        getTransactionsByDateRangeUseCase(accountId, currentStartDate, currentEndDate)
             .onEach { transactions ->
                 val filteredTransactions = filterTransactions(transactions)
                 val analysisData = processTransactions(filteredTransactions)
