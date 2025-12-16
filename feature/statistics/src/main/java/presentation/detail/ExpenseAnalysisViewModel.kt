@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
+import presentation.detail.model.TabType
 import transaction.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
@@ -40,7 +41,47 @@ class ExpenseAnalysisViewModel @Inject constructor(
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
         currentStartDate = calendar.timeInMillis
-        
+
+        loadExpenseAnalysis()
+    }
+
+    fun loadData(tabType: TabType) {
+        // Adjust date range based on tab type
+        val calendar = Calendar.getInstance()
+        currentEndDate = calendar.timeInMillis
+
+        when (tabType) {
+            TabType.NOW -> {
+                // Current month
+                calendar.set(Calendar.DAY_OF_MONTH, 1)
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+                currentStartDate = calendar.timeInMillis
+            }
+            TabType.MONTHLY -> {
+                // Last 12 months
+                calendar.add(Calendar.MONTH, -12)
+                calendar.set(Calendar.DAY_OF_MONTH, 1)
+                currentStartDate = calendar.timeInMillis
+            }
+            TabType.QUARTER -> {
+                // Last 4 quarters (12 months)
+                calendar.add(Calendar.MONTH, -12)
+                currentStartDate = calendar.timeInMillis
+            }
+            TabType.YEAR -> {
+                // Last 5 years
+                calendar.add(Calendar.YEAR, -5)
+                calendar.set(Calendar.DAY_OF_YEAR, 1)
+                currentStartDate = calendar.timeInMillis
+            }
+            TabType.CUSTOM -> {
+                // Use current date range (already set)
+            }
+        }
+
         loadExpenseAnalysis()
     }
 

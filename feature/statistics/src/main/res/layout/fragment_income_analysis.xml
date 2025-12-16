@@ -1,254 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background"
-    android:fillViewport="true">
+    android:paddingTop="@dimen/dimen_padding_top">
 
-    <LinearLayout
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:background="@color/app_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/blue_bg"
+        app:tabIndicatorFullWidth="true"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/blue_bg" />
 
-        <!-- Tabs: Date, Month, Year -->
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/app_background"
-            app:tabGravity="fill"
-            app:tabIndicatorColor="@color/blue_bg"
-            app:tabIndicatorFullWidth="true"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="@color/blue_bg" />
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
 
-        <!-- Date Range Filter -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_date_range"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_background"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="16dp">
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
-                android:id="@+id/icon_date_range"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_v2_calendar"
-                android:tint="@color/gray_big_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/text_view_date_range"
-                style="@style/TextAppearance.App.Normal.Black"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="01/2025 - 12/2025"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/icon_date_range"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Income Category Filter -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_category_filter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_background"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="16dp">
-
-            <ImageView
-                android:id="@+id/icon_category"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/v2_ic_income_analysic_report"
-                android:tint="@color/gray_big_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/icon_arrow_category"
-                app:layout_constraintStart_toEndOf="@id/icon_category"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    style="@style/TextAppearance.App.Small.Black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Income category" />
-
-                <TextView
-                    android:id="@+id/text_view_category"
-                    style="@style/TextAppearance.App.Normal.Black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="All income categories" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/icon_arrow_category"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_next_double"
-                android:tint="@color/gray_big_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Accounts Filter -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_account_filter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_background"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="16dp">
-
-            <ImageView
-                android:id="@+id/icon_account"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_wallet"
-                android:tint="@color/gray_big_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/icon_arrow_account"
-                app:layout_constraintStart_toEndOf="@id/icon_account"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    style="@style/TextAppearance.App.Small.Black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tài khoản" />
-
-                <TextView
-                    android:id="@+id/text_view_account"
-                    style="@style/TextAppearance.App.Normal.Black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="All accounts" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/icon_arrow_account"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_next_double"
-                android:tint="@color/gray_big_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Chart Section -->
-        <TextView
-            android:id="@+id/text_view_chart_unit"
-            style="@style/TextAppearance.App.Small.Black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="(Unit: Million)" />
-
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/bar_chart"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="8dp"
-            android:padding="16dp" />
-
-        <!-- Summary Section -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_background"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/label_total_income"
-                style="@style/TextAppearance.App.Normal.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Income"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/text_view_total_income"
-                style="@style/TextAppearance.App.Normal.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 ₫"
-                android:textColor="@color/green_income"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/label_average_income"
-                style="@style/TextAppearance.App.Normal.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Average collection/month"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/label_total_income" />
-
-            <TextView
-                android:id="@+id/text_view_average_income"
-                style="@style/TextAppearance.App.Normal.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 ₫"
-                android:textColor="@color/green_income"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_view_total_income" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Monthly Breakdown List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_monthly_breakdown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:nestedScrollingEnabled="false" />
-
-    </LinearLayout>
-
-</androidx.core.widget.NestedScrollView>
 

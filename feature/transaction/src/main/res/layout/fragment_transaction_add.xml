@@ -374,7 +374,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_background"
                     android:orientation="vertical"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:layout_constraintDimensionRatio="8:1"
                     app:layout_constraintTop_toBottomOf="@+id/layout_addition">
 
@@ -502,32 +502,6 @@
                             android:drawableStart="@drawable/ic_photo"
                             android:text="Gallery" />
                     </LinearLayout>
-
-                    <!--                <LinearLayout-->
-                    <!--                    android:id="@+id/layout_fee"-->
-                    <!--                    android:layout_width="match_parent"-->
-                    <!--                    android:layout_height="0dp"-->
-                    <!--                    android:layout_marginTop="8dp"-->
-                    <!--                    android:background="@drawable/rounded_background"-->
-                    <!--                    android:orientation="vertical"-->
-                    <!--                    android:paddingHorizontal="16dp"-->
-                    <!--                    app:layout_constraintDimensionRatio="9:1"-->
-                    <!--                    app:layout_constraintTop_toBottomOf="@id/layout_lend">-->
-
-                    <!--                    <include-->
-                    <!--                        layout="@layout/text_with_toggle_button"-->
-                    <!--                        android:layout_width="match_parent"-->
-                    <!--                        android:layout_height="match_parent" />-->
-
-                    <!--                    <View-->
-                    <!--                        android:layout_width="match_parent"-->
-                    <!--                        android:layout_height="1dp"-->
-                    <!--                        android:alpha="0.1"-->
-                    <!--                        android:background="@android:color/black"-->
-                    <!--                        app:layout_constraintTop_toBottomOf="@id/icon_category" />-->
-
-                    <!--                </LinearLayout>-->
-
                 </LinearLayout>
             </LinearLayout>
 
@@ -554,7 +528,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/rounded_background"
-                android:text="Save Transaction"
+                android:text="@string/text_save_transaction"
                 app:backgroundTint="@color/blue_bg"
                 app:layout_constraintTop_toBottomOf="@id/button_show_more" />
 

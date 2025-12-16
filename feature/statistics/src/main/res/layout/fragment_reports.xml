@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="@dimen/dimen_padding_top">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/top_bar"
@@ -14,7 +13,8 @@
         android:elevation="4dp"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Reports"
+        android:paddingTop="@dimen/dimen_padding_top"
+        android:text="@string/text_reports"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -132,7 +132,7 @@
             style="@style/TextAppearance.App.Normal.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Incom vs Outcome"
+            android:text="Income vs Outcome"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -143,6 +143,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="In the last 5 months"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_view_income_and_outcome" />
 
         <TextView
@@ -186,6 +187,7 @@
         app:layout_constraintTop_toBottomOf="@id/constraint_layout_income_and_outcome">
 
         <ui.CustomCardView
+            android:id="@+id/button_expense_analysis"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -196,6 +198,7 @@
             app:text="Expense analysis" />
 
         <ui.CustomCardView
+            android:id="@+id/button_income_analysis"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -207,32 +210,32 @@
 
         <ui.CustomCardView
             android:layout_width="0dp"
-            app:src="@drawable/v2_ic_debt_sistuation"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_background"
+            app:src="@drawable/v2_ic_debt_sistuation"
             app:text="Money lent/borrowed" />
 
         <ui.CustomCardView
             android:layout_width="0dp"
-            app:src="@drawable/v2_ic_payee_payer"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_background"
+            app:src="@drawable/v2_ic_payee_payer"
             app:text="Payee/Payer" />
 
         <ui.CustomCardView
             android:layout_width="0dp"
-            app:src="@drawable/v2_ic_event_report"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_background"
+            app:src="@drawable/v2_ic_event_report"
             app:text="Event" />
 
         <ui.CustomCardView

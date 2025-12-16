@@ -23,11 +23,19 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
 
     override fun initListener() {
         binding.constraintLayoutIncomeAndOutcome.setOnClickListener {
-            viewModel.navigateToIncomeExpenseDetail()
+            viewModel.navigateToExpenseVsIncome()
         }
         
         binding.constraintLayoutCurrentFinance.setOnClickListener {
             viewModel.navigateToReportDetailContainer()
+        }
+
+        binding.buttonExpenseAnalysis.setOnClickListener {
+            viewModel.navigateToExpenseAnalysis()
+        }
+
+        binding.buttonIncomeAnalysis.setOnClickListener {
+            viewModel.navigateToIncomeAnalysis()
         }
     }
 

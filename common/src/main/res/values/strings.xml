@@ -47,4 +47,10 @@
     <string name="Done">Done</string>
     <string name="text_0">0</string>
     <string name="text_vnd">đ</string>
+    <string name="text_empty_event">You have no trips or events</string>
+    <string name="text_save_transaction">Save Transaction</string>
+    <string name="text_account">Account</string>
+    <string name="text_all_accounts">All accounts</string>
+    <string name="text_record_history">Record history</string>
+    <string name="text_reports">Reports</string>
 </resources>
