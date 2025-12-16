@@ -4,18 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:paddingTop="@dimen/margin_medium_normal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
         <!-- Top Summary Card: Financial statement (1) - (2) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/card_financial_statement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_medium_normal"
             android:layout_marginBottom="16dp"
             android:background="@drawable/rounded_background"
             android:padding="16dp"
@@ -50,6 +51,7 @@
             android:id="@+id/card_total_amount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium_normal"
             android:layout_marginTop="@dimen/margin_medium_normal"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
@@ -90,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="@dimen/margin_medium_normal"
+            android:layout_marginEnd="@dimen/margin_medium_normal"
             android:layout_marginBottom="16dp"
             android:background="@drawable/rounded_background"
             android:padding="16dp"
@@ -121,46 +124,54 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Assets Section -->
-        <TextView
-            android:id="@+id/text_view_assets_header"
-            style="@style/TextAppearance.App.Normal.Black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Assets (1)"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_total_amount" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_assets"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:nestedScrollingEnabled="false"
-            app:layout_constraintTop_toBottomOf="@id/text_view_assets_header" />
-
-        <!-- Liabilities Section -->
-        <TextView
-            android:id="@+id/text_view_liabilities_header"
-            style="@style/TextAppearance.App.Normal.Black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Liabilities (2)"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recycler_view_assets" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_liabilities"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:nestedScrollingEnabled="false"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margin_medium_normal"
+            android:background="@color/white"
+            android:padding="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_view_liabilities_header" />
+            app:layout_constraintTop_toBottomOf="@id/card_total_amount">
+            <!-- Assets Section -->
+            <TextView
+                android:id="@+id/text_view_assets_header"
+                style="@style/TextAppearance.App.Normal.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Assets (1)"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_assets"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintTop_toBottomOf="@id/text_view_assets_header" />
+
+            <!-- Liabilities Section -->
+            <TextView
+                android:id="@+id/text_view_liabilities_header"
+                style="@style/TextAppearance.App.Normal.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Liabilities (2)"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recycler_view_assets" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_liabilities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_view_liabilities_header" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

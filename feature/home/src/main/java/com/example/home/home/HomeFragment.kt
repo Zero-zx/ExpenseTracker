@@ -79,7 +79,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
     override fun observeData() {
         collectFlow(viewModel.uiState) { state ->
             when (state) {
-                is UIState.Idle -> {}
+                is UIState.Idle -> {
+                    showNoDataState()
+                }
                 is UIState.Loading -> {
                     // Could show loading indicator if needed
                 }

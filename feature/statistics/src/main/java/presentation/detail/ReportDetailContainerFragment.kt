@@ -53,10 +53,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
 
     override fun onResume() {
         super.onResume()
-        // Only setup dropdown if adapter is null (fragment was recreated)
-        if (dropdownAdapter == null) {
-            setupDropdownMenu(preserveCurrentText = true)
-        }
+        setupDropdownMenu(preserveCurrentText = true)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -65,7 +62,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
     }
 
     private fun setupDropdownMenu(preserveCurrentText: Boolean = false) {
-        val reportTypes = ReportType.values()
+        val reportTypes = ReportType.entries.toTypedArray()
         val reportTypeNames = reportTypes.map { it.getDisplayName() }.toTypedArray()
 
         dropdownAdapter = ArrayAdapter(
@@ -77,7 +74,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
         val autoCompleteTextView = binding.autoCompleteReportType as MaterialAutoCompleteTextView
         autoCompleteTextView.setAdapter(dropdownAdapter)
         autoCompleteTextView.threshold = 0 // Show all options immediately
-        
+
         if (!preserveCurrentText || autoCompleteTextView.text.isNullOrEmpty()) {
             autoCompleteTextView.setText(currentReportType.getDisplayName(), false)
         }
@@ -103,7 +100,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
             arguments?.getString(ARG_REPORT_TYPE)?.let {
                 currentReportType = ReportType.valueOfOrNull(it) ?: ReportType.FINANCIAL_STATEMENT
             }
-            
+
             binding.autoCompleteReportType.setText(currentReportType.getDisplayName(), false)
             switchFragment(currentReportType)
             isInitialLoad = false
@@ -112,7 +109,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
 
     private fun switchFragment(reportType: ReportType) {
         val fragment = createFragmentForType(reportType)
-        
+
         childFragmentManager.commit {
             replace(binding.fragmentContainer.id, fragment)
             setReorderingAllowed(true)

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.R
 import com.example.statistics.databinding.ItemFinancialStatementBinding
 import java.text.NumberFormat
 import java.util.Locale
@@ -18,8 +19,6 @@ class FinancialStatementAdapter(
     companion object {
         private const val TYPE_ASSET = 0
         private const val TYPE_LIABILITY = 1
-        
-        // Shared currency formatter để tránh tạo nhiều instances
         private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
     }
 
@@ -66,8 +65,8 @@ class FinancialStatementAdapter(
                 textViewAmount.text = currencyFormatter.format(asset.amount)
                 textViewAmount.setTextColor(
                     root.context.getColor(
-                        if (asset.amount < 0) com.example.common.R.color.red_expense
-                        else com.example.common.R.color.green_income
+                        if (asset.amount < 0) R.color.red_expense
+                        else R.color.green_income
                     )
                 )
                 setIcon(asset.iconRes)

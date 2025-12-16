@@ -16,10 +16,10 @@
         android:background="@drawable/ripple_image_button"
         android:scaleType="fitXY"
         android:src="@drawable/icon_history"
-        android:tint="@color/gray_big_icon"
         app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_report"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/gray_big_icon" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/dropdown_menu_report"
@@ -40,9 +40,9 @@
             android:gravity="center"
             android:inputType="none"
             android:paddingVertical="0dp"
-            android:textAlignment="center"
-            android:paddingStart="4dp"
+            android:paddingStart="16dp"
             android:text="Financial statement"
+            android:textAlignment="center"
             android:textColor="@color/blue_bg"
             android:textStyle="bold" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -56,10 +56,10 @@
         android:background="@drawable/ripple_image_button"
         android:scaleType="fitXY"
         android:src="@drawable/ic_share_code"
-        android:tint="@color/gray_big_icon"
         app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_report"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/gray_big_icon" />
 
     <!-- Container cho Fragment con -->
     <FrameLayout
