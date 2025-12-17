@@ -5,14 +5,14 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.UIState
+import com.example.common.R
 import com.example.transaction.databinding.FragmentTransactionListBinding
 import constants.FragmentResultKeys
 import dagger.hilt.android.AndroidEntryPoint
-import navigation.Navigator
 import ui.listenForSelectionResult
+import ui.navigateBack
 import java.text.NumberFormat
 import java.util.Locale
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
@@ -20,14 +20,12 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
 ) {
     private val viewModel: TransactionListViewModel by viewModels()
 
-    @Inject
-    lateinit var navigator: Navigator
 
     private val adapter = TransactionListAdapter(
         onItemClick = { transaction ->
             // Navigate to edit transaction screen only if not in selection mode
             if (!viewModel.isSelectionMode.value) {
-                navigator.navigateToEditTransaction(transaction.id)
+                viewModel.navigateToEditTransaction(transaction.id)
             }
         },
         onItemSelect = { transaction ->
@@ -44,7 +42,7 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
 
     override fun initListener() {
         binding.buttonBack.setOnClickListener {
-            navigator.navigateUp()
+            navigateBack()
         }
 
         binding.buttonSearch.setOnClickListener {
@@ -75,8 +73,8 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
             viewModel.deleteSelectedTransactions()
         }
 
-        binding.layoutQuarterSelection.setOnClickListener {
-            navigator.navigateToDataSetting()
+        binding.layoutTimeSelection.setOnClickListener {
+            viewModel.navigateToDataSetting()
         }
     }
 
@@ -202,18 +200,21 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
         binding.apply {
             if (isSelectionMode) {
                 // Update toolbar
-                textViewTitle.text = if (viewModel.selectedTransactions.value.isEmpty()) {
-                    "Select transaction"
+                if (viewModel.selectedTransactions.value.isEmpty()) {
+                    textViewTitle.text = "Select transaction"
+                    textViewDelete.setTextColor(R.color.black_text)
                 } else {
-                    "${viewModel.selectedTransactions.value.size} selected"
+                    textViewTitle.text = "${viewModel.selectedTransactions.value.size} selected"
+                    textViewDelete.setTextColor(R.color.blue_bg)
                 }
+
                 buttonSearch.visibility = View.GONE
                 buttonMenu.visibility = View.GONE
                 textViewDelete.visibility = View.VISIBLE
-                
+
                 // Hide header layout
-                headerLayout.visibility = View.GONE
-                
+                layoutTimeSelection.visibility = View.GONE
+
                 // Show action bar
                 layoutActionBar.visibility = View.VISIBLE
             } else {
@@ -222,15 +223,15 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
                 buttonSearch.visibility = View.VISIBLE
                 buttonMenu.visibility = View.VISIBLE
                 textViewDelete.visibility = View.GONE
-                
+
                 // Show header layout
                 headerLayout.visibility = View.VISIBLE
-                
+
                 // Hide action bar
                 layoutActionBar.visibility = View.GONE
                 checkboxSelectAll.isChecked = false
             }
-            
+
             // Update adapter
             adapter.setSelectionMode(isSelectionMode)
         }
@@ -246,7 +247,7 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
                     "${selectedIds.size} selected"
                 }
             }
-            
+
             // Update select all checkbox
             val allTransactionIds = adapter.currentList.flatMap { item ->
                 if (item is TransactionListItem.DateHeader) {
@@ -255,9 +256,9 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
                     emptyList()
                 }
             }
-            checkboxSelectAll.isChecked = selectedIds.isNotEmpty() && 
-                selectedIds.containsAll(allTransactionIds)
-            
+            checkboxSelectAll.isChecked = selectedIds.isNotEmpty() &&
+                    selectedIds.containsAll(allTransactionIds)
+
             // Update adapter
             adapter.setSelectedTransactions(selectedIds)
         }

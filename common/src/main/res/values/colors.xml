@@ -18,6 +18,7 @@
     <color name="gray_big_icon">#6B727F</color>
     <color name="gray_text">#6B727F</color>
     <color name="black_text">#010512</color>
+    <color name="black_outline">#737986</color>
     <color name="black_chevron">#4B5563</color>
     <color name="blue_fab">#E0F3FE</color>
     <color name="blue_item_bg">#F0F9FF</color>

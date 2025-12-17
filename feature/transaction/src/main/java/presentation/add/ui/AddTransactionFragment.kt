@@ -13,14 +13,13 @@ import base.BaseFragment
 import base.UIState
 import camera.CameraHandler
 import com.example.transaction.databinding.FragmentTransactionAddBinding
+import com.google.android.material.chip.Chip
 import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
-import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS
 import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
 import constants.FragmentResultKeys.RESULT_CATEGORY_ID
-import constants.FragmentResultKeys.RESULT_EVENT_ID
 import constants.FragmentResultKeys.RESULT_LOCATION_ID
 import constants.FragmentResultKeys.RESULT_PAYEE_IDS
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +35,7 @@ import transaction.model.Event
 import ui.CalculatorManager
 import ui.CalculatorProvider
 import ui.GridSpacingItemDecoration
+import ui.animateChevronRotation
 import ui.createSlideDownAnimation
 import ui.createSlideUpAnimation
 import ui.gone
@@ -60,8 +60,7 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
     private val adapter = CategoryAdapter(
         onItemClick = { category ->
             viewModel.selectCategory(category = category)
-        }
-    )
+        })
 
     private lateinit var cameraHandler: CameraHandler
     private lateinit var permissionHandler: PermissionHandler
@@ -107,8 +106,13 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
             setOnItemClickListener { parent, _, position, _ ->
                 val selectedItem = parent.getItemAtPosition(position) as CategoryType
                 setText(selectedItem.label, false)
-                // Load categories when user manually changes type
-                viewModel.loadCategoriesByType(selectedItem)
+                binding.layoutMostUse.isVisible = selectedItem == CategoryType.EXPENSE
+                binding.editTextAmount.setTextColor(
+                    if (selectedItem == CategoryType.EXPENSE) context.getColor(CommonR.color.red_expense)
+                    else context.getColor(
+                        CommonR.color.green_income
+                    )
+                )
             }
             post {
                 val dropdownWidth = (300 * resources.displayMetrics.density).toInt()
@@ -142,11 +146,6 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
             viewModel.selectAccountById(accountId)
         }
 
-        listenForSelectionResult(REQUEST_SELECT_EVENT_ID) { bundle ->
-            val eventId = bundle.getLong(RESULT_EVENT_ID)
-            viewModel.selectEventById(eventId)
-        }
-
         listenForSelectionResult(REQUEST_SELECT_PAYEE_IDS) { bundle ->
             val payeeIds = bundle.getLongArray(RESULT_PAYEE_IDS) ?: longArrayOf()
             viewModel.selectPayeesByIds(payeeIds)
@@ -165,11 +164,11 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
                 viewModel.onHistoryClick()
             }
 
-            layoutCategorySelection.setOnClickListener {
+            layoutMoreCategory.setOnClickListener {
                 viewModel.toSelectCategory()
             }
 
-            layoutRecentlyUse.setOnClickListener {
+            buttonMostUse.setOnClickListener {
                 toggleRecentlyCategory()
             }
 
@@ -202,45 +201,15 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
             }
 
             buttonShowMore.setOnClickListener {
-                if (layoutMore.visibility == View.GONE) {
-                    layoutMore.visibility = View.VISIBLE
-                    buttonShowMore.text = getString(com.example.common.R.string.text_hide_details)
-                    layoutMore.startAnimation(
-                        createSlideDownAnimation(context)
-                    )
-                } else {
-                    buttonShowMore.text =
-                        getString(com.example.common.R.string.text_show_more_details)
-                    layoutMore.startAnimation(
-                        createSlideUpAnimation(context, layoutMore)
-                    )
-                }
+                viewModel.toggleMoreDetailsExpanded()
             }
 
             buttonSubmit.setOnClickListener {
-                val selectedCategory = viewModel.selectedCategory.value
-                if (selectedCategory == null) {
-                    Toast.makeText(
-                        context,
-                        "Please select a category",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
-                }
+                saveTransaction()
+            }
 
-                // Parse amount by removing thousand separators (commas, spaces, etc.)
-                val amountText = editTextAmount.text.toString()
-                    .replace(",", "")  // Remove commas
-                    .replace(" ", "")  // Remove spaces
-                    .trim()
-                val amount = amountText.toDoubleOrNull() ?: 0.0
-
-                viewModel.addTransaction(
-                    amount = amount,
-                    description = editTextNote.text?.toString(),
-                    createAt = selectedDateStartMillis?.plus(selectedTimeOffsetMillis ?: 0)
-                        ?: System.currentTimeMillis()
-                )
+            buttonSave.setOnClickListener {
+                saveTransaction()
             }
 
             // Take photo
@@ -252,12 +221,9 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
                     onGranted = { cameraHandler.launchCamera() },
                     onDenied = {
                         Toast.makeText(
-                            requireContext(),
-                            "Camera permission required",
-                            Toast.LENGTH_SHORT
+                            requireContext(), "Camera permission required", Toast.LENGTH_SHORT
                         ).show()
-                    }
-                )
+                    })
                 permissionHandler.setup(permissionLauncher)
             }
 
@@ -269,12 +235,9 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
                     onGranted = { cameraHandler.launchGallery() },
                     onDenied = {
                         Toast.makeText(
-                            requireContext(),
-                            "Gallery permission required",
-                            Toast.LENGTH_SHORT
+                            requireContext(), "Gallery permission required", Toast.LENGTH_SHORT
                         ).show()
-                    }
-                )
+                    })
                 permissionHandler.setup(permissionLauncher)
             }
 
@@ -294,9 +257,7 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
 
                 is UIState.Error -> {
                     Toast.makeText(
-                        context,
-                        "Error loading categories: ${state.message}",
-                        Toast.LENGTH_SHORT
+                        context, "Error loading categories: ${state.message}", Toast.LENGTH_SHORT
                     ).show()
                 }
 
@@ -318,7 +279,9 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
 
         collectState(viewModel.selectedEvent) { event ->
-            updateSelectedEvents(event?.let { listOf(it) } ?: emptyList())
+            if (event != null) {
+                updateSelectedEvent(event)
+            }
         }
 
         collectState(viewModel.selectedPayees) { payees ->
@@ -379,9 +342,7 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
                         "Transaction added successfully"
                     }
                     Toast.makeText(
-                        context,
-                        message,
-                        Toast.LENGTH_SHORT
+                        context, message, Toast.LENGTH_SHORT
                     ).show()
                 }
 
@@ -392,9 +353,7 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
                         "Error adding transaction: ${state.message}"
                     }
                     Toast.makeText(
-                        context,
-                        message,
-                        Toast.LENGTH_SHORT
+                        context, message, Toast.LENGTH_SHORT
                     ).show()
                 }
 
@@ -403,11 +362,39 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
 
         // Observe transaction data when loaded for editing
-        collectState<transaction.model.Transaction?>(viewModel.transactionLoaded) { transaction ->
+        collectState(viewModel.transactionLoaded) { transaction ->
             transaction?.let {
                 populateTransactionFields(it)
             }
         }
+
+        // Observe more details expanded state
+        collectState(viewModel.isMoreDetailsExpanded) { isExpanded ->
+            updateMoreDetailsVisibility(isExpanded)
+        }
+    }
+
+    private fun saveTransaction() {
+        val selectedCategory = viewModel.selectedCategory.value
+        if (selectedCategory == null) {
+            Toast.makeText(
+                context, "Please select a category", Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        // Parse amount by removing thousand separators (commas, spaces, etc.)
+        val amountText = binding.editTextAmount.text.toString().replace(",", "")  // Remove commas
+            .replace(" ", "")  // Remove spaces
+            .trim()
+        val amount = amountText.toDoubleOrNull() ?: 0.0
+
+        viewModel.addTransaction(
+            amount = amount,
+            description = binding.editTextNote.text?.toString(),
+            createAt = selectedDateStartMillis?.plus(selectedTimeOffsetMillis ?: 0)
+                ?: System.currentTimeMillis()
+        )
     }
 
     private fun updateSelectedCategory(category: Category) {
@@ -439,23 +426,22 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
     }
 
-    private fun updateSelectedEvents(events: List<Event>) {
+    private fun updateSelectedEvent(event: Event) {
         binding.apply {
-            customViewEvent.getTextView().isVisible = events.isEmpty()
+            customViewEvent.getTextView().isVisible = true
             customViewEvent.getChipGroup().removeAllViews()
 
             // Add chips for each selected event (filter out nulls for safety)
-            events.filterNotNull().forEach { event ->
-                val chip = com.google.android.material.chip.Chip(requireContext())
-                chip.text = event.eventName.standardize()
-                chip.isCloseIconVisible = true
-                chip.setOnCloseIconClickListener {
-                    viewModel.removeEvent(event)
-                }
-                // Insert before the "Add Event" chip
-                customViewEvent.getChipGroup()
-                    .addView(chip, customViewEvent.getChipGroup().childCount - 1)
+            val chip = Chip(requireContext())
+            chip.text = event.eventName
+            chip.isCloseIconVisible = true
+            chip.setOnCloseIconClickListener {
+                viewModel.removeEvent(event)
             }
+            // Insert before the "Add Event" chip
+            customViewEvent.getChipGroup()
+                .addView(chip, customViewEvent.getChipGroup().childCount - 1)
+
         }
     }
 
@@ -498,7 +484,15 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     fun toggleRecentlyCategory() {
         binding.apply {
+            // Toggle visibility first
             recyclerViewCategories.isVisible = !recyclerViewCategories.isVisible
+
+            // Then animate chevron to match the new state
+            imageViewChevron.animateChevronRotation(
+                isExpanded = recyclerViewCategories.isVisible,
+                origin = -90f,
+                angle = 90f,
+            )
         }
     }
 
@@ -512,22 +506,17 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
             onGranted = { /* Will be set dynamically */ },
             onDenied = {
                 Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
-            }
-        )
+            })
         permissionHandler.setup(permissionLauncher)
     }
 
     private fun setupCameraHandler() {
-        cameraHandler = CameraHandler(
-            fragment = this,
-            fileProvider = fileProvider,
-            onImageCaptured = { uri ->
+        cameraHandler =
+            CameraHandler(fragment = this, fileProvider = fileProvider, onImageCaptured = { uri ->
                 viewModel.saveImage(uri)
-            },
-            onError = { message ->
+            }, onError = { message ->
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-            }
-        )
+            })
         cameraHandler.setup()
     }
 
@@ -560,12 +549,33 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
             // Set date and time millis for submission
             val localDate = java.time.Instant.ofEpochMilli(transaction.createAt)
                 .atZone(java.time.ZoneId.systemDefault()).toLocalDate()
-            selectedDateStartMillis = localDate.atStartOfDay(java.time.ZoneId.systemDefault())
-                .toInstant().toEpochMilli()
+            selectedDateStartMillis =
+                localDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
 
             val hour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
             val minute = calendar.get(java.util.Calendar.MINUTE)
             selectedTimeOffsetMillis = (hour * 3_600_000L + minute * 60_000L)
+        }
+    }
+
+    private fun updateMoreDetailsVisibility(isExpanded: Boolean) {
+        binding.apply {
+            if (isExpanded) {
+                layoutMore.visibility = View.VISIBLE
+                buttonShowMore.text = getString(com.example.common.R.string.text_hide_details)
+                layoutMore.startAnimation(createSlideDownAnimation(context))
+            } else {
+                if (layoutMore.visibility == View.VISIBLE) {
+                    buttonShowMore.text =
+                        getString(com.example.common.R.string.text_show_more_details)
+                    layoutMore.startAnimation(createSlideUpAnimation(context, layoutMore))
+                } else {
+                    // Set visibility directly without animation when initializing
+                    layoutMore.visibility = View.GONE
+                    buttonShowMore.text =
+                        getString(com.example.common.R.string.text_show_more_details)
+                }
+            }
         }
     }
 

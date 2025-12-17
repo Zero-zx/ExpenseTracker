@@ -13,9 +13,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class CustomTabFragment : DataSettingTabFragment() {
 
-    @Inject
-    lateinit var navigator: Navigator
-
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     override fun updateUI(state: DataSettingUiState) {

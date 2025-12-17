@@ -25,5 +25,11 @@ internal interface EventDao {
 
     @Query("SELECT * FROM tb_event WHERE id = :eventId")
     suspend fun getEventById(eventId: Long): EventEntity?
+
+    @Query("SELECT * FROM tb_event WHERE eventName = :eventName AND accountId = :accountId LIMIT 1")
+    suspend fun getEventByName(eventName: String, accountId: Long): EventEntity?
+
+    @Query("SELECT * FROM tb_event WHERE accountId = :accountId AND eventName LIKE '%' || :searchQuery || '%' ORDER BY startDate DESC")
+    fun searchEventsByAccount(accountId: Long, searchQuery: String): Flow<List<EventEntity>>
 }
 

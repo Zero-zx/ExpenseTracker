@@ -5,8 +5,8 @@ data class Event(
     val eventName: String,
     val startDate: Long,
     val endDate: Long?,
-    val numberOfParticipants: Int,
+    val numberOfParticipants: Int? = 0,
     val accountId: Long,
     val isActive: Boolean = true,
-    val participants: List<String> = emptyList()
+    val participants: List<String>? = emptyList()
 )

@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 import com.example.expensetracker.R
 import navigation.Navigator
 import navigation.navigateWithAnim
+import transaction.model.CategoryType
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,8 +34,12 @@ class NavigatorImpl @Inject constructor() : Navigator {
         navController?.navigateWithAnim(R.id.transactionListFragment)
     }
 
-    override fun navigateToMoreCategory() {
-        navController?.navigateWithAnim(R.id.categorySelectFragment)
+
+    override fun navigateToMoreCategory(categoryType: String) {
+        navController?.navigateWithAnim(
+            R.id.categorySelectFragment,
+            bundleOf("category_type" to categoryType)
+        )
     }
 
     override fun navigateToAccountList() {

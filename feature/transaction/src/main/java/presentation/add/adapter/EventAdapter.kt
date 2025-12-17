@@ -35,7 +35,7 @@ class EventAdapter(
             binding.apply {
                 itemView.isSelected = isSelected
                 textViewName.text = event.eventName
-
+                textViewIconEvent.text = event.eventName.firstOrNull()?.toString() ?: ""
                 itemView.setOnClickListener {
                     val position = bindingAdapterPosition
                     if (position != RecyclerView.NO_POSITION) {

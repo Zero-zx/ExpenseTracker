@@ -2,6 +2,10 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.App" parent="Theme.Material3.Light.NoActionBar">
+<!--        <item name="colorOnSurface">@color/white</item>-->
+        <item name="colorPrimary">@color/blue_bg</item>
+<!--        <item name="colorSurface">@color/shrine_surface</item>-->
+<!--        <item name="colorOnPrimary">@color/shrine_on_primary</item>-->
         <item name="android:windowBackground">@color/app_background</item>
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.Material3.DisplayLarge</item>
         <item name="textAppearanceDisplayMedium">@style/TextAppearance.Material3.DisplayMedium
@@ -87,7 +91,7 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <!-- Title text: 12sp -->
+    <!-- Small text: 12sp -->
     <style name="TextAppearance.App.Small" parent="TextAppearance.Material3.BodySmall">
         <item name="android:textSize">12sp</item>
     </style>
@@ -158,7 +162,4 @@
         <item name="android:height">@dimen/keyboard_number_min_height</item>
     </style>
 
-
-    <dimen name="keyboard_number_text_size">20sp</dimen>
-    <dimen name="keyboard_number_min_height">45dp</dimen>
 </resources>

@@ -9,6 +9,8 @@ import com.example.transaction.databinding.ItemCategoryChildBinding
 import com.example.transaction.databinding.ItemCategoryParentBinding
 import helpers.standardize
 import transaction.model.Category
+import ui.animateExpandCollapse
+import ui.setChevronRotation
 
 class ExpandableCategoryAdapter(
     private val onCategoryClick: (Category) -> Unit
@@ -148,15 +150,8 @@ class ExpandableCategoryAdapter(
                 // Show/hide chevron based on whether category has children
                 if (hasChildren) {
                     iconChevron.visibility = android.view.View.VISIBLE
-                    iconChevron.rotation = if (isExpanded) 90f else 0f
+                    iconChevron.setChevronRotation(isExpanded)
                     iconChevron.setOnClickListener {
-                        // Toggle rotation animation
-                        val targetRotation = if (iconChevron.rotation == 0f) 90f else 0f
-                        iconChevron.animate()
-                            .rotation(targetRotation)
-                            .setDuration(200)
-                            .start()
-                        onToggle()
                     }
                 } else {
                     iconChevron.visibility = android.view.View.INVISIBLE

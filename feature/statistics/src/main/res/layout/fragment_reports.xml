@@ -13,7 +13,7 @@
         android:elevation="4dp"
         android:gravity="center"
         android:padding="16dp"
-        android:paddingTop="@dimen/dimen_padding_top"
+        android:paddingTop="@dimen/padding_edges"
         android:text="@string/text_reports"
         app:layout_constraintTop_toTopOf="parent" />
 

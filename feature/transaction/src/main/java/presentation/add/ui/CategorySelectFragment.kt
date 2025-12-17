@@ -16,6 +16,7 @@ class CategorySelectFragment : BaseFragment<FragmentCategorySelectBinding>(
 ) {
     private var selectedCategoryId: Long? = null
     private var tabMediator: TabLayoutMediator? = null
+    private var initialCategoryType: CategoryType = CategoryType.EXPENSE
 
     fun getSelectedCategoryId(): Long? = selectedCategoryId
 
@@ -23,6 +24,11 @@ class CategorySelectFragment : BaseFragment<FragmentCategorySelectBinding>(
         // Get initially selected category ID from arguments
         arguments?.getLong("selected_category_id", -1L)?.takeIf { it != -1L }?.let {
             selectedCategoryId = it
+        }
+
+        // Get category type from arguments to set default tab
+        arguments?.getString("category_type")?.let { typeString ->
+            initialCategoryType = CategoryType.valueOf(typeString)
         }
 
         setupViewPager()
@@ -59,6 +65,16 @@ class CategorySelectFragment : BaseFragment<FragmentCategorySelectBinding>(
             tabs = tabs
         )
         tabMediator = mediator
+
+        // Set the initial tab based on the category type
+        val initialTabPosition = when (initialCategoryType) {
+            CategoryType.EXPENSE -> 0
+            CategoryType.INCOME -> 1
+            CategoryType.LEND -> 2
+            CategoryType.BORROWING -> 2
+            else -> 0
+        }
+        binding.viewPager.setCurrentItem(initialTabPosition, false)
     }
 
     override fun onDestroyView() {

@@ -34,5 +34,15 @@ internal class EventRepositoryImpl @Inject constructor(
     override suspend fun getEventById(eventId: Long): Event? {
         return eventDao.getEventById(eventId)?.toDomain()
     }
+
+    override suspend fun getEventByName(eventName: String, accountId: Long): Event? {
+        return eventDao.getEventByName(eventName, accountId)?.toDomain()
+    }
+
+    override fun searchEventsByAccount(accountId: Long, searchQuery: String): Flow<List<Event>> {
+        return eventDao.searchEventsByAccount(accountId, searchQuery).map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
 }
 

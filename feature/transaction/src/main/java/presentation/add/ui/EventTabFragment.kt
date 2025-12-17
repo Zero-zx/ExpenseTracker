@@ -2,27 +2,27 @@ package presentation.add.ui
 
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import base.BaseFragment
 import base.UIState
-import com.example.transaction.R as TransactionR
 import com.example.transaction.databinding.FragmentEventTabBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 import presentation.add.adapter.EventAdapter
 import presentation.add.model.EventTabType
 import presentation.add.viewModel.AddTransactionViewModel
 import presentation.add.viewModel.EventSelectViewModel
 import transaction.model.Event
+import ui.navigateBack
+import com.example.transaction.R as TransactionR
 
 @AndroidEntryPoint
 class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
     FragmentEventTabBinding::inflate
 ) {
     private val viewModel: EventSelectViewModel by viewModels()
-    private val addTransactionViewModel: AddTransactionViewModel by hiltNavGraphViewModels(TransactionR.id.transaction_nav_graph)
+    private val addTransactionViewModel: AddTransactionViewModel by hiltNavGraphViewModels(
+        TransactionR.id.transaction_nav_graph
+    )
     private lateinit var adapter: EventAdapter
     private var tabType: EventTabType = EventTabType.IN_PROGRESS
     private val selectedEventId: Long by lazy {
@@ -32,7 +32,8 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
     override fun initView() {
         adapter = EventAdapter(
             { event ->
-                (parentFragment as EventSelectFragment).onEventSelected(event.id)
+                addTransactionViewModel.selectEvent(event)
+                navigateBack()
             },
             {
                 // TODO: Handle item update
@@ -46,7 +47,7 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
 
     override fun initListener() {
         binding.buttonAddTrip.setOnClickListener {
-            showAddEventView()
+            showListView()
         }
 
         binding.buttonSave.setOnClickListener {
@@ -54,11 +55,11 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
             if (eventName.isBlank()) {
                 return@setOnClickListener
             }
-            
+
             // Create temporary event and add to AddTransactionViewModel
             val currentTime = System.currentTimeMillis()
             val event = Event(
-                id = 0, // Will be assigned temporary ID
+                id = -1L,
                 eventName = eventName,
                 startDate = currentTime,
                 endDate = null,
@@ -66,72 +67,99 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
                 accountId = addTransactionViewModel.getCurrentAccountId() ?: 1L,
                 isActive = true
             )
-            addTransactionViewModel.addTemporaryEvent(event)
-            
-            // Clear input
-            binding.editTextEventName.text?.clear()
-            showRecyclerView()
+            addTransactionViewModel.selectEvent(event)
+
+            navigateBack()
         }
+
+        binding.editTextEventName.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.updateSearchQuery(s?.toString() ?: "")
+            }
+
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
     }
 
     override fun observeData() {
-        // Observe persisted events from EventSelectViewModel
-        viewLifecycleOwner.lifecycleScope.launch {
-            combine(
-                viewModel.uiState,
-                addTransactionViewModel.temporaryEvents
-            ) { persistedState, temporaryEvents ->
-                when (persistedState) {
-                    is UIState.Success -> {
-                        // Merge persisted and temporary events
-                        val mergedEvents = temporaryEvents + persistedState.data
-                        UIState.Success(mergedEvents)
-                    }
-                    is UIState.Loading -> UIState.Loading
-                    is UIState.Error -> persistedState
-                    else -> UIState.Idle
-                }
-            }.collect { mergedState ->
-                when (mergedState) {
-                    is UIState.Loading -> {}
-                    is UIState.Success -> {
-                        if (mergedState.data.isEmpty()) {
-                            showEmptyView()
-                        } else {
-                            showRecyclerView()
-                            adapter.submitList(mergedState.data)
-                            if (selectedEventId != -1L) {
-                                val selectedEvent = mergedState.data.find { it.id == selectedEventId }
-                                selectedEvent?.let {
-                                    adapter.setSelectedEvents(listOf(it))
-                                }
-                            }
-                        }
-                    }
-                    else -> {
-                        showEmptyView()
-                    }
-                }
+        // Observe event list from database
+        collectFlow(viewModel.uiState) { state ->
+            when (state) {
+                is UIState.Loading -> {}
+                is UIState.Success -> handleSuccessState(state.data)
+                is UIState.Error -> handleErrorState()
+                is UIState.Idle -> handleEmptyState()
+            }
+        }
+
+        // Observe selected event from AddTransactionViewModel
+        collectState(addTransactionViewModel.selectedEvent) { selectedEvent ->
+            selectedEvent?.let { event ->
+                handleSelectedEvent(event)
             }
         }
     }
 
+    private fun handleSuccessState(events: List<Event>) {
+        handleEventListLoaded(events)
+    }
+
+    private fun handleErrorState() {
+        showEmptyView()
+    }
+
+    private fun handleEmptyState() {
+        if (binding.editTextEventName.text.isNullOrBlank()) showEmptyView()
+    }
+
+
+    private fun handleEventListLoaded(events: List<Event>) {
+        showListView()
+        adapter.submitList(events)
+
+        val selectedEvent = addTransactionViewModel.selectedEvent.value
+        if (selectedEvent != null) {
+            val eventInDatabase = events.find { it.id == selectedEvent.id }
+            if (eventInDatabase != null) {
+                // Event exists in database - select it in the list
+                adapter.setSelectedEvents(listOf(eventInDatabase))
+            } else {
+                // Event doesn't exist in database - show add form
+                showAddEventViewWithData(selectedEvent.eventName)
+            }
+        } else if (selectedEventId != -1L) {
+            // Handle pre-selected event from arguments
+            events.find { it.id == selectedEventId }?.let { event ->
+                adapter.setSelectedEvents(listOf(event))
+            }
+        }
+    }
+
+    private fun handleSelectedEvent(event: Event) {
+        binding.layoutAddEvent.isVisible = true
+        binding.editTextEventName.setText(event.eventName)
+    }
+
+    private fun isEventInDatabase(event: Event): Boolean {
+        return event.id > 0
+    }
+
+    private fun showAddEventViewWithData(eventName: String) {
+        showListView()
+        binding.editTextEventName.setText(eventName)
+    }
+
     fun showEmptyView() {
         binding.layoutEmpty.isVisible = true
-        binding.recyclerView.isVisible = false
         binding.layoutAddEvent.isVisible = false
         binding.buttonAddTrip.isVisible = tabType == EventTabType.IN_PROGRESS
     }
 
-    fun showRecyclerView() {
-        binding.layoutEmpty.isVisible = false
-        binding.recyclerView.isVisible = true
-        binding.layoutAddEvent.isVisible = false
-    }
 
-    fun showAddEventView() {
+    fun showListView() {
         binding.layoutEmpty.isVisible = false
-        binding.recyclerView.isVisible = false
         binding.layoutAddEvent.isVisible = true
     }
 

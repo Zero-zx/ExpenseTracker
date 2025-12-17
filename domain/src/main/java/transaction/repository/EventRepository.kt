@@ -13,5 +13,8 @@ interface EventRepository {
     suspend fun deleteEvent(event: Event)
 
     suspend fun getEventById(eventId: Long): Event?
-}
 
+    suspend fun getEventByName(eventName: String, accountId: Long): Event?
+
+    fun searchEventsByAccount(accountId: Long, searchQuery: String): Flow<List<Event>>
+}

@@ -10,9 +10,8 @@ import com.example.transaction.databinding.FragmentDataSettingBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import constants.FragmentResultKeys
 import dagger.hilt.android.AndroidEntryPoint
-import navigation.Navigator
+import ui.navigateBack
 import ui.setSelectionResult
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class DataSettingFragment : BaseFragment<FragmentDataSettingBinding>(
@@ -20,9 +19,6 @@ class DataSettingFragment : BaseFragment<FragmentDataSettingBinding>(
 ) {
     val viewModel: DataSettingViewModel by viewModels()
 
-    @Inject
-    lateinit var navigator: Navigator
-    
     private var tabMediator: TabLayoutMediator? = null
 
     override fun initView() {
@@ -31,7 +27,7 @@ class DataSettingFragment : BaseFragment<FragmentDataSettingBinding>(
 
     override fun initListener() {
         binding.imageViewBack.setOnClickListener {
-            navigator.navigateUp()
+            navigateBack()
         }
     }
 
@@ -55,8 +51,7 @@ class DataSettingFragment : BaseFragment<FragmentDataSettingBinding>(
         )
         tabMediator = mediator
 
-        // Set default tab to Q (index 3)
-        binding.viewPager.setCurrentItem(3, false)
+        binding.viewPager.setCurrentItem(2, false)
 
         // Update ViewModel when tab changes
         binding.viewPager.registerOnPageChangeCallback(object :
@@ -117,7 +112,7 @@ class DataSettingFragment : BaseFragment<FragmentDataSettingBinding>(
             )
         )
 
-        navigator.navigateUp()
+        navigateBack()
     }
 
     override fun onDestroyView() {
@@ -126,4 +121,3 @@ class DataSettingFragment : BaseFragment<FragmentDataSettingBinding>(
         super.onDestroyView()
     }
 }
-
