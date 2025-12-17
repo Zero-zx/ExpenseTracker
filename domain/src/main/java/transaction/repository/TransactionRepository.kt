@@ -10,6 +10,7 @@ interface TransactionRepository {
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)
     fun getTransactionsByDateRange(accountId: Long, startDate: Long, endDate: Long): Flow<List<Transaction>>
+    suspend fun getCategoryUsageCount(accountId: Long): Map<Long, Int>
 }
 
 

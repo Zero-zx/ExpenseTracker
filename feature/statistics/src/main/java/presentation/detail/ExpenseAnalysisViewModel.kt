@@ -175,5 +175,8 @@ class ExpenseAnalysisViewModel @Inject constructor(
             monthlyData = monthlyData
         )
     }
+
+    fun getSelectedCategoryIds(): List<Long>? = selectedCategoryIds
+    fun getSelectedAccountIds(): List<Long>? = selectedAccountIds
 }
 

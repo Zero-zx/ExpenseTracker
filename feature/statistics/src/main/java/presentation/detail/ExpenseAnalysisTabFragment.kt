@@ -1,6 +1,7 @@
 package presentation.detail
 
 import android.graphics.Color
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
@@ -11,11 +12,15 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import constants.FragmentResultKeys.RESULT_ACCOUNT_IDS
+import constants.FragmentResultKeys.RESULT_CATEGORY_IDS
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.MonthlyAnalysisAdapter
 import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
+import transaction.model.CategoryType
+import ui.listenForSelectionResult
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -77,15 +82,85 @@ class ExpenseAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
 
         // Category filter
         binding.layoutCategoryFilter.setOnClickListener {
-            // TODO: Navigate to category selection
+            openCategoryMultiSelect()
         }
 
         // Account filter
         binding.layoutAccountFilter.setOnClickListener {
-            // TODO: Navigate to account selection
+            openAccountMultiSelect()
         }
 
+        setupFragmentResultListeners()
         updateDateRangeDisplay()
+        updateCategoryDisplay()
+        updateAccountDisplay()
+    }
+
+    private fun openCategoryMultiSelect() {
+        val selectedIds = viewModel.getSelectedCategoryIds()?.toLongArray()
+        val fragment = CategoryMultiSelectFragment.newInstance(
+            CategoryType.EXPENSE,
+            selectedIds
+        )
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(android.R.id.content, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun openAccountMultiSelect() {
+        val selectedIds = viewModel.getSelectedAccountIds()?.toLongArray()
+        val fragment = AccountMultiSelectFragment.newInstance(selectedIds)
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(android.R.id.content, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun setupFragmentResultListeners() {
+        listenForSelectionResult(
+            constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_IDS
+        ) { bundle ->
+            val categoryIds = bundle.getLongArray(RESULT_CATEGORY_IDS)
+            categoryIds?.let {
+                viewModel.loadExpenseAnalysis(
+                    categoryIds = it.toList(),
+                    accountIds = viewModel.getSelectedAccountIds()
+                )
+                updateCategoryDisplay()
+            }
+        }
+
+        listenForSelectionResult(
+            constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_IDS
+        ) { bundle ->
+            val accountIds = bundle.getLongArray(RESULT_ACCOUNT_IDS)
+            accountIds?.let {
+                viewModel.loadExpenseAnalysis(
+                    categoryIds = viewModel.getSelectedCategoryIds(),
+                    accountIds = it.toList()
+                )
+                updateAccountDisplay()
+            }
+        }
+    }
+
+    private fun updateCategoryDisplay() {
+        val selectedIds = viewModel.getSelectedCategoryIds()
+        binding.textViewCategory.text = if (selectedIds.isNullOrEmpty()) {
+            getString(com.example.statistics.R.string.text_all_expense_categories)
+        } else {
+            "${selectedIds.size} categories"
+        }
+    }
+
+    private fun updateAccountDisplay() {
+        val selectedIds = viewModel.getSelectedAccountIds()
+        binding.textViewAccount.text = if (selectedIds.isNullOrEmpty()) {
+            getString(com.example.statistics.R.string.text_all_accounts)
+        } else {
+            "${selectedIds.size} accounts"
+        }
     }
 
     private fun updateDateRangeDisplay() {

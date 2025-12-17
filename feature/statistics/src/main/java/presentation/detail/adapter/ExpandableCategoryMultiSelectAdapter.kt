@@ -1,30 +1,30 @@
-package presentation.add.adapter
+package presentation.detail.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.transaction.databinding.ItemCategoryChildBinding
-import com.example.transaction.databinding.ItemCategoryParentBinding
+import com.example.statistics.databinding.ItemCategoryMultiSelectChildBinding
+import com.example.statistics.databinding.ItemCategoryMultiSelectParentBinding
 import helpers.standardize
 import transaction.model.Category
-import ui.animateExpandCollapse
 import ui.setChevronRotation
 
-class ExpandableCategoryAdapter(
-    private val onCategoryClick: (Category) -> Unit
-) : ListAdapter<ExpandableCategoryAdapter.CategoryItem, ExpandableCategoryAdapter.CategoryViewHolder>(
+class ExpandableCategoryMultiSelectAdapter(
+    private val onCategoryToggle: (Long) -> Unit,
+    private val onParentCategoryToggle: ((Long, List<Long>) -> Unit)? = null,
+    private val selectedCategoryIds: () -> Set<Long>
+) : ListAdapter<ExpandableCategoryMultiSelectAdapter.CategoryItem, ExpandableCategoryMultiSelectAdapter.CategoryViewHolder>(
     CategoryDiffCallback()
 ) {
 
     private val expandedParentIds = mutableSetOf<Long>()
-    private var searchQuery: String = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return when (viewType) {
             VIEW_TYPE_PARENT -> {
-                val binding = ItemCategoryParentBinding.inflate(
+                val binding = ItemCategoryMultiSelectParentBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -33,7 +33,7 @@ class ExpandableCategoryAdapter(
             }
 
             VIEW_TYPE_CHILD -> {
-                val binding = ItemCategoryChildBinding.inflate(
+                val binding = ItemCategoryMultiSelectChildBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -47,18 +47,29 @@ class ExpandableCategoryAdapter(
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val item = getItem(position)
+        val selectedIds = selectedCategoryIds()
         when (holder) {
             is ParentCategoryViewHolder -> {
+                val childCategoryIds = allCategories.filter { it.parentId == item.category.id }.map { it.id }
                 holder.bind(
                     category = item.category,
                     isExpanded = expandedParentIds.contains(item.category.id),
                     onToggle = { toggleExpansion(item.category.id) },
-                    hasChildren = item.hasChildren
+                    hasChildren = item.hasChildren,
+                    isSelected = selectedIds.contains(item.category.id),
+                    onCategoryToggle = { 
+                        onParentCategoryToggle?.invoke(item.category.id, childCategoryIds) 
+                            ?: onCategoryToggle(item.category.id)
+                    }
                 )
             }
 
             is ChildCategoryViewHolder -> {
-                holder.bind(item.category)
+                holder.bind(
+                    item.category,
+                    isSelected = selectedIds.contains(item.category.id),
+                    onCategoryToggle = { onCategoryToggle(item.category.id) }
+                )
             }
         }
     }
@@ -78,6 +89,7 @@ class ExpandableCategoryAdapter(
     }
 
     private var allCategories: List<Category> = emptyList()
+    private var searchQuery: String = ""
 
     fun submitCategories(categories: List<Category>) {
         allCategories = categories
@@ -97,7 +109,7 @@ class ExpandableCategoryAdapter(
         } else {
             // Filter categories that match search query
             categories.filter { category ->
-                category.title.standardize().lowercase().contains(searchQuery)
+                category.title.lowercase().contains(searchQuery)
             }
         }
 
@@ -109,7 +121,7 @@ class ExpandableCategoryAdapter(
             
             // Only show parent if it matches or has matching children
             val shouldShowParent = searchQuery.isBlank() || 
-                    parent.title.standardize().lowercase().contains(searchQuery) ||
+                    parent.title.lowercase().contains(searchQuery) ||
                     childCategories.isNotEmpty()
             
             if (shouldShowParent) {
@@ -140,33 +152,25 @@ class ExpandableCategoryAdapter(
         binding: Any
     ) : RecyclerView.ViewHolder(
         when (binding) {
-            is ItemCategoryParentBinding -> binding.root
-            is ItemCategoryChildBinding -> binding.root
+            is ItemCategoryMultiSelectParentBinding -> binding.root
+            is ItemCategoryMultiSelectChildBinding -> binding.root
             else -> throw IllegalArgumentException("Unknown binding type")
         }
     ) {
-        abstract fun bind(category: Category)
+        abstract fun bind(category: Category, isSelected: Boolean, onCategoryToggle: () -> Unit)
     }
 
     inner class ParentCategoryViewHolder(
-        private val binding: ItemCategoryParentBinding
+        private val binding: ItemCategoryMultiSelectParentBinding
     ) : CategoryViewHolder(binding) {
-
-        init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val item = getItem(position)
-                    onCategoryClick(item.category)
-                }
-            }
-        }
 
         fun bind(
             category: Category,
             isExpanded: Boolean,
             onToggle: () -> Unit,
-            hasChildren: Boolean
+            hasChildren: Boolean,
+            isSelected: Boolean,
+            onCategoryToggle: () -> Unit
         ) {
             binding.apply {
                 // Set icon
@@ -180,42 +184,52 @@ class ExpandableCategoryAdapter(
                     iconChevron.visibility = android.view.View.VISIBLE
                     iconChevron.setChevronRotation(isExpanded)
                     iconChevron.setOnClickListener {
+                        onToggle()
                     }
                 } else {
                     iconChevron.visibility = android.view.View.INVISIBLE
                 }
 
-
                 // Hide nested RecyclerView (we're using flat list instead)
                 recyclerViewChildCategories.visibility = ViewGroup.GONE
 
+                // Setup checkbox
+                checkbox.setOnCheckedChangeListener(null)
+                checkbox.isChecked = isSelected
+                checkbox.setOnCheckedChangeListener { _, _ ->
+                    onCategoryToggle()
+                }
+
+                root.setOnClickListener {
+                    checkbox.isChecked = !checkbox.isChecked
+                }
             }
         }
 
-        override fun bind(category: Category) {
+        override fun bind(category: Category, isSelected: Boolean, onCategoryToggle: () -> Unit) {
             // Not used for parent
         }
     }
 
     inner class ChildCategoryViewHolder(
-        private val binding: ItemCategoryChildBinding
+        private val binding: ItemCategoryMultiSelectChildBinding
     ) : CategoryViewHolder(binding) {
 
-        init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val item = getItem(position)
-                    onCategoryClick(item.category)
-                }
-            }
-        }
-
-        override fun bind(category: Category) {
+        override fun bind(category: Category, isSelected: Boolean, onCategoryToggle: () -> Unit) {
             binding.apply {
                 imageIcon.setImageResource(category.iconRes)
                 textViewCategoryName.text = category.title.standardize()
 
+                // Setup checkbox
+                checkbox.setOnCheckedChangeListener(null)
+                checkbox.isChecked = isSelected
+                checkbox.setOnCheckedChangeListener { _, _ ->
+                    onCategoryToggle()
+                }
+
+                root.setOnClickListener {
+                    checkbox.isChecked = !checkbox.isChecked
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package repository
 
+import dao.CategoryUsageCount
 import dao.TransactionDao
 import dao.TransactionPayeeDao
 import model.TransactionPayeeEntity
@@ -95,5 +96,10 @@ internal class TransactionRepositoryImpl @Inject constructor(
                     transactionWithDetails.toDomain(payeeIds)
                 }
             }
+    }
+
+    override suspend fun getCategoryUsageCount(accountId: Long): Map<Long, Int> {
+        return transactionDao.getCategoryUsageCount(accountId)
+            .associate { it.categoryId to it.usageCount }
     }
 }
