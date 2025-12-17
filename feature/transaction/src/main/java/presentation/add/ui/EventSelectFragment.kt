@@ -31,11 +31,11 @@ class EventSelectFragment : BaseFragment<FragmentEventSelectBinding>(
             }
         }
     }
-
-    fun onEventSelected(eventId: Long) {
-        setEventIdSelectionResult(eventId)
-        navigateBack()
-    }
+//
+//    fun onEventSelected(eventId: Long) {
+//        setEventIdSelectionResult(eventId)
+//        navigateBack()
+//    }
 
     fun setupViewPager() {
         val tabs = listOf(

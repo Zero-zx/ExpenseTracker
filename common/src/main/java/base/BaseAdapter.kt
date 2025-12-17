@@ -1,16 +1,17 @@
 package base
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 
 abstract class BaseAdapter<T, VBinding : ViewBinding>(
     private val inflateMethod: (LayoutInflater, ViewGroup?, Boolean) -> VBinding,
+    diffCallback: DiffUtil.ItemCallback<T>,
     private val onClick: ((T) -> Unit)? = null
-) : RecyclerView.Adapter<BaseAdapter<T, VBinding>.BaseViewHolder>() {
-    private val items = mutableListOf<T>()
+) : ListAdapter<T, BaseAdapter<T, VBinding>.BaseViewHolder>(diffCallback) {
 
     inner class BaseViewHolder(val binding: VBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: T) {
@@ -34,16 +35,7 @@ abstract class BaseAdapter<T, VBinding : ViewBinding>(
         )
     }
 
-    override fun getItemCount() = items.size
-
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        holder.bind(items[position])
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun submitList(newItems: List<T>) {
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
+        holder.bind(getItem(position))
     }
 }

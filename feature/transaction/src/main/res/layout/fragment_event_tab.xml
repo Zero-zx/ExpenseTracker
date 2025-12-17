@@ -4,26 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_bg">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_event_transaction" />
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/dimen_padding_top"
-        android:visibility="gone">
+        android:paddingTop="@dimen/padding_edges"
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/image_view_empty"
@@ -40,7 +28,7 @@
             android:id="@+id/text_view_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_padding_top"
+            android:layout_marginTop="@dimen/padding_edges"
             android:gravity="center"
             android:text="You have no trips or events"
             app:layout_constraintTop_toBottomOf="@id/image_view_empty" />
@@ -49,7 +37,7 @@
             android:id="@+id/button_add_trip"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_padding_top"
+            android:layout_marginTop="@dimen/padding_edges"
             android:background="@drawable/rounded_background"
             android:backgroundTint="@color/blue_bg"
             android:gravity="center"
@@ -87,6 +75,8 @@
             android:id="@+id/text_input_layout_event_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
+            app:hintEnabled="false"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -94,15 +84,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/black_outline_rounded_background"
-                android:hint="Enter trip/event name" />
+                android:hint="Enter trip/event name"
+                android:padding="@dimen/padding_normal" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginBottom="@dimen/margin_medium"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/button_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_input_layout_event_name"
+            tools:listitem="@layout/item_event_transaction" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_save"
             style="@style/TextAppearance.App.Normal.White"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/padding_edges"
             android:background="@drawable/rounded_background"
             android:text="Confirm"
             app:backgroundTint="@color/blue_bg"

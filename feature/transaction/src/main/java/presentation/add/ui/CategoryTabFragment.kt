@@ -2,11 +2,14 @@ package presentation.add.ui
 
 import android.os.Bundle
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import base.BaseFragment
 import base.UIState
+import com.example.transaction.R
 import com.example.transaction.databinding.FragmentCategoryTabBinding
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.add.adapter.ExpandableCategoryAdapter
+import presentation.add.viewModel.AddTransactionViewModel
 import presentation.add.viewModel.CategoryTabViewModel
 import transaction.model.CategoryType
 
@@ -15,11 +18,12 @@ class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
     FragmentCategoryTabBinding::inflate
 ) {
     private val viewModel: CategoryTabViewModel by viewModels()
+    private val addTransactionViewModel: AddTransactionViewModel by hiltNavGraphViewModels(R.id.transaction_nav_graph)
 
     private val adapter = ExpandableCategoryAdapter(
         onCategoryClick = { category ->
             // Notify parent fragment about category selection
-            (parentFragment as? CategorySelectFragment)?.onCategorySelected(category.id)
+            addTransactionViewModel.selectCategory(category)
         }
     )
 

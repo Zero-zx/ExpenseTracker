@@ -5,7 +5,7 @@ interface Navigator {
     fun popBackStack(): Boolean
     fun navigateToTransactionRoute()
     fun navigateToTransaction()
-    fun navigateToMoreCategory()
+    fun navigateToMoreCategory(categoryType: String = "EXPENSE")
     fun navigateToAccountList()
     fun navigateToAddAccount()
     fun navigateToSelectAccount(selectedAccountId: Long = -1L)

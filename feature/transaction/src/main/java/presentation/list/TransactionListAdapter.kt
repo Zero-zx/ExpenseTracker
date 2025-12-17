@@ -1,7 +1,9 @@
 package presentation.list
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -85,6 +87,36 @@ class TransactionListAdapter(
                 // Update child adapter selection state
                 childAdapter.setSelectionMode(this@TransactionListAdapter.isSelectionMode)
                 childAdapter.setSelectedTransactions(this@TransactionListAdapter.selectedTransactionIds)
+
+                // Show/hide group checkbox in selection mode and set checked state
+                val groupIds = header.transactions.map { it.id }
+                checkboxSelection.visibility =
+                    if (this@TransactionListAdapter.isSelectionMode) View.VISIBLE else View.GONE
+
+                // detach listener before setting checked programmatically
+                checkboxSelection.setOnCheckedChangeListener(null)
+                checkboxSelection.isChecked = this@TransactionListAdapter.selectedTransactionIds.containsAll(groupIds)
+
+                // attach listener to toggle child selection by calling onItemSelect only for items that need toggling
+                checkboxSelection.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
+                    onItemSelect?.let { selectFn ->
+                        if (isChecked) {
+                            // select all child transactions that are not currently selected
+                            header.transactions.forEach { txn ->
+                                if (!this@TransactionListAdapter.selectedTransactionIds.contains(txn.id)) {
+                                    selectFn(txn)
+                                }
+                            }
+                        } else {
+                            // deselect all child transactions that are currently selected
+                            header.transactions.forEach { txn ->
+                                if (this@TransactionListAdapter.selectedTransactionIds.contains(txn.id)) {
+                                    selectFn(txn)
+                                }
+                            }
+                        }
+                    }
+                }
 
                 // Submit child list
                 childAdapter.submitList(header.transactions)

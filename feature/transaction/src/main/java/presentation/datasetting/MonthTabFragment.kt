@@ -5,6 +5,7 @@ import androidx.core.os.bundleOf
 import constants.FragmentResultKeys
 import dagger.hilt.android.AndroidEntryPoint
 import navigation.Navigator
+import ui.navigateBack
 import ui.openMonthPicker
 import ui.setSelectionResult
 import java.text.SimpleDateFormat
@@ -15,9 +16,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MonthTabFragment : DataSettingTabFragment() {
-
-    @Inject
-    lateinit var navigator: Navigator
 
     private val monthFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
 
@@ -85,7 +83,7 @@ class MonthTabFragment : DataSettingTabFragment() {
                                 FragmentResultKeys.RESULT_PERIOD_LABEL to periodLabel
                             )
                         )
-                        navigator.navigateUp()
+                        navigateBack()
                     }
                 }
             )

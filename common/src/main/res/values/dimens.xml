@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dimen_padding_top">24dp</dimen>
-    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="padding_edges">24dp</dimen>
+    <dimen name="margin_normal">8dp</dimen>
     <dimen name="margin_s">8dp</dimen>
     <dimen name="margin_large_small">8dp</dimen>
     <dimen name="margin_medium_normal">16dp</dimen>
@@ -17,5 +17,8 @@
     <dimen name="width_stroke_number_keyboard">0.3dp</dimen>
     <dimen name="padding_normal">8dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
     <dimen name="font_size_medium">19sp</dimen>
+    <dimen name="keyboard_number_text_size">20sp</dimen>
+    <dimen name="keyboard_number_min_height">45dp</dimen>
 </resources>

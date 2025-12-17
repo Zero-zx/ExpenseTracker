@@ -30,12 +30,12 @@ internal data class EventEntity(
     @ColumnInfo(name = "endDate")
     val endDate: Long?,
     @ColumnInfo(name = "numberOfParticipants")
-    val numberOfParticipants: Int,
+    val numberOfParticipants: Int? = null,
     @ColumnInfo(name = "accountId")
     val accountId: Long,
     @ColumnInfo(name = "isActive")
     val isActive: Boolean = true,
     @TypeConverters(StringListConverter::class)
     @ColumnInfo(name = "participants")
-    val participants: List<String> = emptyList()
+    val participants: List<String>? = emptyList()
 )

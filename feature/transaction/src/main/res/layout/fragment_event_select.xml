@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/dimen_padding_top"
-    android:background="@color/white_bg">
+    android:layout_marginTop="@dimen/padding_edges"
+    android:background="@color/white">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -40,7 +40,7 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:text="@string/text_with_whom" />
+                android:text="@string/text_trip_event" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 

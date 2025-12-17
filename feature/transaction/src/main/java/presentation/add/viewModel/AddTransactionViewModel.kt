@@ -65,6 +65,9 @@ class AddTransactionViewModel @Inject constructor(
     private val _categoryState = MutableStateFlow<UIState<List<Category>>>(UIState.Loading)
     val categoryState = _categoryState.asStateFlow()
 
+    private val _currentCategoryType = MutableStateFlow<CategoryType>(CategoryType.EXPENSE)
+    val currentCategoryType = _currentCategoryType.asStateFlow()
+
     private val _selectedCategory = MutableStateFlow<Category?>(null)
     val selectedCategory = _selectedCategory.asStateFlow()
 
@@ -86,9 +89,13 @@ class AddTransactionViewModel @Inject constructor(
     private val _imageUploadState = MutableStateFlow<UIState<TransactionImage>?>(null)
     val imageUploadState = _imageUploadState.asStateFlow()
 
+    // UI state for more details section
+    private val _isMoreDetailsExpanded = MutableStateFlow(false)
+    val isMoreDetailsExpanded = _isMoreDetailsExpanded.asStateFlow()
+
     // Temporary data storage (not yet persisted)
-    private val _temporaryEvents = MutableStateFlow<List<Event>>(emptyList())
-    val temporaryEvents = _temporaryEvents.asStateFlow()
+    private val _temporaryEvent = MutableStateFlow<Event?>(null)
+    val temporaryEvent = _temporaryEvent.asStateFlow()
 
     private val _temporaryPayees = MutableStateFlow<List<PayeeTransaction>>(emptyList())
     val temporaryPayees = _temporaryPayees.asStateFlow()
@@ -102,6 +109,7 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun loadCategoriesByType(type: CategoryType) {
+        _currentCategoryType.value = type
         viewModelScope.launch {
             getCategoriesByTypeUseCase(type)
                 .onStart { _categoryState.value = UIState.Loading }
@@ -138,24 +146,33 @@ class AddTransactionViewModel @Inject constructor(
         createAt: Long
     ) {
         viewModelScope.launch {
-            val selectedCategory = _selectedCategory.value ?: return@launch
-            val selectedAccount = _selectedAccount.value ?: return@launch
+            val selectedCategory = _selectedCategory.value
+            val selectedAccount = _selectedAccount.value
             val selectedEvent = _selectedEvent.value
+
+            if (selectedCategory == null) {
+                setError("Please select a category")
+                return@launch
+            }
+
+            if (selectedAccount == null) {
+                setError("Please select an account")
+                return@launch
+            }
 
             setLoading()
             try {
                 // Step 1: Persist temporary event if it's temporary (negative ID)
                 var finalEvent = selectedEvent
-                if (selectedEvent != null) {
+                if (selectedEvent != null && selectedEvent.id < 0L) {
                     val eventId = addEventUseCase(
                         eventName = selectedEvent.eventName,
                         startDate = selectedEvent.startDate,
                         endDate = selectedEvent.endDate,
-                        numberOfParticipants = selectedEvent.numberOfParticipants,
-                        accountId = selectedEvent.accountId,
-                        participants = listOf("Me") // Default participant
+                        accountId = selectedEvent.accountId
                     )
                     finalEvent = selectedEvent.copy(id = eventId)
+                    _selectedEvent.value = selectedEvent.copy(id = eventId)
                 }
 
                 // Step 2: Persist temporary payees if any are temporary
@@ -265,12 +282,16 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
+    fun selectEvent(event: Event) {
+        _selectedEvent.value = event
+    }
+
     fun selectEventById(eventId: Long) {
         viewModelScope.launch {
             try {
                 // Check temporary events first (negative IDs)
                 val event = if (eventId < 0) {
-                    _temporaryEvents.value.find { it.id == eventId }
+                    _temporaryEvent.value
                 } else {
                     getEventByIdUseCase(eventId)
                 }
@@ -296,7 +317,7 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun toSelectCategory() {
-        navigator.navigateToMoreCategory()
+        navigator.navigateToMoreCategory(_currentCategoryType.value.name)
     }
 
     fun toSelectAccount() {
@@ -419,11 +440,10 @@ class AddTransactionViewModel @Inject constructor(
         resetState()
     }
 
-    // Temporary data management methods (exposed for other ViewModels)
     fun addTemporaryEvent(event: Event): Long {
-        val temporaryId = generateTemporaryId(_temporaryEvents.value.size)
-        val eventWithId = event.copy(id = temporaryId)
-        _temporaryEvents.value = _temporaryEvents.value + eventWithId
+        val temporaryId = -1L
+        val event = event.copy(id = temporaryId)
+        _temporaryEvent.value = event
         return temporaryId
     }
 
@@ -443,7 +463,7 @@ class AddTransactionViewModel @Inject constructor(
 
     fun getTemporaryEvent(eventId: Long): Event? {
         if (eventId >= 0) return null
-        return _temporaryEvents.value.find { it.id == eventId }
+        return _temporaryEvent.value
     }
 
     fun getTemporaryPayee(payeeId: Long): PayeeTransaction? {
@@ -457,7 +477,7 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     private fun clearTemporaryData() {
-        _temporaryEvents.value = emptyList()
+        _temporaryEvent.value = null
         _temporaryPayees.value = emptyList()
         _temporaryLocations.value = emptyList()
     }
@@ -508,5 +528,12 @@ class AddTransactionViewModel @Inject constructor(
      */
     fun getCurrentAccountId(): Long? {
         return getCurrentAccountIdUseCase()
+    }
+
+    /**
+     * Toggle more details section expanded state
+     */
+    fun toggleMoreDetailsExpanded() {
+        _isMoreDetailsExpanded.value = !_isMoreDetailsExpanded.value
     }
 }

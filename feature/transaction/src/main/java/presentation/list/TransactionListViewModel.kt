@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import navigation.Navigator
 import transaction.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.DeleteTransactionUseCase
@@ -27,6 +28,7 @@ data class TransactionListData(
 
 @HiltViewModel
 class TransactionListViewModel @Inject constructor(
+    private val navigator: Navigator,
     private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
     private val deleteTransactionUseCase: DeleteTransactionUseCase
 ) : BaseViewModel<TransactionListData>() {
@@ -251,5 +253,13 @@ class TransactionListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun navigateToEditTransaction(transactionId: Long) {
+        navigator.navigateToEditTransaction(transactionId)
+    }
+
+    fun navigateToDataSetting() {
+        navigator.navigateToDataSetting()
     }
 }
