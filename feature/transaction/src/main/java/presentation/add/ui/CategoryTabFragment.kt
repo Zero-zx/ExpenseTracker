@@ -1,14 +1,18 @@
 package presentation.add.ui
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.UIState
 import com.example.transaction.R
 import com.example.transaction.databinding.FragmentCategoryTabBinding
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.add.adapter.ExpandableCategoryAdapter
+import presentation.add.adapter.MostUsingCategoryAdapter
 import presentation.add.viewModel.AddTransactionViewModel
 import presentation.add.viewModel.CategoryTabViewModel
 import transaction.model.CategoryType
@@ -23,7 +27,16 @@ class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
     private val adapter = ExpandableCategoryAdapter(
         onCategoryClick = { category ->
             // Notify parent fragment about category selection
-            addTransactionViewModel.selectCategory(category)
+            (parentFragment as? CategorySelectFragment)?.onCategorySelected(category.id)
+                ?: addTransactionViewModel.selectCategory(category)
+        }
+    )
+
+    private val mostUsingAdapter = MostUsingCategoryAdapter(
+        onCategoryClick = { category ->
+            // Notify parent fragment about category selection
+            (parentFragment as? CategorySelectFragment)?.onCategorySelected(category.id)
+                ?: addTransactionViewModel.selectCategory(category)
         }
     )
 
@@ -38,10 +51,29 @@ class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
         super.onCreate(savedInstanceState)
         // Load categories with the specified type filter
         viewModel.loadCategories(categoryType)
+        // Load most used categories
+        viewModel.loadMostUsedCategories(categoryType)
     }
 
     override fun initView() {
         binding.recyclerViewCategories.adapter = adapter
+        binding.recyclerViewMostUsing.adapter = mostUsingAdapter
+        binding.recyclerViewMostUsing.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+
+        // Setup search
+        binding.editTextSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val query = s?.toString() ?: ""
+                viewModel.updateSearchQuery(query)
+                adapter.filter(query)
+            }
+        })
     }
 
     override fun observeData() {
@@ -54,6 +86,33 @@ class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
                 is UIState.Success -> adapter.submitCategories(state.data)
                 is UIState.Error -> {
                     // handle error if needed
+                }
+
+                else -> {}
+            }
+        }
+
+        collectFlow(viewModel.mostUsedCategories) { state ->
+            when (state) {
+                is UIState.Loading -> {
+                    // show loading if needed
+                }
+
+                is UIState.Success -> {
+                    mostUsingAdapter.submitList(state.data)
+                    // Show/hide most using section based on data
+                    if (state.data.isEmpty()) {
+                        binding.textViewMostUsing.visibility = android.view.View.GONE
+                        binding.recyclerViewMostUsing.visibility = android.view.View.GONE
+                    } else {
+                        binding.textViewMostUsing.visibility = android.view.View.VISIBLE
+                        binding.recyclerViewMostUsing.visibility = android.view.View.VISIBLE
+                    }
+                }
+                is UIState.Error -> {
+                    // Hide most using section on error
+                    binding.textViewMostUsing.visibility = android.view.View.GONE
+                    binding.recyclerViewMostUsing.visibility = android.view.View.GONE
                 }
 
                 else -> {}

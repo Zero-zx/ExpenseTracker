@@ -1,5 +1,6 @@
 package dao
 
+import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -43,4 +44,21 @@ internal interface TransactionDao {
     @Transaction
     @Query("SELECT * FROM tb_transaction WHERE id = :transactionId")
     suspend fun getTransactionById(transactionId: Long): TransactionWithDetails?
+
+    // Get category usage count (number of times each category is used)
+    @Query("""
+        SELECT category_id, COUNT(*) as usage_count
+        FROM tb_transaction
+        WHERE account_id = :accountId
+        GROUP BY category_id
+        ORDER BY usage_count DESC
+    """)
+    suspend fun getCategoryUsageCount(accountId: Long): List<CategoryUsageCount>
 }
+
+data class CategoryUsageCount(
+    @ColumnInfo(name = "category_id")
+    val categoryId: Long,
+    @ColumnInfo(name = "usage_count")
+    val usageCount: Int
+)
