@@ -1,9 +1,11 @@
 package dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import model.PayeeEntity
 
@@ -20,6 +22,12 @@ internal interface PayeeTransactionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPayee(payee: PayeeEntity): Long
+
+    @Update
+    suspend fun updatePayee(payee: PayeeEntity)
+
+    @Delete
+    suspend fun deletePayee(payee: PayeeEntity)
 
     @Query("SELECT * FROM tb_payee WHERE name = :name AND accountId = :accountId LIMIT 1")
     suspend fun getPayeeByName(name: String, accountId: Long): PayeeEntity?

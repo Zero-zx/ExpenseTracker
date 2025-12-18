@@ -1,18 +1,14 @@
 package presentation.add.ui
 
-import androidx.core.os.bundleOf
 import base.BaseFragment
 import base.TabConfig
 import base.setupWithTabs
 import com.example.transaction.databinding.FragmentEventSelectBinding
 import com.google.android.material.tabs.TabLayoutMediator
-import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_ID
-import constants.FragmentResultKeys.RESULT_EVENT_ID
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.add.model.EventTabType
-import transaction.model.Event
 import ui.navigateBack
-import ui.setEventIdSelectionResult
+import ui.setEventNameSelectionResult
 
 @AndroidEntryPoint
 class EventSelectFragment : BaseFragment<FragmentEventSelectBinding>(
@@ -31,11 +27,11 @@ class EventSelectFragment : BaseFragment<FragmentEventSelectBinding>(
             }
         }
     }
-//
-//    fun onEventSelected(eventId: Long) {
-//        setEventIdSelectionResult(eventId)
-//        navigateBack()
-//    }
+
+    fun onEventSelected(eventName: String) {
+        setEventNameSelectionResult(eventName)
+        navigateBack()
+    }
 
     fun setupViewPager() {
         val tabs = listOf(

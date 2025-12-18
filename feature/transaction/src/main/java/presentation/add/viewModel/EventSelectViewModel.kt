@@ -11,8 +11,10 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import navigation.Navigator
 import transaction.model.Event
+import transaction.usecase.DeleteEventUseCase
 import transaction.usecase.GetEventsByAccountUseCase
 import transaction.usecase.SearchEventsByAccountUseCase
+import transaction.usecase.UpdateEventUseCase
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -20,7 +22,10 @@ import javax.inject.Inject
 class EventSelectViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getEventsByAccountUseCase: GetEventsByAccountUseCase,
-    private val searchEventsByAccountUseCase: SearchEventsByAccountUseCase
+
+    private val searchEventsByAccountUseCase: SearchEventsByAccountUseCase,
+    private val updateEventUseCase: UpdateEventUseCase,
+    private val deleteEventUseCase: DeleteEventUseCase
 ) : BaseViewModel<List<Event>>() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -62,6 +67,30 @@ class EventSelectViewModel @Inject constructor(
 
     fun clearSearch() {
         _searchQuery.value = ""
+    }
+
+    fun updateEvent(event: Event) {
+        viewModelScope.launch {
+            try {
+                updateEventUseCase(event)
+                // Reload events after update
+                loadEvents()
+            } catch (e: Exception) {
+                setError(e.message ?: "Failed to update event")
+            }
+        }
+    }
+
+    fun deleteEvent(eventId: Long) {
+        viewModelScope.launch {
+            try {
+                deleteEventUseCase(eventId)
+                // Reload events after delete
+                loadEvents()
+            } catch (e: Exception) {
+                setError(e.message ?: "Failed to delete event")
+            }
+        }
     }
 }
 

@@ -44,4 +44,12 @@ class CustomChipsView @JvmOverloads constructor(
     fun getChipGroup(): ChipGroup {
         return binding.chipGroup
     }
+
+    fun hideText() {
+        binding.textView.gone()
+    }
+
+    fun showText() {
+        binding.textView.visible()
+    }
 }

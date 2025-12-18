@@ -1,4 +1,4 @@
-package presentation.add.ui
+package presentation.edit.ui
 
 //import com.bumptech.glide.Glide
 import account.model.Account
@@ -49,7 +49,7 @@ import com.example.transaction.R as TransactionR
 
 
 @AndroidEntryPoint
-class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
+class EditTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
     FragmentTransactionAddBinding::inflate
 ) {
     private val viewModel: AddTransactionViewModel by hiltNavGraphViewModels(TransactionR.id.transaction_nav_graph)
@@ -78,12 +78,15 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
     private var selectedDateStartMillis: Long? = null
     private var selectedTimeOffsetMillis: Long? = null
 
-    // Get transaction ID from arguments if editing
-    private val transactionId: Long? by lazy {
-        arguments?.getLong("transaction_id", -1L)?.takeIf { it != -1L }
+    // Get transaction ID from arguments (required for edit)
+    private val transactionId: Long by lazy {
+        arguments?.getLong("transaction_id") ?: throw IllegalArgumentException("Transaction ID is required for EditTransactionFragment")
     }
 
     override fun initView() {
+        // Reset state first to clear any stale Success/Error states from previous operations
+        viewModel.resetTransactionState()
+
         setUpDropdownMenu()
         setUpRecyclerView()
         listenForResult()
@@ -91,10 +94,8 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
         setupCameraHandler()
         setupCalculator()
 
-        // Load transaction data if editing
-        transactionId?.let { id ->
-            viewModel.loadTransaction(id)
-        }
+        // Load transaction data
+        viewModel.loadTransaction(transactionId)
     }
 
     fun setUpDropdownMenu() {
@@ -217,7 +218,7 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
                 permissionHandler.checkCameraPermission()
                 // After permission granted, launch camera
                 permissionHandler = PermissionHandler(
-                    fragment = this@AddTransactionFragment,
+                    fragment = this@EditTransactionFragment,
                     onGranted = { cameraHandler.launchCamera() },
                     onDenied = {
                         Toast.makeText(
@@ -231,7 +232,7 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
             buttonPickImage.setOnClickListener {
                 permissionHandler.checkGalleryPermission()
                 permissionHandler = PermissionHandler(
-                    fragment = this@AddTransactionFragment,
+                    fragment = this@EditTransactionFragment,
                     onGranted = { cameraHandler.launchGallery() },
                     onDenied = {
                         Toast.makeText(
@@ -336,24 +337,16 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
             when (state) {
                 is UIState.Loading -> {}
                 is UIState.Success -> {
-                    val message = if (transactionId != null) {
-                        "Transaction updated successfully"
-                    } else {
-                        "Transaction added successfully"
-                    }
                     Toast.makeText(
-                        context, message, Toast.LENGTH_SHORT
+                        context, "Transaction updated successfully", Toast.LENGTH_SHORT
                     ).show()
+                    // Navigate back to list after successful update
+                    viewModel.navigateBack()
                 }
 
                 is UIState.Error -> {
-                    val message = if (transactionId != null) {
-                        "Error updating transaction: ${state.message}"
-                    } else {
-                        "Error adding transaction: ${state.message}"
-                    }
                     Toast.makeText(
-                        context, message, Toast.LENGTH_SHORT
+                        context, "Error updating transaction: ${state.message}", Toast.LENGTH_SHORT
                     ).show()
                 }
 
@@ -430,6 +423,7 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
         binding.apply {
             customViewEvent.getTextView().isVisible = true
             customViewEvent.getChipGroup().removeAllViews()
+            customViewEvent.hideText()
 
             // Add chips for each selected event (filter out nulls for safety)
             val chip = Chip(requireContext())
@@ -520,14 +514,6 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
         cameraHandler.setup()
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Only reset state if not editing
-        if (transactionId == null) {
-            viewModel.resetTransactionState()
-        }
-    }
-
     private fun populateTransactionFields(transaction: transaction.model.Transaction) {
         binding.apply {
             // Populate amount
@@ -598,3 +584,4 @@ class AddTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
         calculatorManager.hide()
     }
 }
+
