@@ -9,15 +9,16 @@
 
     <ImageButton
         android:id="@+id/button_list_transaction"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/ripple_image_button"
-        android:scaleType="fitXY"
+        android:scaleType="center"
         android:src="@drawable/icon_history"
         android:tint="@color/gray_big_icon"
         app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,14 +49,15 @@
 
     <ImageButton
         android:id="@+id/button_submit"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/ripple_image_button"
-        android:scaleType="fitXY"
+        android:scaleType="center"
         android:src="@drawable/icon_submit"
         app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/gray_big_icon" />

@@ -47,6 +47,13 @@ fun Fragment.setEventIdSelectionResult(selectedId: Long) {
     )
 }
 
+fun Fragment.setEventNameSelectionResult(selectedName: String) {
+    setSelectionResult(
+        FragmentResultKeys.REQUEST_SELECT_EVENT_NAME,
+        bundleOf(FragmentResultKeys.RESULT_EVENT_NAME to selectedName)
+    )
+}
+
 
 fun Fragment.setAccountIdSelectionResult(selectedId: Long) {
     setSelectionResult(

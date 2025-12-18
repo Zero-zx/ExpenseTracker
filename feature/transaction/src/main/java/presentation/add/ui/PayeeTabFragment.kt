@@ -22,6 +22,8 @@ import presentation.add.model.PayeeTabType
 import presentation.add.viewModel.AddTransactionViewModel
 import presentation.add.viewModel.PayeeSelectViewModel
 import transaction.model.PayeeTransaction
+import ui.CustomAlertDialog
+import ui.showEditPayeeDialog
 
 @AndroidEntryPoint
 class PayeeTabFragment : BaseFragment<FragmentEventTabBinding>(
@@ -193,6 +195,34 @@ class PayeeTabFragment : BaseFragment<FragmentEventTabBinding>(
             val selectedPayees = currentList.filter { currentSelectedIds.contains(it.id) }
             adapter.setSelectedPayees(selectedPayees)
         }
+    }
+
+    private fun handlePayeeEdit(payee: PayeeTransaction) {
+        showEditPayeeDialog(
+            payeeName = payee.name,
+            onUpdate = { name ->
+                viewModel.updatePayee(
+                    payee.copy(name = name)
+                )
+            },
+            onDelete = {
+                showDeleteConfirmation(payee)
+            }
+        )
+    }
+
+    private fun showDeleteConfirmation(payee: PayeeTransaction) {
+        CustomAlertDialog.Builder(requireContext())
+            .setTitle("Delete Payee")
+            .setMessage("Are you sure you want to delete '${payee.name}'?")
+            .setPositiveButton("Delete") { dialog ->
+                viewModel.deletePayee(payee.id)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     companion object {

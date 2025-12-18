@@ -8,8 +8,10 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import navigation.Navigator
 import transaction.model.PayeeTransaction
+import transaction.usecase.DeletePayeeUseCase
 import transaction.usecase.GetPayeesByAccountUseCase
 import transaction.usecase.GetRecentPayeesByAccountUseCase
+import transaction.usecase.UpdatePayeeUseCase
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,7 +19,9 @@ class PayeeSelectViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getPayeesByAccountUseCase: GetPayeesByAccountUseCase,
     private val getRecentPayeesByAccountUseCase: GetRecentPayeesByAccountUseCase,
-    private val getAllPhoneContactsUseCase: GetAllPhoneContactsUseCase
+    private val getAllPhoneContactsUseCase: GetAllPhoneContactsUseCase,
+    private val updatePayeeUseCase: UpdatePayeeUseCase,
+    private val deletePayeeUseCase: DeletePayeeUseCase
 ) : BaseViewModel<List<PayeeTransaction>>() {
 
     companion object {
@@ -67,6 +71,30 @@ class PayeeSelectViewModel @Inject constructor(
                 })
             } catch (e: Exception) {
                 setError(e.message ?: "Failed to load contacts")
+            }
+        }
+    }
+
+    fun updatePayee(payee: PayeeTransaction) {
+        viewModelScope.launch {
+            try {
+                updatePayeeUseCase(payee)
+                // Reload payees after update
+                loadRecentPayees()
+            } catch (e: Exception) {
+                setError(e.message ?: "Failed to update payee")
+            }
+        }
+    }
+
+    fun deletePayee(payeeId: Long) {
+        viewModelScope.launch {
+            try {
+                deletePayeeUseCase(payeeId)
+                // Reload payees after delete
+                loadRecentPayees()
+            } catch (e: Exception) {
+                setError(e.message ?: "Failed to delete payee")
             }
         }
     }

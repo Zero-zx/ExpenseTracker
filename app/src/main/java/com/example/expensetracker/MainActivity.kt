@@ -78,10 +78,9 @@ class MainActivity : AppCompatActivity(), CalculatorProvider {
     private fun setupBackPress() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val isStartDestination = navController.currentDestination?.id ==
-                        navController.currentDestination?.parent?.startDestinationId
+                val canPopBack = navController.popBackStack()
 
-                if (isStartDestination) {
+                if (!canPopBack) {
                     // On root destination - check for double back press
                     val currentTime = System.currentTimeMillis()
 
@@ -117,5 +116,9 @@ class MainActivity : AppCompatActivity(), CalculatorProvider {
      */
     override fun getCalculatorView(): CalculatorView {
         return binding.calculatorView
+    }
+
+    override fun onBackPressed() {
+        navigator.navigateUp()
     }
 }

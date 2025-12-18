@@ -32,8 +32,6 @@ class AddTransactionUseCase @Inject constructor(
             location = location,
             payeeIds = payeeIds
         )
-        require(transaction.amount > 0) { "Amount must be greater than 0" }
-
         return repository.insertTransaction(transaction)
     }
 }

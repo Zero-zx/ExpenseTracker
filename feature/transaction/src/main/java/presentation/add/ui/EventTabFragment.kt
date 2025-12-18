@@ -2,47 +2,43 @@ package presentation.add.ui
 
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import base.BaseFragment
 import base.UIState
 import com.example.transaction.databinding.FragmentEventTabBinding
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.add.adapter.EventAdapter
 import presentation.add.model.EventTabType
-import presentation.add.viewModel.AddTransactionViewModel
 import presentation.add.viewModel.EventSelectViewModel
 import transaction.model.Event
-import ui.navigateBack
-import com.example.transaction.R as TransactionR
+import ui.CustomAlertDialog
+import ui.showEditEventDialog
 
 @AndroidEntryPoint
 class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
     FragmentEventTabBinding::inflate
 ) {
     private val viewModel: EventSelectViewModel by viewModels()
-    private val addTransactionViewModel: AddTransactionViewModel by hiltNavGraphViewModels(
-        TransactionR.id.transaction_nav_graph
-    )
     private lateinit var adapter: EventAdapter
     private var tabType: EventTabType = EventTabType.IN_PROGRESS
-    private val selectedEventId: Long by lazy {
-        parentFragment?.arguments?.getLong(ARG_SELECTED_EVENT_ID, -1L) ?: -1L
+    private val selectedEventName: String by lazy {
+        parentFragment?.arguments?.getString(ARG_SELECTED_EVENT_NAME, "") ?: ""
     }
 
     override fun initView() {
         adapter = EventAdapter(
-            { event ->
-                addTransactionViewModel.selectEvent(event)
-                navigateBack()
+            onItemClick = { event ->
+                (parentFragment as EventSelectFragment).onEventSelected(event.eventName)
             },
-            {
-                // TODO: Handle item update
+            onItemUpdate = { event ->
+                handleEventEdit(event)
             }
         )
         binding.recyclerView.adapter = adapter
 
         val tabTypeArg = arguments?.getSerializable(ARG_TAB_TYPE) as? EventTabType
         tabType = tabTypeArg ?: EventTabType.IN_PROGRESS
+
+        showAddEventViewWithData(selectedEventName)
     }
 
     override fun initListener() {
@@ -56,20 +52,7 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
                 return@setOnClickListener
             }
 
-            // Create temporary event and add to AddTransactionViewModel
-            val currentTime = System.currentTimeMillis()
-            val event = Event(
-                id = -1L,
-                eventName = eventName,
-                startDate = currentTime,
-                endDate = null,
-                numberOfParticipants = 1,
-                accountId = addTransactionViewModel.getCurrentAccountId() ?: 1L,
-                isActive = true
-            )
-            addTransactionViewModel.selectEvent(event)
-
-            navigateBack()
+            (parentFragment as EventSelectFragment).onEventSelected(eventName)
         }
 
         binding.editTextEventName.addTextChangedListener(object : android.text.TextWatcher {
@@ -93,13 +76,6 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
                 is UIState.Idle -> handleEmptyState()
             }
         }
-
-        // Observe selected event from AddTransactionViewModel
-        collectState(addTransactionViewModel.selectedEvent) { selectedEvent ->
-            selectedEvent?.let { event ->
-                handleSelectedEvent(event)
-            }
-        }
     }
 
     private fun handleSuccessState(events: List<Event>) {
@@ -118,32 +94,39 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
     private fun handleEventListLoaded(events: List<Event>) {
         showListView()
         adapter.submitList(events)
-
-        val selectedEvent = addTransactionViewModel.selectedEvent.value
-        if (selectedEvent != null) {
-            val eventInDatabase = events.find { it.id == selectedEvent.id }
-            if (eventInDatabase != null) {
-                // Event exists in database - select it in the list
-                adapter.setSelectedEvents(listOf(eventInDatabase))
-            } else {
-                // Event doesn't exist in database - show add form
-                showAddEventViewWithData(selectedEvent.eventName)
-            }
-        } else if (selectedEventId != -1L) {
-            // Handle pre-selected event from arguments
-            events.find { it.id == selectedEventId }?.let { event ->
-                adapter.setSelectedEvents(listOf(event))
-            }
-        }
     }
 
-    private fun handleSelectedEvent(event: Event) {
-        binding.layoutAddEvent.isVisible = true
-        binding.editTextEventName.setText(event.eventName)
+
+    private fun handleEventEdit(event: Event) {
+        showEditEventDialog(
+            eventName = event.eventName,
+            isCompleted = !event.isActive,
+            onUpdate = { name, isCompleted ->
+                viewModel.updateEvent(
+                    event.copy(
+                        eventName = name,
+                        isActive = !isCompleted
+                    )
+                )
+            },
+            onDelete = {
+                showDeleteConfirmation(event)
+            }
+        )
     }
 
-    private fun isEventInDatabase(event: Event): Boolean {
-        return event.id > 0
+    private fun showDeleteConfirmation(event: Event) {
+        CustomAlertDialog.Builder(requireContext())
+            .setTitle("Delete Event")
+            .setMessage("Are you sure you want to delete '${event.eventName}'?")
+            .setPositiveButton("Delete") { dialog ->
+                viewModel.deleteEvent(event.id)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun showAddEventViewWithData(eventName: String) {
@@ -165,7 +148,7 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
 
     companion object {
         private const val ARG_TAB_TYPE = "event_tab_type"
-        const val ARG_SELECTED_EVENT_ID = "selected_event_id"
+        const val ARG_SELECTED_EVENT_NAME = "selected_event_name"
 
         fun newInstance(tabType: EventTabType): EventTabFragment {
             return EventTabFragment().apply {

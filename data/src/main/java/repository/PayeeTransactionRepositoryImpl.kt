@@ -33,6 +33,14 @@ internal class PayeeTransactionRepositoryImpl @Inject constructor(
         return payeeTransactionDao.insertPayee(payee.toEntity())
     }
 
+    override suspend fun updatePayee(payee: PayeeTransaction) {
+        payeeTransactionDao.updatePayee(payee.toEntity())
+    }
+
+    override suspend fun deletePayee(payee: PayeeTransaction) {
+        payeeTransactionDao.deletePayee(payee.toEntity())
+    }
+
     override suspend fun getPayeeByName(name: String, accountId: Long): PayeeTransaction? {
         return payeeTransactionDao.getPayeeByName(name, accountId)?.toDomain()
     }

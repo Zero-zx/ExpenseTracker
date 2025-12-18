@@ -2,10 +2,12 @@ package presentation.list
 
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.UIState
-import com.example.common.R
+import com.example.transaction.R as TransactionR
+import com.example.common.R as CommonR
 import com.example.transaction.databinding.FragmentTransactionListBinding
 import constants.FragmentResultKeys
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,13 +25,11 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
 
     private val adapter = TransactionListAdapter(
         onItemClick = { transaction ->
-            // Navigate to edit transaction screen only if not in selection mode
             if (!viewModel.isSelectionMode.value) {
                 viewModel.navigateToEditTransaction(transaction.id)
             }
         },
         onItemSelect = { transaction ->
-            // Toggle selection when in selection mode
             viewModel.toggleTransactionSelection(transaction.id)
         }
     )
@@ -202,10 +202,10 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
                 // Update toolbar
                 if (viewModel.selectedTransactions.value.isEmpty()) {
                     textViewTitle.text = "Select transaction"
-                    textViewDelete.setTextColor(R.color.black_text)
+                    textViewDelete.setTextColor(CommonR.color.black_text)
                 } else {
                     textViewTitle.text = "${viewModel.selectedTransactions.value.size} selected"
-                    textViewDelete.setTextColor(R.color.blue_bg)
+                    textViewDelete.setTextColor(CommonR.color.blue_bg)
                 }
 
                 buttonSearch.visibility = View.GONE

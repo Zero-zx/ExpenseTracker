@@ -2,15 +2,15 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/transaction_nav_graph"
-    app:startDestination="@id/transactionAddFragment"
     app:enterAnim="@anim/slide_in_right"
     app:exitAnim="@anim/slide_out_left"
     app:popEnterAnim="@android:anim/slide_in_left"
-    app:popExitAnim="@android:anim/slide_out_right">
+    app:popExitAnim="@android:anim/slide_out_right"
+    app:startDestination="@id/transactionAddFragment">
 
     <fragment
         android:id="@+id/transactionAddFragment"
-        android:name="presentation.add.ui.AddTransactionFragment" />
+        android:name="presentation.add.ui.TransactionAddFragment" />
     <fragment
         android:id="@+id/categorySelectFragment"
         android:name="presentation.add.ui.CategorySelectFragment" />
@@ -30,4 +30,12 @@
         android:id="@+id/eventSelectFragment"
         android:name="presentation.add.ui.EventSelectFragment"
         android:label="EventSelectFragment" />
+    <fragment
+        android:id="@+id/transactionListFragment"
+        android:name="presentation.list.TransactionListFragment"
+        android:label="TransactionListFragment" />
+    <fragment
+        android:id="@+id/editTransactionFragment"
+        android:name="presentation.edit.ui.EditTransactionFragment"
+        android:label="EditTransactionFragment" />
 </navigation>

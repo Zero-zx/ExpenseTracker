@@ -5,7 +5,6 @@ import androidx.navigation.NavController
 import com.example.expensetracker.R
 import navigation.Navigator
 import navigation.navigateWithAnim
-import transaction.model.CategoryType
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,11 +18,11 @@ class NavigatorImpl @Inject constructor() : Navigator {
     }
 
     override fun navigateUp(): Boolean {
-        return navController?.navigateUp() ?: false
+        return navController?.popBackStack() ?: false
     }
 
     override fun popBackStack(): Boolean {
-        return navController?.navigateUp() ?: false
+        return navController?.popBackStack() ?: false
     }
 
     override fun navigateToTransactionRoute() {
@@ -57,10 +56,10 @@ class NavigatorImpl @Inject constructor() : Navigator {
         )
     }
 
-    override fun navigateToSelectEvent(selectedEventId: Long) {
+    override fun navigateToSelectEvent(selectedEventName: String) {
         navController?.navigateWithAnim(
             R.id.eventSelectFragment,
-            bundleOf("selected_event_id" to selectedEventId)
+            bundleOf("selected_event_name" to selectedEventName)
         )
     }
 
