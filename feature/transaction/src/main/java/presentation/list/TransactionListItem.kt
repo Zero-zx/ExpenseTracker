@@ -14,3 +14,4 @@ sealed class TransactionListItem {
         val transaction: Transaction
     ) : TransactionListItem()
 }
+

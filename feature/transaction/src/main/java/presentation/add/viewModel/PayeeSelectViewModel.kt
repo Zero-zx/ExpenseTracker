@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import navigation.Navigator
-import transaction.model.PayeeTransaction
+import transaction.model.Payee
 import transaction.usecase.DeletePayeeUseCase
 import transaction.usecase.GetPayeesByAccountUseCase
 import transaction.usecase.GetRecentPayeesByAccountUseCase
@@ -22,7 +22,7 @@ class PayeeSelectViewModel @Inject constructor(
     private val getAllPhoneContactsUseCase: GetAllPhoneContactsUseCase,
     private val updatePayeeUseCase: UpdatePayeeUseCase,
     private val deletePayeeUseCase: DeletePayeeUseCase
-) : BaseViewModel<List<PayeeTransaction>>() {
+) : BaseViewModel<List<Payee>>() {
 
     companion object {
         private const val ACCOUNT_ID = 1L // TODO: Get from account repository
@@ -63,7 +63,7 @@ class PayeeSelectViewModel @Inject constructor(
                 val contacts = getAllPhoneContactsUseCase()
                 // Contacts are not temporary, they're from device
                 setSuccess(contacts.map { contact ->
-                    PayeeTransaction(
+                    Payee(
                         id = contact.id,
                         name = contact.displayName,
                         ACCOUNT_ID
@@ -75,7 +75,7 @@ class PayeeSelectViewModel @Inject constructor(
         }
     }
 
-    fun updatePayee(payee: PayeeTransaction) {
+    fun updatePayee(payee: Payee) {
         viewModelScope.launch {
             try {
                 updatePayeeUseCase(payee)

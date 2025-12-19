@@ -205,3 +205,4 @@ if (selectedEvent != null) {
 
 **Kết luận:** Business logic cơ bản đã OK, nhưng có một số vấn đề về tính nhất quán cần được sửa để đảm bảo số liệu chính xác và trải nghiệm người dùng tốt hơn.
 
+

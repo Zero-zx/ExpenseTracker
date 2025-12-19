@@ -62,3 +62,4 @@ abstract class BaseListAdapter<T, VBinding : ViewBinding>(
     }
 }
 
+

@@ -9,7 +9,9 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import model.PayeeEntity
 import model.TransactionEntity
+import model.TransactionPayeeEntity
 import model.TransactionWithDetails
 
 @Dao
@@ -17,11 +19,36 @@ internal interface TransactionDao {
     // Get all transactions for an account
     @Transaction
     @Query("SELECT * FROM tb_transaction WHERE account_id = :accountId")
-    fun getAccountWithTransactions(accountId: Long): Flow<List<TransactionWithDetails>>
+    fun getTransactionByAccountId(accountId: Long): Flow<List<TransactionWithDetails>>
 
     // insert new transaction to database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(transaction: TransactionEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertStudentCourses(transactionPayees: List<TransactionPayeeEntity>)
+
+    @Transaction
+    suspend fun insertTransactionWithPayees(
+        transaction: TransactionEntity,
+        payees: List<PayeeEntity>
+    ): Long {
+        // 1. Insert student and get generated ID
+        val transactionId = insert(transaction)
+
+        // 2. Create junction table records
+        if (payees.isNotEmpty()) {
+            val transactionPayees = payees.map { payee ->
+                TransactionPayeeEntity(
+                    payeeId = payee.id,
+                    transactionId = transactionId
+                )
+            }
+            insertStudentCourses(transactionPayees)
+        }
+
+        return transactionId
+    }
 
     // update an existed transaction
     @Update
@@ -46,13 +73,15 @@ internal interface TransactionDao {
     suspend fun getTransactionById(transactionId: Long): TransactionWithDetails?
 
     // Get category usage count (number of times each category is used)
-    @Query("""
+    @Query(
+        """
         SELECT category_id, COUNT(*) as usage_count
         FROM tb_transaction
         WHERE account_id = :accountId
         GROUP BY category_id
         ORDER BY usage_count DESC
-    """)
+    """
+    )
     suspend fun getCategoryUsageCount(accountId: Long): List<CategoryUsageCount>
 }
 

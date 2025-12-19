@@ -128,3 +128,4 @@ class DataSettingAdapter : ListAdapter<DataSettingAdapterItem, RecyclerView.View
         }
     }
 }
+

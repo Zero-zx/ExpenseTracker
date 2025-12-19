@@ -1,9 +1,9 @@
 package mapper
 
-import transaction.model.Transaction
 import model.TransactionEntity
 import model.TransactionWithDetails
 import model.toDomain
+import transaction.model.Transaction
 
 internal fun Transaction.toEntity(): TransactionEntity {
     return TransactionEntity(
@@ -14,12 +14,11 @@ internal fun Transaction.toEntity(): TransactionEntity {
         categoryId = category.id,
         accountId = account.id,
         eventId = event?.id,
-        partnerId = partnerId,
         locationId = location?.id
     )
 }
 
-internal fun TransactionWithDetails.toDomain(payeeIds: List<Long> = emptyList()): Transaction {
+internal fun TransactionWithDetails.toDomain(): Transaction {
     return Transaction(
         id = transactionEntity.id,
         description = transactionEntity.description,
@@ -27,9 +26,8 @@ internal fun TransactionWithDetails.toDomain(payeeIds: List<Long> = emptyList())
         category = categoryEntity.toDomain(),
         account = accountEntity.toDomain(),
         event = eventEntity?.toDomain(),
-        partnerId = 1,
         createAt = transactionEntity.createAt,
         location = locationEntity?.toDomain(),
-        payeeIds = payeeIds
+        payees = payees.map { it.toDomain() }
     )
 }

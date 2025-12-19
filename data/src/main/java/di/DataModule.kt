@@ -13,7 +13,7 @@ import dao.AccountDao
 import dao.CategoryDao
 import dao.EventDao
 import dao.LocationDao
-import dao.PayeeTransactionDao
+import dao.PayeeDao
 import dao.TransactionDao
 import dao.TransactionImageDao
 import dao.TransactionPayeeDao
@@ -23,13 +23,13 @@ import datasource.PhoneContactDataSource
 import transaction.repository.CategoryRepository
 import transaction.repository.EventRepository
 import transaction.repository.LocationRepository
-import transaction.repository.PayeeTransactionRepository
+import transaction.repository.PayeeRepository
 import transaction.repository.TransactionRepository
 import repository.AccountRepositoryImpl
 import repository.CategoryRepositoryImpl
 import repository.EventRepositoryImpl
 import repository.LocationRepositoryImpl
-import repository.PayeeTransactionRepositoryImpl
+import repository.PayeeRepositoryImpl
 import repository.PhoneContactRepositoryImpl
 import repository.SessionRepositoryImpl
 import repository.TransactionRepositoryImpl
@@ -77,16 +77,17 @@ internal object DataModule {
         return appDatabase.eventDao()
     }
 
-    @Provides
-    @Singleton
-    fun providePayeeTransactionDao(appDatabase: BudgetDatabase): PayeeTransactionDao {
-        return appDatabase.payeeTransactionDao()
-    }
 
     @Provides
     @Singleton
     fun provideLocationDao(appDatabase: BudgetDatabase): LocationDao {
         return appDatabase.locationDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTransactionImageDao(appDatabase: BudgetDatabase): TransactionImageDao {
+        return appDatabase.transactionImageDao()
     }
 
     @Provides
@@ -97,8 +98,8 @@ internal object DataModule {
 
     @Provides
     @Singleton
-    fun provideTransactionImageDao(appDatabase: BudgetDatabase): TransactionImageDao {
-        return appDatabase.transactionImageDao()
+    fun providePayeeDao(appDatabase: BudgetDatabase): PayeeDao {
+        return appDatabase.payeeDao()
     }
 
     @Provides
@@ -154,8 +155,8 @@ internal object DataModule {
 
     @Provides
     @Singleton
-    fun providePayeeTransactionRepository(payeeTransactionDao: PayeeTransactionDao): PayeeTransactionRepository {
-        return PayeeTransactionRepositoryImpl(payeeTransactionDao)
+    fun providePayeeTransactionRepository(payeeDao: PayeeDao): PayeeRepository {
+        return PayeeRepositoryImpl(payeeDao)
     }
 
     @Provides

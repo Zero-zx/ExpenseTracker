@@ -9,7 +9,7 @@ internal class SessionRepositoryImpl @Inject constructor(
     private val sessionManager: UserSessionManager
 ) : SessionRepository {
 
-    override fun getCurrentUserId(): Long? {
+    override fun getCurrentUserId(): Long {
         return sessionManager.getCurrentUserId()
     }
 

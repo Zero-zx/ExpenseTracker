@@ -17,11 +17,11 @@ import com.google.android.material.chip.Chip
 import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
-import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS
+import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_NAMES
 import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
 import constants.FragmentResultKeys.RESULT_CATEGORY_ID
 import constants.FragmentResultKeys.RESULT_LOCATION_ID
-import constants.FragmentResultKeys.RESULT_PAYEE_IDS
+import constants.FragmentResultKeys.RESULT_PAYEE_NAMES
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.standardize
 import permission.PermissionHandler
@@ -32,6 +32,7 @@ import storage.FileProvider
 import transaction.model.Category
 import transaction.model.CategoryType
 import transaction.model.Event
+import transaction.model.Payee
 import ui.CalculatorManager
 import ui.CalculatorProvider
 import ui.GridSpacingItemDecoration
@@ -80,7 +81,8 @@ class EditTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     // Get transaction ID from arguments (required for edit)
     private val transactionId: Long by lazy {
-        arguments?.getLong("transaction_id") ?: throw IllegalArgumentException("Transaction ID is required for EditTransactionFragment")
+        arguments?.getLong("transaction_id")
+            ?: throw IllegalArgumentException("Transaction ID is required for EditTransactionFragment")
     }
 
     override fun initView() {
@@ -147,9 +149,9 @@ class EditTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
             viewModel.selectAccountById(accountId)
         }
 
-        listenForSelectionResult(REQUEST_SELECT_PAYEE_IDS) { bundle ->
-            val payeeIds = bundle.getLongArray(RESULT_PAYEE_IDS) ?: longArrayOf()
-            viewModel.selectPayeesByIds(payeeIds)
+        listenForSelectionResult(REQUEST_SELECT_PAYEE_NAMES) { bundle ->
+            val payeeNames = bundle.getStringArray(RESULT_PAYEE_NAMES) ?: emptyArray()
+            viewModel.addPayee(payeeNames.toList())
         }
 
         listenForSelectionResult(REQUEST_SELECT_LOCATION_ID) { bundle ->
@@ -439,7 +441,7 @@ class EditTransactionFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
     }
 
-    private fun updateSelectedPayees(payees: List<transaction.model.PayeeTransaction>) {
+    private fun updateSelectedPayees(payees: List<Payee>) {
         binding.apply {
             customViewPayee.getTextView().isVisible = payees.isEmpty()
             customViewPayee.getChipGroup().removeAllViews()

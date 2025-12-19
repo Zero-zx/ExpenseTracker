@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.Flow
 import model.PayeeEntity
 
 @Dao
-internal interface PayeeTransactionDao {
-    @Query("SELECT * FROM tb_payee WHERE accountId = :accountId ORDER BY name ASC")
-    fun getAllPayeesByAccount(accountId: Long): Flow<List<PayeeEntity>>
+internal interface PayeeDao {
+    @Query("SELECT * FROM tb_payee WHERE userId = :accountId ORDER BY name ASC")
+    fun getAllPayeesByUserId(accountId: Long): Flow<List<PayeeEntity>>
 
-    @Query("SELECT * FROM tb_payee WHERE accountId = :accountId AND isFromContacts = 0 ORDER BY name ASC")
-    fun getRecentPayeesByAccount(accountId: Long): Flow<List<PayeeEntity>>
+    @Query("SELECT * FROM tb_payee WHERE userId = :accountId AND isFromContacts = 0 ORDER BY name ASC")
+    fun getRecentPayeesByUserId(accountId: Long): Flow<List<PayeeEntity>>
 
     @Query("SELECT * FROM tb_payee WHERE id = :payeeId")
     suspend fun getPayeeById(payeeId: Long): PayeeEntity?
@@ -29,8 +29,6 @@ internal interface PayeeTransactionDao {
     @Delete
     suspend fun deletePayee(payee: PayeeEntity)
 
-    @Query("SELECT * FROM tb_payee WHERE name = :name AND accountId = :accountId LIMIT 1")
+    @Query("SELECT * FROM tb_payee WHERE name = :name AND userId = :accountId LIMIT 1")
     suspend fun getPayeeByName(name: String, accountId: Long): PayeeEntity?
 }
-
-

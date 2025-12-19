@@ -83,19 +83,25 @@
         android:layout_marginHorizontal="16dp"
         android:visibility="gone">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_input_layout_event_name"
+        <ui.ChipInputView
+            android:id="@+id/chip_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="@dimen/margin_medium"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_text_event_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/black_outline_rounded_background"
-                android:hint="Enter trip/event name" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_payees"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginBottom="@dimen/margin_medium"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/button_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/chip_input_view"
+            tools:listitem="@layout/item_event_transaction" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_save"

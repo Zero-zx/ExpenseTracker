@@ -17,6 +17,6 @@ interface SessionRepository {
 
     suspend fun setCurrentUserId(userId: Long)
 
-    fun getCurrentUserId(): Long?
+    fun getCurrentUserId(): Long = 1
 
 }

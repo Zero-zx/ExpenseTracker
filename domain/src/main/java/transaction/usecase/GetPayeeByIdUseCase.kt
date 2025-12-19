@@ -1,13 +1,13 @@
 package transaction.usecase
 
-import transaction.model.PayeeTransaction
-import transaction.repository.PayeeTransactionRepository
+import transaction.model.Payee
+import transaction.repository.PayeeRepository
 import javax.inject.Inject
 
 class GetPayeeByIdUseCase @Inject constructor(
-    private val repository: PayeeTransactionRepository
+    private val repository: PayeeRepository
 ) {
-    suspend operator fun invoke(payeeId: Long): PayeeTransaction? {
+    suspend operator fun invoke(payeeId: Long): Payee? {
         return repository.getPayeeById(payeeId)
     }
 }

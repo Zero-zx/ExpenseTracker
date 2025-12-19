@@ -4,6 +4,7 @@ import account.model.Account
 import transaction.model.Category
 import transaction.model.Event
 import transaction.model.Location
+import transaction.model.Payee
 import transaction.model.Transaction
 import transaction.repository.TransactionRepository
 import javax.inject.Inject
@@ -19,7 +20,7 @@ class AddTransactionUseCase @Inject constructor(
         event: Event? = null,
         createAt: Long,
         location: Location? = null,
-        payeeIds: List<Long> = emptyList()
+        payees: List<Payee> = emptyList()
     ): Long {
         val transaction = Transaction(
             amount = amount,
@@ -28,11 +29,10 @@ class AddTransactionUseCase @Inject constructor(
             description = description,
             account = account,
             event = event,
-            partnerId = 0,
             location = location,
-            payeeIds = payeeIds
+            payees = payees
         )
-        return repository.insertTransaction(transaction)
+        return repository.insertTransactionWithPayees(transaction)
     }
 }
 

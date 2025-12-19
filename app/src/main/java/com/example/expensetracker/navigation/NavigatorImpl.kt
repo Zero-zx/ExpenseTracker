@@ -63,10 +63,10 @@ class NavigatorImpl @Inject constructor() : Navigator {
         )
     }
 
-    override fun navigateToSelectPayee(selectedPayeeIds: LongArray) {
+    override fun navigateToSelectPayee(selectedPayeeNames: Array<String>) {
         navController?.navigateWithAnim(
             R.id.payeeSelectFragment,
-            bundleOf("selected_payee_ids" to selectedPayeeIds)
+            bundleOf("selected_payee_names" to selectedPayeeNames)
         )
     }
 

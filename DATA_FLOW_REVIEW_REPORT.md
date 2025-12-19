@@ -154,3 +154,4 @@ override fun getAllTransactionByAccount(accountId: Long): Flow<List<Transaction>
 
 **Kết luận:** Data flow đã được sửa và hoạt động đúng. PayeeIds giờ đã được load đầy đủ từ database. Cần tiếp tục monitor và fix vấn đề Category null safety trong tương lai.
 
+
