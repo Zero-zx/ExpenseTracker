@@ -38,13 +38,3 @@ internal data class TransactionPayeeEntity(
     @ColumnInfo(name = "payeeId")
     val payeeId: Long
 )
-
-// Data class for query results that only return transactionId and payeeId
-internal data class TransactionPayeePair(
-    @ColumnInfo(name = "transactionId")
-    val transactionId: Long,
-    @ColumnInfo(name = "payeeId")
-    val payeeId: Long
-)
-
-

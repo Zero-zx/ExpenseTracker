@@ -8,7 +8,7 @@ import dao.AccountDao
 import dao.CategoryDao
 import dao.EventDao
 import dao.LocationDao
-import dao.PayeeTransactionDao
+import dao.PayeeDao
 import dao.TransactionDao
 import dao.TransactionImageDao
 import dao.TransactionPayeeDao
@@ -45,8 +45,8 @@ internal abstract class BudgetDatabase : RoomDatabase() {
     abstract fun accountDao(): AccountDao
     abstract fun categoryDao(): CategoryDao
     abstract fun eventDao(): EventDao
-    abstract fun payeeTransactionDao(): PayeeTransactionDao
+    abstract fun payeeDao(): PayeeDao
     abstract fun locationDao(): LocationDao
-    abstract fun transactionPayeeDao(): TransactionPayeeDao
     abstract fun transactionImageDao(): TransactionImageDao
+    abstract fun transactionPayeeDao(): TransactionPayeeDao
 }

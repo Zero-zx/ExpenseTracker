@@ -5,7 +5,6 @@ import account.model.Account
 import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
-import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -20,12 +19,12 @@ import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_NAME
 import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
-import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS
+import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_NAMES
 import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
 import constants.FragmentResultKeys.RESULT_CATEGORY_ID
 import constants.FragmentResultKeys.RESULT_EVENT_NAME
 import constants.FragmentResultKeys.RESULT_LOCATION_ID
-import constants.FragmentResultKeys.RESULT_PAYEE_IDS
+import constants.FragmentResultKeys.RESULT_PAYEE_NAMES
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.standardize
 import permission.PermissionHandler
@@ -36,6 +35,7 @@ import storage.FileProvider
 import transaction.model.Category
 import transaction.model.CategoryType
 import transaction.model.Event
+import transaction.model.Payee
 import ui.CalculatorManager
 import ui.CalculatorProvider
 import ui.GridSpacingItemDecoration
@@ -160,13 +160,13 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         listenForSelectionResult(REQUEST_SELECT_EVENT_NAME) { bundle ->
             val eventName = bundle.getString(RESULT_EVENT_NAME)
             if (eventName != null) {
-                viewModel.addTemporaryEvent(eventName)
+                viewModel.selectEvent(eventName)
             }
         }
 
-        listenForSelectionResult(REQUEST_SELECT_PAYEE_IDS) { bundle ->
-            val payeeIds = bundle.getLongArray(RESULT_PAYEE_IDS) ?: longArrayOf()
-            viewModel.selectPayeesByIds(payeeIds)
+        listenForSelectionResult(REQUEST_SELECT_PAYEE_NAMES) { bundle ->
+            val payeeNames = bundle.getStringArray(RESULT_PAYEE_NAMES) ?: emptyArray()
+            viewModel.addPayee(payeeNames.toList())
         }
 
         listenForSelectionResult(REQUEST_SELECT_LOCATION_ID) { bundle ->
@@ -464,7 +464,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
     }
 
-    private fun updateSelectedPayees(payees: List<transaction.model.PayeeTransaction>) {
+    private fun updateSelectedPayees(payees: List<Payee>) {
         binding.apply {
             customViewPayee.getTextView().isVisible = payees.isEmpty()
             customViewPayee.getChipGroup().removeAllViews()

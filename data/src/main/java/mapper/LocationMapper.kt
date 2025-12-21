@@ -20,3 +20,4 @@ internal fun LocationEntity.toDomain(): Location {
 }
 
 
+

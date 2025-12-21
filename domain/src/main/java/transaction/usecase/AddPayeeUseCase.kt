@@ -1,33 +1,36 @@
 package transaction.usecase
 
-import transaction.model.PayeeTransaction
-import transaction.repository.PayeeTransactionRepository
+import session.repository.SessionRepository
+import transaction.model.Payee
+import transaction.repository.PayeeRepository
 import javax.inject.Inject
 
 class AddPayeeUseCase @Inject constructor(
-    private val repository: PayeeTransactionRepository
+    private val repository: PayeeRepository,
+    private val sessionRepository: SessionRepository
 ) {
     suspend operator fun invoke(
         name: String,
-        accountId: Long,
         isFromContacts: Boolean = false,
         contactId: Long? = null
-    ): Long {
+    ): Payee {
         require(name.isNotBlank()) { "Payee name cannot be blank" }
-
+        val userId = sessionRepository.getCurrentUserId()
         // Check if payee already exists
-        val existingPayee = repository.getPayeeByName(name, accountId)
+        val existingPayee = repository.getPayeeByName(name, userId)
         if (existingPayee != null) {
-            return existingPayee.id
+            return existingPayee
         }
 
-        val payee = PayeeTransaction(
+        val payee = Payee(
             name = name,
-            accountId = accountId,
+            userId = userId,
             isFromContacts = isFromContacts,
             contactId = contactId
         )
 
-        return repository.insertPayee(payee)
+        val payeeId = repository.insertPayee(payee)
+        // Return payee with the generated ID
+        return payee.copy(id = payeeId)
     }
 }

@@ -14,7 +14,7 @@ class AddEventUseCase @Inject constructor(
         numberOfParticipants: Int? = 0,
         accountId: Long,
         participants: List<String>? = emptyList()
-    ): Long {
+    ): Event {
         // Validate event name
         require(eventName.isNotBlank()) {
             "Event name cannot be blank"
@@ -49,8 +49,8 @@ class AddEventUseCase @Inject constructor(
         // Check if event with same name already exists for this account
         val existingEvent = repository.getEventByName(trimmedEventName, accountId)
         if (existingEvent != null) {
-            // Event already exists, return its ID
-            return existingEvent.id
+            // Event already exists, return it
+            return existingEvent
         }
 
         val event = Event(
@@ -63,7 +63,9 @@ class AddEventUseCase @Inject constructor(
             participants = sanitizedParticipants
         )
 
-        return repository.insertEvent(event)
+        val eventId = repository.insertEvent(event)
+        // Return event with the generated ID
+        return event.copy(id = eventId)
     }
 }
 

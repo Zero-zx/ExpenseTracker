@@ -1,9 +1,9 @@
 package model
 
-import android.R
 import androidx.room.Embedded
+import androidx.room.Junction
 import androidx.room.Relation
-import transaction.model.Transaction
+import transaction.model.Payee
 
 // Model used for query one-to-many relationship
 internal data class TransactionWithDetails(
@@ -28,9 +28,14 @@ internal data class TransactionWithDetails(
         entityColumn = "id"
     )
     val locationEntity: LocationEntity?,
-//    @Relation(
-//        parentColumn = "partner_id",
-//        entityColumn = "id"
-//    )
-//    val partner: PartnerEntity?
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "id",
+        associateBy = Junction(
+            value = TransactionPayeeEntity::class,
+            parentColumn = "transactionId",
+            entityColumn = "payeeId"
+        )
+    )
+    val payees: List<PayeeEntity>
 )

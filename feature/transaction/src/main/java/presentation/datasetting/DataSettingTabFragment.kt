@@ -37,3 +37,4 @@ abstract class DataSettingTabFragment : BaseFragment<FragmentDataSettingTabBindi
         (parentFragment as? DataSettingFragment)?.applySelection()
     }
 }
+

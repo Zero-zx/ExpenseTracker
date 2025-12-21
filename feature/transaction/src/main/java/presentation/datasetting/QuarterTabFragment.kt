@@ -27,3 +27,4 @@ class QuarterTabFragment : DataSettingTabFragment() {
         return items
     }
 }
+

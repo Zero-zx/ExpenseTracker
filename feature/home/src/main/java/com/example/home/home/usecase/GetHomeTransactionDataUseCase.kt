@@ -105,3 +105,4 @@ data class CategoryExpenseData(
     val amount: Double,
     val percentage: Double = 0.0
 )
+

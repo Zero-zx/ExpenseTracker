@@ -64,8 +64,8 @@ fun Fragment.setAccountIdSelectionResult(selectedId: Long) {
 
 fun Fragment.setPayeeIdsSelectionResult(selectedIds: LongArray) {
     setSelectionResult(
-        FragmentResultKeys.REQUEST_SELECT_PAYEE_IDS,
-        bundleOf(FragmentResultKeys.RESULT_PAYEE_IDS to selectedIds)
+        FragmentResultKeys.REQUEST_SELECT_PAYEE_NAMES,
+        bundleOf(FragmentResultKeys.RESULT_PAYEE_NAMES to selectedIds)
     )
 }
 

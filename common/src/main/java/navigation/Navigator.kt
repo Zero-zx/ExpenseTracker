@@ -10,7 +10,7 @@ interface Navigator {
     fun navigateToAddAccount()
     fun navigateToSelectAccount(selectedAccountId: Long = -1L)
     fun navigateToSelectEvent(selectedEventName: String = "")
-    fun navigateToSelectPayee(selectedPayeeIds: LongArray = longArrayOf())
+    fun navigateToSelectPayee(selectedPayeeNames: Array<String> = emptyArray())
     fun navigateToSelectLocation(selectedLocationId: Long = -1L)
     fun navigateToEventList()
     fun navigateToAddEvent()

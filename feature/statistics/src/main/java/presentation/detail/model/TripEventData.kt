@@ -7,3 +7,4 @@ data class TripEventData(
     val totalAmount: Double // Total expense for this event
 )
 
+

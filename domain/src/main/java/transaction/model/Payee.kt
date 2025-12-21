@@ -1,11 +1,10 @@
 package transaction.model
 
-import account.model.Account
-
 data class Payee(
     val id: Long = 0,
-    val eventId: Long,
-    val account: Account?,
-    val participantName: String
+    val name: String,
+    val userId: Long = 1L, // Account that owns this payee
+    val isFromContacts: Boolean = false, // Whether this payee is from device contacts
+    val contactId: Long? = null // Contact ID if from device contacts
 )
 

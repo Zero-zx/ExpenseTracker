@@ -12,3 +12,4 @@ class GetTransactionsByDateRangeUseCase @Inject constructor(
         return transactionRepository.getTransactionsByDateRange(accountId, startDate, endDate)
     }
 }
+

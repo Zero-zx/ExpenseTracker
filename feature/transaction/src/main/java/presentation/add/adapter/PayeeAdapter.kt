@@ -6,13 +6,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemEventTransactionBinding
-import transaction.model.PayeeTransaction
+import transaction.model.Payee
 
 class PayeeAdapter(
-    private val onItemClick: (PayeeTransaction) -> Unit,
-    private val onItemUpdate: (PayeeTransaction) -> Unit
-) : ListAdapter<PayeeTransaction, PayeeAdapter.PayeeViewHolder>(PayeeDiffCallback()) {
-    private val selectedPayeeIds = mutableSetOf<Long>()
+    private val onItemClick: (Payee) -> Unit,
+    private val onItemUpdate: (Payee) -> Unit
+) : ListAdapter<Payee, PayeeAdapter.PayeeViewHolder>(PayeeDiffCallback()) {
+    // Use names instead of IDs since temporary payees all have id = -1L
+    private val selectedPayeeNames = mutableSetOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PayeeViewHolder {
         val binding = ItemEventTransactionBinding.inflate(
@@ -24,14 +25,14 @@ class PayeeAdapter(
     }
 
     override fun onBindViewHolder(holder: PayeeViewHolder, position: Int) {
-        holder.bind(getItem(position), selectedPayeeIds.contains(getItem(position).id))
+        holder.bind(getItem(position), selectedPayeeNames.contains(getItem(position).name))
     }
 
     inner class PayeeViewHolder(
         private val binding: ItemEventTransactionBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(payee: PayeeTransaction, isSelected: Boolean) {
+        fun bind(payee: Payee, isSelected: Boolean) {
             binding.apply {
                 itemView.isSelected = isSelected
                 textViewName.text = payee.name
@@ -54,29 +55,29 @@ class PayeeAdapter(
         }
     }
 
-    private class PayeeDiffCallback : DiffUtil.ItemCallback<PayeeTransaction>() {
-        override fun areItemsTheSame(oldItem: PayeeTransaction, newItem: PayeeTransaction): Boolean {
+    private class PayeeDiffCallback : DiffUtil.ItemCallback<Payee>() {
+        override fun areItemsTheSame(oldItem: Payee, newItem: Payee): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: PayeeTransaction, newItem: PayeeTransaction): Boolean {
+        override fun areContentsTheSame(oldItem: Payee, newItem: Payee): Boolean {
             return oldItem == newItem
         }
     }
 
-    fun setSelectedPayees(payees: List<PayeeTransaction>) {
-        val newIds = payees.map { it.id }.toSet()
-        if (newIds == selectedPayeeIds) return
+    fun setSelectedPayees(payees: List<Payee>) {
+        val newNames = payees.map { it.name }.toSet()
+        if (newNames == selectedPayeeNames) return
 
         // Find positions that changed and notify them
-        val previousIds = selectedPayeeIds.toSet()
-        selectedPayeeIds.clear()
-        selectedPayeeIds.addAll(newIds)
+        val previousNames = selectedPayeeNames.toSet()
+        selectedPayeeNames.clear()
+        selectedPayeeNames.addAll(newNames)
 
         // Notify items that were selected or deselected
-        val changedIds = (previousIds + newIds) - (previousIds.intersect(newIds))
-        changedIds.forEach { changedId ->
-            val position = currentList.indexOfFirst { it.id == changedId }
+        val changedNames = (previousNames + newNames) - (previousNames.intersect(newNames))
+        changedNames.forEach { changedName ->
+            val position = currentList.indexOfFirst { it.name == changedName }
             if (position != -1) {
                 notifyItemChanged(position)
             }

@@ -1,23 +1,23 @@
 package mapper
 
 import model.PayeeEntity
-import transaction.model.PayeeTransaction
+import transaction.model.Payee
 
-internal fun PayeeTransaction.toEntity(): PayeeEntity {
+internal fun Payee.toEntity(): PayeeEntity {
     return PayeeEntity(
         id = id,
         name = name,
-        accountId = accountId,
+        userId = userId,
         isFromContacts = isFromContacts,
         contactId = contactId
     )
 }
 
-internal fun PayeeEntity.toDomain(): PayeeTransaction {
-    return PayeeTransaction(
+internal fun PayeeEntity.toDomain(): Payee {
+    return Payee(
         id = id,
         name = name,
-        accountId = accountId,
+        userId = userId,
         isFromContacts = isFromContacts,
         contactId = contactId
     )

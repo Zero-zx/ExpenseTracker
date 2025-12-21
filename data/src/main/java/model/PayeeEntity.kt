@@ -16,19 +16,19 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = AccountEntity::class,
             parentColumns = ["id"],
-            childColumns = ["accountId"],
+            childColumns = ["userId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("accountId")]
+    indices = [Index("userId")]
 )
 internal data class PayeeEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo(name = "name")
     val name: String,
-    @ColumnInfo(name = "accountId")
-    val accountId: Long,
+    @ColumnInfo(name = "userId")
+    val userId: Long,
     @ColumnInfo(name = "isFromContacts")
     val isFromContacts: Boolean = false,
     @ColumnInfo(name = "contactId")

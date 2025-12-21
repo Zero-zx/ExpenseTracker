@@ -20,7 +20,6 @@ import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
 import constants.FragmentResultKeys.RESULT_LOCATION_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import presentation.add.adapter.LocationAdapter
 import presentation.add.viewModel.AddTransactionViewModel
@@ -40,7 +39,7 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
         parentFragment?.arguments?.getLong("selected_location_id", -1L) ?: -1L
     }
 
-    // Track current search query to filter temporary locations
+    // Track current search query to filter locations
     private val currentSearchQuery = MutableStateFlow<String>("")
 
     override fun initView() {
@@ -89,14 +88,17 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
                     return@setOnClickListener
                 }
 
-                // Create temporary location and add to AddTransactionViewModel
+                // Create and persist location immediately, then select it
+                val accountId = addTransactionViewModel.getCurrentAccountId() ?: 1L
                 val location = Location(
-                    id = 0, // Will be assigned temporary ID
                     name = locationName,
-                    accountId = addTransactionViewModel.getCurrentAccountId() ?: 1L
+                    accountId = accountId
                 )
                 addTransactionViewModel.addTemporaryLocation(location)
 
+                // Reload locations to show the newly persisted one
+                viewModel.loadLocations()
+                
                 // Clear input and show list
                 editTextSearch.text?.clear()
                 showRecyclerView()
@@ -105,49 +107,37 @@ class LocationSelectFragment : BaseFragment<FragmentLocationSelectBinding>(
     }
 
     override fun observeData() {
-        // Observe persisted locations from LocationSelectViewModel and merge with temporary ones
+        // Observe persisted locations from LocationSelectViewModel
+        // Temporary locations are now persisted immediately, so they appear in the persisted list
         viewLifecycleOwner.lifecycleScope.launch {
-            combine(
-                viewModel.uiState,
-                addTransactionViewModel.temporaryLocations,
-                currentSearchQuery
-            ) { persistedState, temporaryLocations, searchQuery ->
-                when (persistedState) {
-                    is UIState.Success -> {
-                        // Filter temporary locations by search query if searching
-                        val filteredTemporary = if (searchQuery.isNotBlank()) {
-                            temporaryLocations.filter {
-                                it.name.contains(searchQuery, ignoreCase = true)
-                            }
-                        } else {
-                            temporaryLocations
-                        }
-                        // Merge persisted and temporary locations (temporary first)
-                        val mergedLocations = filteredTemporary + persistedState.data
-                        UIState.Success(mergedLocations)
-                    }
-
-                    is UIState.Loading -> UIState.Loading
-                    is UIState.Error -> persistedState
-                    else -> UIState.Idle
-                }
-            }.collect { mergedState ->
-                when (mergedState) {
+            viewModel.uiState.collect { state ->
+                when (state) {
                     is UIState.Loading -> {}
                     is UIState.Success -> {
-                        if (mergedState.data.isNotEmpty()) {
+                        // Filter by search query if searching
+                        val filteredLocations = if (currentSearchQuery.value.isNotBlank()) {
+                            state.data.filter {
+                                it.name.contains(currentSearchQuery.value, ignoreCase = true)
+                            }
+                        } else {
+                            state.data
+                        }
+                        
+                        if (filteredLocations.isNotEmpty()) {
                             showRecyclerView()
-                            adapter.submitList(mergedState.data)
+                            adapter.submitList(filteredLocations)
                             if (selectedLocationId != -1L) {
                                 val selectedLocation =
-                                    mergedState.data.find { it.id == selectedLocationId }
+                                    filteredLocations.find { it.id == selectedLocationId }
                                 adapter.setSelectedLocation(selectedLocation)
                             }
                         } else {
                             showEmptyView()
                         }
                     }
-
+                    is UIState.Error -> {
+                        showEmptyView()
+                    }
                     else -> {
                         showEmptyView()
                     }

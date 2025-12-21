@@ -10,13 +10,13 @@ class AddLocationUseCase @Inject constructor(
     suspend operator fun invoke(
         name: String,
         accountId: Long
-    ): Long {
+    ): Location {
         require(name.isNotBlank()) { "Location name cannot be blank" }
 
         // Check if location already exists
         val existingLocation = repository.getLocationByName(name, accountId)
         if (existingLocation != null) {
-            return existingLocation.id
+            return existingLocation
         }
 
         val location = Location(
@@ -24,6 +24,8 @@ class AddLocationUseCase @Inject constructor(
             accountId = accountId
         )
 
-        return repository.insertLocation(location)
+        val locationId = repository.insertLocation(location)
+        // Return location with the generated ID
+        return location.copy(id = locationId)
     }
 }

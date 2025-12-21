@@ -38,3 +38,4 @@ class NowTabFragment : BaseFragment<FragmentTabNowBinding>(
 }
 
 
+
