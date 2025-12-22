@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/other_nav_graph"
+    app:startDestination="@id/otherFragment"
+    app:enterAnim="@anim/slide_in_right"
+    app:exitAnim="@anim/slide_out_left"
+    app:popEnterAnim="@android:anim/slide_in_left"
+    app:popExitAnim="@android:anim/slide_out_right">
+
+    <fragment
+        android:id="@+id/otherFragment"
+        android:name="com.example.other.other.OtherFragment"
+        android:label="Other"
+        tools:layout="@layout/fragment_other" />
+</navigation>
