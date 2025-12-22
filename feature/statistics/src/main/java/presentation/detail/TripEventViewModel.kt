@@ -81,7 +81,7 @@ class TripEventViewModel @Inject constructor(
         calendar.set(Calendar.MILLISECOND, 0)
         val startDate = calendar.timeInMillis
         
-        return getTransactionsByDateRangeUseCase(accountId, startDate, endDate)
+        return getTransactionsByDateRangeUseCase(startDate, endDate)
     }
 }
 

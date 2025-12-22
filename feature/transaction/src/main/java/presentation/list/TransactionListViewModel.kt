@@ -85,7 +85,7 @@ class TransactionListViewModel @Inject constructor(
     private fun loadTransactions() {
         setLoading()
         viewModelScope.launch {
-            getTransactionsByDateRangeUseCase(currentAccountId, currentStartDate, currentEndDate)
+            getTransactionsByDateRangeUseCase(currentStartDate, currentEndDate)
                 .catch { exception ->
                     setError(exception.message ?: "Unknown error occurred")
                 }

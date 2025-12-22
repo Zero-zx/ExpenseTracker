@@ -7,13 +7,14 @@
 
     <ImageButton
         android:id="@+id/button_back"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/top_icon_size"
+        android:layout_height="@dimen/top_icon_size"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Back"
-        android:src="@drawable/icon_back"
+        android:src="@drawable/v2_ic_back_gray"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/gray_top_icon" />
 
     <TextView
         android:id="@+id/text_view_title"

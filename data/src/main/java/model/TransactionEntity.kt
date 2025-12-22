@@ -33,6 +33,8 @@ import androidx.room.PrimaryKey
 internal data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    @ColumnInfo(name = "user_id")
+    val userId: Long,
     @ColumnInfo(name = "amount")
     val amount: Double,
     @ColumnInfo(name = "create_at")

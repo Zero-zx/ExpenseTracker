@@ -21,6 +21,12 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
     private val viewModel: ReportsViewModel by viewModels()
     private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
 
+    override fun initView() {
+        // Set rounded corners for the combined chart: 8dp radius
+        val radiusPx = (8 * resources.displayMetrics.density).toInt()
+        binding.barChartIncomeExpense.setRadius(radiusPx)
+    }
+
     override fun initListener() {
         binding.constraintLayoutIncomeAndOutcome.setOnClickListener {
             viewModel.navigateToExpenseVsIncome()
@@ -94,41 +100,48 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
         val monthLabels = chartData.monthlyData.map { it.monthLabel }.toTypedArray()
         xAxis.valueFormatter = IndexAxisValueFormatter(monthLabels)
 
-        // Configure Y-axis (left) - hide labels
+        // Prepare data entries for combined chart
+        // Dataset 0 (X) = Expense (bottom, red)
+        // Dataset 1 (Y) = Income (top, green)
+        val expenseEntries = mutableListOf<BarEntry>()
+        val incomeEntries = mutableListOf<BarEntry>()
+        var maxTotal = 0.0
+
+        chartData.monthlyData.forEachIndexed { index, data ->
+            expenseEntries.add(BarEntry(index.toFloat(), data.expense.toFloat()))
+            incomeEntries.add(BarEntry(index.toFloat(), data.income.toFloat()))
+            // Track the maximum combined value for Y-axis scaling
+            val total = data.expense + data.income
+            if (total > maxTotal) maxTotal = total
+        }
+
+        // Configure Y-axis (left) - set maximum to the highest combined value
         val leftAxis = barChart.axisLeft
         leftAxis.setDrawGridLines(true)
         leftAxis.gridColor = Color.parseColor("#E0E0E0")
         leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = (maxTotal * 1.1).toFloat() // Add 10% padding at top
         leftAxis.setDrawLabels(false) // Hide Y-axis labels
 
         // Configure Y-axis (right) - disabled
         val rightAxis = barChart.axisRight
         rightAxis.isEnabled = false
 
-        // Prepare data entries
-        val incomeEntries = mutableListOf<BarEntry>()
-        val expenseEntries = mutableListOf<BarEntry>()
-
-        chartData.monthlyData.forEachIndexed { index, data ->
-            incomeEntries.add(BarEntry(index.toFloat(), data.income.toFloat()))
-            expenseEntries.add(BarEntry(index.toFloat(), data.expense.toFloat()))
-        }
-
-        // Create datasets - hide values on bars
-        val incomeDataSet = BarDataSet(incomeEntries, "").apply {
-            color = Color.parseColor("#4CAF50") // Green for income
-            setDrawValues(false) // Hide values on bars
-        }
-
+        // Create dataset for expense (bottom, red) - Dataset 0
         val expenseDataSet = BarDataSet(expenseEntries, "").apply {
             color = Color.parseColor("#F44336") // Red for expense
             setDrawValues(false) // Hide values on bars
         }
 
-        // Create grouped bar data
-        val barData = BarData(incomeDataSet, expenseDataSet).apply {
-            barWidth = 0.35f
-            groupBars(0f, 0.06f, 0.02f)
+        // Create dataset for income (top, green) - Dataset 1
+        val incomeDataSet = BarDataSet(incomeEntries, "").apply {
+            color = Color.parseColor("#4CAF50") // Green for income
+            setDrawValues(false) // Hide values on bars
+        }
+
+        // Create bar data with both datasets - RoundedCombinedBarChart will combine them
+        val barData = BarData(expenseDataSet, incomeDataSet).apply {
+            barWidth = 0.6f
         }
 
         barChart.data = barData

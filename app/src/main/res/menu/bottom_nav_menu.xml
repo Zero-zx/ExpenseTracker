@@ -16,8 +16,8 @@
         android:id="@+id/statistics_nav_graph"
         android:icon="@drawable/ic_exclude_report"
         android:title="@string/text_reports" />
-<!--    <item-->
-<!--        android:id="@+id/transactionListFragment"-->
-<!--        android:icon="@drawable/ic_more"-->
-<!--        android:title="@string/text_other" />-->
+    <item
+        android:id="@+id/home_nav_graph"
+        android:icon="@drawable/ic_more"
+        android:title="@string/text_other" />
 </menu>

@@ -175,7 +175,7 @@
                         android:layout_height="24dp"
                         android:contentDescription="Go"
                         android:rotation="180"
-                        android:src="@drawable/icon_back" />
+                        android:src="@drawable/v2_ic_back_gray" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -233,7 +233,7 @@
                         android:layout_height="24dp"
                         android:contentDescription="Go"
                         android:rotation="180"
-                        android:src="@drawable/icon_back" />
+                        android:src="@drawable/v2_ic_back_gray" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -291,7 +291,7 @@
                         android:layout_height="24dp"
                         android:contentDescription="Go"
                         android:rotation="180"
-                        android:src="@drawable/icon_back" />
+                        android:src="@drawable/v2_ic_back_gray" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

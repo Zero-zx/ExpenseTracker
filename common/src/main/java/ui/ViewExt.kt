@@ -3,12 +3,19 @@ package ui
 import android.app.TimePickerDialog
 import android.content.Context
 import android.text.format.DateFormat
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.common.R
+import com.example.common.databinding.CustomToastLayoutBinding
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -28,6 +35,67 @@ fun View.visible() {
 
 fun Fragment.navigateBack() {
     findNavController().navigateUp()
+}
+
+/*
+ * Show a success toast.
+ */
+fun Context.showSuccessToast(
+    message: String,
+    duration: Int = Toast.LENGTH_SHORT
+) {
+    showCustomToast(
+        message = message,
+        iconRes = R.drawable.ic_success_sync_40dp,
+        backgroundColor = R.color.bg_success,
+        duration = duration
+    )
+}
+
+
+/*
+ * Show a warning toast.
+ */
+fun Context.showWarningToast(
+    message: String,
+    duration: Int = Toast.LENGTH_SHORT
+) {
+    showCustomToast(
+        message = message,
+        iconRes = R.drawable.ic_warning,
+        backgroundColor = R.color.bg_warning,
+        duration = duration
+    )
+}
+
+/**
+ * Show a custom toast with an icon and background color.
+ */
+
+fun Context.showCustomToast(
+    message: String,
+    @DrawableRes iconRes: Int,
+    @ColorInt backgroundColor: Int,
+    duration: Int = Toast.LENGTH_SHORT
+) {
+    // 1. Initialize ViewBinding
+    val binding = CustomToastLayoutBinding.inflate(LayoutInflater.from(this))
+
+    // 2. Set dynamic properties
+    binding.toastText.text = message
+    binding.toastIcon.setImageResource(iconRes)
+
+    // Change background color using tint
+    binding.toastCard.background = getDrawable(R.drawable.rounded_background)
+    binding.toastCard.setBackgroundColor(backgroundColor)
+
+    // 3. Create and show the Toast
+    Toast(applicationContext).apply {
+        this.duration = duration
+        setGravity(Gravity.TOP, 0, 120) // Force center screen
+        view = binding.root
+        show()
+    }
 }
 
 /**

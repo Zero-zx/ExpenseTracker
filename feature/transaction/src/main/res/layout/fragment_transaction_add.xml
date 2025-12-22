@@ -7,60 +7,64 @@
     android:background="@drawable/blue_white_background"
     android:paddingTop="@dimen/padding_edges">
 
-    <ImageButton
-        android:id="@+id/button_list_transaction"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/ripple_image_button"
-        android:scaleType="center"
-        android:src="@drawable/icon_history"
-        android:tint="@color/gray_big_icon"
-        app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/dropdown_menu_transaction"
-        style="@style/Widget.App.ExposedDropdownMenu"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintDimensionRatio="9:2"
-        app:layout_constraintEnd_toStartOf="@+id/button_submit"
-        app:layout_constraintStart_toEndOf="@id/button_list_transaction"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.5">
+        <ImageButton
+            android:id="@+id/button_list_transaction"
+            android:layout_width="@dimen/top_icon_size"
+            android:layout_height="@dimen/top_icon_size"
+            android:background="@drawable/ripple_image_button"
+            android:padding="@dimen/padding_medium"
+            android:scaleType="center"
+            android:src="@drawable/icon_history"
+            android:tint="@color/gray_big_icon"
+            app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <AutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/blue_outline_rounded_background"
-            android:gravity="center"
-            android:inputType="none"
-            android:paddingVertical="0dp"
-            android:paddingStart="4dp"
-            android:text="Expense"
-            android:textColor="@color/blue_bg"
-            android:textStyle="bold" />
-    </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dropdown_menu_transaction"
+            style="@style/Widget.App.ExposedDropdownMenu"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="9:2"
+            app:layout_constraintEnd_toStartOf="@+id/button_submit"
+            app:layout_constraintStart_toEndOf="@id/button_list_transaction"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.5">
 
-    <ImageButton
-        android:id="@+id/button_submit"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/ripple_image_button"
-        android:scaleType="center"
-        android:src="@drawable/icon_submit"
-        app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/gray_big_icon" />
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/blue_outline_rounded_background"
+                android:gravity="center"
+                android:inputType="none"
+                android:paddingVertical="0dp"
+                android:paddingStart="4dp"
+                android:text="Expense"
+                android:textColor="@color/blue_bg"
+                android:textStyle="bold" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/button_submit"
+            android:layout_width="@dimen/top_icon_size"
+            android:layout_height="@dimen/top_icon_size"
+            android:background="@drawable/ripple_image_button"
+            android:padding="@dimen/padding_medium"
+            android:scaleType="center"
+            android:src="@drawable/icon_submit"
+            app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/gray_big_icon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -71,7 +75,7 @@
         android:clipToPadding="false"
         android:paddingHorizontal="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dropdown_menu_transaction">
+        app:layout_constraintTop_toBottomOf="@+id/layout_top_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -118,6 +122,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/text_view_currency"
                         style="@style/TextAppearance.App.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -166,7 +171,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="@dimen/padding_normal"
                         android:text="@string/text_select_category"
-                        android:textColor="@color/red_hint"
                         app:layout_constraintBottom_toBottomOf="@id/icon_category"
                         app:layout_constraintEnd_toStartOf="@+id/text_view_all"
                         app:layout_constraintStart_toEndOf="@+id/icon_category"
@@ -516,13 +520,11 @@
                 </LinearLayout>
             </LinearLayout>
 
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_show_more"
                 style="@style/TextAppearance.App.Normal.Blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="@dimen/padding_normal"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/selector_button_full_white"
@@ -535,14 +537,12 @@
                 android:id="@+id/button_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="@dimen/padding_normal"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/selector_button_blue"
                 android:text="@string/text_save"
                 app:backgroundTint="@color/blue_bg"
                 app:layout_constraintTop_toBottomOf="@id/button_show_more" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

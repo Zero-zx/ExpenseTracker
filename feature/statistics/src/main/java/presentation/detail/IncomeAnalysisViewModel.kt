@@ -32,7 +32,7 @@ class IncomeAnalysisViewModel @Inject constructor(
         // Default: Last 12 months
         val calendar = Calendar.getInstance()
         currentEndDate = calendar.timeInMillis
-        
+
         calendar.add(Calendar.MONTH, -12)
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -59,23 +59,27 @@ class IncomeAnalysisViewModel @Inject constructor(
                 calendar.set(Calendar.MILLISECOND, 0)
                 currentStartDate = calendar.timeInMillis
             }
+
             TabType.MONTHLY -> {
                 // Last 12 months
                 calendar.add(Calendar.MONTH, -12)
                 calendar.set(Calendar.DAY_OF_MONTH, 1)
                 currentStartDate = calendar.timeInMillis
             }
+
             TabType.QUARTER -> {
                 // Last 4 quarters (12 months)
                 calendar.add(Calendar.MONTH, -12)
                 currentStartDate = calendar.timeInMillis
             }
+
             TabType.YEAR -> {
                 // Last 5 years
                 calendar.add(Calendar.YEAR, -5)
                 calendar.set(Calendar.DAY_OF_YEAR, 1)
                 currentStartDate = calendar.timeInMillis
             }
+
             TabType.CUSTOM -> {
                 // Use current date range (already set)
             }
@@ -94,7 +98,7 @@ class IncomeAnalysisViewModel @Inject constructor(
         endDate?.let { currentEndDate = it }
         selectedCategoryIds = categoryIds
         selectedAccountIds = accountIds
-        
+
         setLoading()
 
         val accountId = getCurrentAccountIdUseCase() ?: run {
@@ -102,7 +106,7 @@ class IncomeAnalysisViewModel @Inject constructor(
             return
         }
 
-        getTransactionsByDateRangeUseCase(accountId, currentStartDate, currentEndDate)
+        getTransactionsByDateRangeUseCase(currentStartDate, currentEndDate)
             .onEach { transactions ->
                 val filteredTransactions = filterTransactions(transactions)
                 val analysisData = processTransactions(filteredTransactions)
@@ -118,15 +122,15 @@ class IncomeAnalysisViewModel @Inject constructor(
         return transactions.filter { transaction ->
             // Filter by category type (only INCOME)
             val isIncome = transaction.category.type == CategoryType.INCOME
-            
+
             // Filter by selected categories if any
-            val matchesCategory = selectedCategoryIds?.isEmpty() != false || 
-                                 selectedCategoryIds?.contains(transaction.category.id) == true
-            
+            val matchesCategory = selectedCategoryIds?.isEmpty() != false ||
+                    selectedCategoryIds?.contains(transaction.category.id) == true
+
             // Filter by selected accounts if any
             val matchesAccount = selectedAccountIds?.isEmpty() != false ||
-                                selectedAccountIds?.contains(transaction.account.id) == true
-            
+                    selectedAccountIds?.contains(transaction.account.id) == true
+
             isIncome && matchesCategory && matchesAccount
         }
     }
@@ -138,10 +142,14 @@ class IncomeAnalysisViewModel @Inject constructor(
         // Initialize 12 months with 0 values
         val startCalendar = Calendar.getInstance().apply { timeInMillis = currentStartDate }
         val endCalendar = Calendar.getInstance().apply { timeInMillis = currentEndDate }
-        
+
         val currentMonth = Calendar.getInstance().apply { timeInMillis = currentStartDate }
-        while (currentMonth.before(endCalendar) || currentMonth.get(Calendar.MONTH) == endCalendar.get(Calendar.MONTH)) {
-            val monthKey = "${currentMonth.get(Calendar.MONTH) + 1}/${currentMonth.get(Calendar.YEAR)}"
+        while (currentMonth.before(endCalendar) || currentMonth.get(Calendar.MONTH) == endCalendar.get(
+                Calendar.MONTH
+            )
+        ) {
+            val monthKey =
+                "${currentMonth.get(Calendar.MONTH) + 1}/${currentMonth.get(Calendar.YEAR)}"
             monthlyDataMap[monthKey] = 0.0
             currentMonth.add(Calendar.MONTH, 1)
         }
@@ -150,7 +158,7 @@ class IncomeAnalysisViewModel @Inject constructor(
         transactions.forEach { transaction ->
             calendar.timeInMillis = transaction.createAt
             val monthKey = "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
-            
+
             monthlyDataMap[monthKey] = (monthlyDataMap[monthKey] ?: 0.0) + transaction.amount
         }
 

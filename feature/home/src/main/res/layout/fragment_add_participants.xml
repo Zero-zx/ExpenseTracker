@@ -7,22 +7,23 @@
 
     <ImageButton
         android:id="@+id/button_back"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/top_icon_size"
+        android:layout_height="@dimen/top_icon_size"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/icon_back"
         android:contentDescription="Back"
+        android:src="@drawable/v2_ic_back_gray"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/gray_top_icon" />
 
     <TextView
         android:id="@+id/text_view_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Add Participants"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="@id/button_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/button_back"
@@ -33,8 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_back">

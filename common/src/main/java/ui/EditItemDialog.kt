@@ -25,7 +25,15 @@ class EditItemDialog private constructor(
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setCancelable(builder.cancelable)
         dialog.setCanceledOnTouchOutside(builder.canceledOnTouchOutside)
+        setDialogWidth()
         setupDialog()
+    }
+
+    private fun setDialogWidth() {
+        dialog.window?.setLayout(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     private fun setupDialog() {

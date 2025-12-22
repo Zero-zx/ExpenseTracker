@@ -3,8 +3,8 @@ package ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.common.R
 import com.example.common.databinding.ChipInputViewBinding
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -33,7 +33,11 @@ class ChipInputView @JvmOverloads constructor(
         chip.isCloseIconVisible = onRemove != null
         chip.setOnCloseIconClickListener {
             onRemove?.invoke()
+            if (binding.chipGroup.childCount == 1) {
+                binding.editTextInput.hint = context.getString(R.string.text_select_payee_name)
+            }
         }
+        chip.setEnsureMinTouchTargetSize(false)
         // Add chip before the edit text (edit text is the last child in ChipGroup)
         val editTextIndex = binding.chipGroup.indexOfChild(binding.editTextInput)
         if (editTextIndex >= 0) {
@@ -41,19 +45,20 @@ class ChipInputView @JvmOverloads constructor(
         } else {
             binding.chipGroup.addView(chip)
         }
-        
+
         // Scroll to end to show the edit text after adding chip
         binding.scrollView.post {
-            binding.scrollView.fullScroll(android.view.View.FOCUS_DOWN)
+            binding.scrollView.fullScroll(FOCUS_DOWN)
         }
-        
+
+        binding.editTextInput.hint = ""
         return chip
     }
 
     fun removeChip(chip: Chip) {
         binding.chipGroup.removeView(chip)
     }
-    
+
     fun removeChipByName(text: String) {
         for (i in 0 until binding.chipGroup.childCount) {
             val child = binding.chipGroup.getChildAt(i)
@@ -73,6 +78,14 @@ class ChipInputView @JvmOverloads constructor(
             }
         }
         return texts
+    }
+
+    fun disableHint() {
+        binding.editTextInput.hint = ""
+    }
+
+    fun enableHint() {
+        binding.editTextInput.hint = context.getString(R.string.text_select_payee_name)
     }
 
     fun clearChips() {

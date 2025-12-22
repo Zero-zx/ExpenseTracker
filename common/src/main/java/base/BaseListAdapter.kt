@@ -61,5 +61,3 @@ abstract class BaseListAdapter<T, VBinding : ViewBinding>(
         holder.bind(getItem(position))
     }
 }
-
-

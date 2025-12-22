@@ -128,6 +128,9 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
+    fun updateCategoryType(categoryType: CategoryType) {
+        _currentCategoryType.value = categoryType
+    }
 
     fun addTransaction(
         amount: Double,
@@ -236,9 +239,8 @@ class AddTransactionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val category = getCategoryById(categoryId)
-                if (category != null) {
-                    _selectedCategory.value = category
-                }
+                _currentCategoryType.value = category.type
+                _selectedCategory.value = category
             } catch (e: Exception) {
             }
         }

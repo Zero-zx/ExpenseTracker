@@ -4,6 +4,7 @@ import androidx.core.os.bundleOf
 import base.BaseFragment
 import base.TabConfig
 import base.setupWithTabs
+import com.example.common.R
 import com.example.transaction.databinding.FragmentEventSelectBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_NAMES
@@ -27,6 +28,8 @@ class PayeeSelectFragment : BaseFragment<FragmentEventSelectBinding>(
         arguments?.getStringArray("selected_payee_names")?.let {
             selectedPayeeNames.addAll(it.toList())
         }
+
+        binding.textViewTitle.text = getString(R.string.text_with_whom)
 
         setupViewPager()
     }

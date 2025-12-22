@@ -8,6 +8,7 @@ import com.example.statistics.databinding.FragmentReportDetailContainerBinding
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.model.ReportType
+import ui.navigateBack
 
 @AndroidEntryPoint
 class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainerBinding>(
@@ -73,7 +74,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
                 reportTypeNames
             )
 
-            val autoCompleteTextView = binding.autoCompleteReportType as MaterialAutoCompleteTextView
+            val autoCompleteTextView = binding.autoCompleteReportType
             autoCompleteTextView.setAdapter(dropdownAdapter)
             autoCompleteTextView.threshold = 0 // Show all options immediately
 
@@ -98,7 +99,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
 
     private fun setupBackButton() {
         binding.buttonBack.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            navigateBack()
         }
     }
 

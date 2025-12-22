@@ -8,6 +8,7 @@ import transaction.model.Transaction
 internal fun Transaction.toEntity(): TransactionEntity {
     return TransactionEntity(
         id = id,
+        userId = account.userId,
         amount = amount,
         createAt = createAt,
         description = description!!,

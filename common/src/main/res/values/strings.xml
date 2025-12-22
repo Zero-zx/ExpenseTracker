@@ -65,4 +65,6 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="text_trip_event">Trip/Event</string>
+    <string name="text_select_payee_name">Select or enter payee name</string>
+    <string name="text_financial_statement">Financial statement</string>
 </resources>
