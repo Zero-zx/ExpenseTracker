@@ -59,6 +59,7 @@ dependencies {
     implementation(project(":feature:transaction"))
     implementation(project(":feature:account"))
     implementation(project(":feature:home"))
+    implementation(project(":feature:other"))
     implementation(libs.androidx.navigation.fragment)
     implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
     androidx()
