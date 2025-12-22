@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/black_outline_rounded_background"
-    android:padding="8dp">
+    android:paddingHorizontal="@dimen/padding_normal">
 
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="120dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,20 +20,22 @@
             android:id="@+id/chip_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/padding_normal"
             app:chipSpacingHorizontal="8dp"
             app:chipSpacingVertical="4dp"
             app:singleLine="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text_input"
+                style="@style/TextAppearance.App.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:hint="Search or type payee name"
-                android:minWidth="120dp"
-                android:minHeight="32dp"
-                android:padding="8dp"
-                android:gravity="center_vertical" />
+                android:cursorVisible="true"
+                android:gravity="center_vertical"
+                android:hint="@string/text_select_payee_name"
+                android:minWidth="24dp"
+                android:paddingVertical="@dimen/padding_normal" />
 
         </com.google.android.material.chip.ChipGroup>
 

@@ -20,6 +20,7 @@ class NowTabViewModel @Inject constructor(
 ) : BaseViewModel<List<ReportItem>>() {
 
     val accountId = 1L
+
     companion object {
         private const val ACCOUNT_ID = 1L
     }
@@ -44,31 +45,31 @@ class NowTabViewModel @Inject constructor(
         val reportItems = mutableListOf<ReportItem>()
 
         // Load Today
-        loadTransactionsForRange(accountId, todayStart, now) { income, expense ->
+        loadTransactionsForRange(todayStart, now) { income, expense ->
             reportItems.add(ReportItem("Today", income, expense))
             checkAndSetSuccess(reportItems)
         }
 
         // Load This Week
-        loadTransactionsForRange(accountId, thisWeekStart, now) { income, expense ->
+        loadTransactionsForRange(thisWeekStart, now) { income, expense ->
             reportItems.add(ReportItem("This Week", income, expense))
             checkAndSetSuccess(reportItems)
         }
 
         // Load This Month
-        loadTransactionsForRange(accountId, thisMonthStart, now) { income, expense ->
+        loadTransactionsForRange(thisMonthStart, now) { income, expense ->
             reportItems.add(ReportItem("This Month", income, expense))
             checkAndSetSuccess(reportItems)
         }
 
         // Load This Quarter
-        loadTransactionsForRange(accountId, thisQuarterStart, now) { income, expense ->
+        loadTransactionsForRange(thisQuarterStart, now) { income, expense ->
             reportItems.add(ReportItem("This Quarter", income, expense))
             checkAndSetSuccess(reportItems)
         }
 
         // Load This Year
-        loadTransactionsForRange(accountId, thisYearStart, now) { income, expense ->
+        loadTransactionsForRange(thisYearStart, now) { income, expense ->
             reportItems.add(ReportItem("This Year", income, expense))
             checkAndSetSuccess(reportItems)
         }
@@ -85,21 +86,15 @@ class NowTabViewModel @Inject constructor(
     }
 
     private fun loadTransactionsForRange(
-        accountId: Long,
-        startDate: Long,
-        endDate: Long,
-        onResult: (Double, Double) -> Unit
+        startDate: Long, endDate: Long, onResult: (Double, Double) -> Unit
     ) {
-        getTransactionsByDateRangeUseCase(accountId, startDate, endDate)
-            .onEach { transactions ->
+        getTransactionsByDateRangeUseCase(startDate, endDate).onEach { transactions ->
                 val (income, expense) = calculateIncomeExpense(transactions)
                 onResult(income, expense)
-            }
-            .catch { exception ->
+            }.catch { exception ->
                 Log.e("NowTabViewModel", "Error loading transactions", exception)
                 onResult(0.0, 0.0)
-            }
-            .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
     private fun calculateIncomeExpense(transactions: List<Transaction>): Pair<Double, Double> {

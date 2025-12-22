@@ -1,5 +1,6 @@
 package session.repository
 
+import account.model.Account
 import kotlinx.coroutines.flow.Flow
 
 interface SessionRepository {

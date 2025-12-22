@@ -60,9 +60,9 @@ internal interface TransactionDao {
 
     // get all transactions in a date range for an account
     @Transaction
-    @Query("SELECT * FROM tb_transaction WHERE account_id = :accountId AND create_at BETWEEN :startDate AND :endDate")
+    @Query("SELECT * FROM tb_transaction WHERE user_id = :userId AND create_at BETWEEN :startDate AND :endDate")
     fun getTransactionsByDateRange(
-        accountId: Long,
+        userId: Long,
         startDate: Long,
         endDate: Long
     ): Flow<List<TransactionWithDetails>>

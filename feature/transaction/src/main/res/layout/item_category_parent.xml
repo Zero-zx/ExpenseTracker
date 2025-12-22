@@ -14,6 +14,7 @@
         android:id="@+id/icon_chevron"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:src="@drawable/icon_chevron"
         android:tint="@color/gray_small_icon"
         app:layout_constraintBottom_toBottomOf="@id/image_icon"

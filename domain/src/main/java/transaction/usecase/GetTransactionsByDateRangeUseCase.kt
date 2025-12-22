@@ -1,15 +1,21 @@
 package transaction.usecase
 
 import kotlinx.coroutines.flow.Flow
+import session.repository.SessionRepository
 import transaction.model.Transaction
 import transaction.repository.TransactionRepository
 import javax.inject.Inject
 
 class GetTransactionsByDateRangeUseCase @Inject constructor(
-    private val transactionRepository: TransactionRepository
+    private val transactionRepository: TransactionRepository,
+    private val sessionRepository: SessionRepository
 ) {
-    operator fun invoke(accountId: Long, startDate: Long, endDate: Long): Flow<List<Transaction>> {
-        return transactionRepository.getTransactionsByDateRange(accountId, startDate, endDate)
+    operator fun invoke(startDate: Long, endDate: Long): Flow<List<Transaction>> {
+        return transactionRepository.getTransactionsByDateRange(
+            sessionRepository.getCurrentUserId(),
+            startDate,
+            endDate
+        )
     }
 }
 

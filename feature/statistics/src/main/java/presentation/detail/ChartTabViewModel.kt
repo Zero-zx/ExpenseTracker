@@ -36,7 +36,7 @@ class ChartTabViewModel @Inject constructor(
 
         val (startDate, endDate) = getDateRangeForTabType(tabType)
 
-        getTransactionsByDateRangeUseCase(accountId, startDate, endDate)
+        getTransactionsByDateRangeUseCase(startDate, endDate)
             .onEach { transactions ->
                 val chartData = processTransactions(transactions, tabType)
                 setSuccess(chartData)

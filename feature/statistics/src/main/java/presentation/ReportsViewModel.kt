@@ -44,7 +44,7 @@ class ReportsViewModel @Inject constructor(
         calendar.add(Calendar.MONTH, -MONTHS_TO_SHOW)
         val startDate = calendar.timeInMillis
 
-        getTransactionsByDateRangeUseCase(accountId, startDate, endDate)
+        getTransactionsByDateRangeUseCase(startDate, endDate)
             .onEach { transactions ->
                 val chartData = processTransactions(transactions)
                 setSuccess(chartData)

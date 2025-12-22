@@ -20,6 +20,7 @@
     <color name="black_text">#010512</color>
     <color name="black_outline">#737986</color>
     <color name="black_chevron">#4B5563</color>
+    <color name="gray_top_icon">#4B5563</color>
     <color name="blue_fab">#E0F3FE</color>
     <color name="blue_item_bg">#F0F9FF</color>
     <color name="blue_primary">#098FD3</color>
@@ -35,6 +36,8 @@
     <color name="color_fill_gray">#e6e9ee</color>
     <color name="color_gray_lite_v2">#f1f1f3</color>
     <color name="color_gray_lite">#eeeef0</color>
+    <color name="bg_warning">#FEB11A</color>
+    <color name="bg_success">#2DB84C</color>
 
     <!--    material 3 colors -->
     <color name="my_app_background">#D1EBFA</color>

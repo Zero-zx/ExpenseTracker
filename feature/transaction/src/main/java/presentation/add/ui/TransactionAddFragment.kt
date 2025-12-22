@@ -2,6 +2,8 @@ package presentation.add.ui
 
 //import com.bumptech.glide.Glide
 import account.model.Account
+import android.content.Context
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
@@ -47,6 +49,8 @@ import ui.listenForSelectionResult
 import ui.navigateBack
 import ui.openDatePicker
 import ui.openTimePicker
+import ui.showCustomToast
+import ui.showWarningToast
 import ui.visible
 import javax.inject.Inject
 import com.example.common.R as CommonR
@@ -104,7 +108,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
 
         if (isEditMode) {
-            binding.buttonListTransaction.setImageResource(CommonR.drawable.icon_back)
+            binding.buttonListTransaction.setImageResource(CommonR.drawable.v2_ic_back_gray)
         }
     }
 
@@ -112,19 +116,16 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         val items = CategoryType.entries
         categoryDropdownAdapter = CategoryDropdownAdapter(requireContext(), items)
         categoryDropdownAdapter.selectedPosition = 0
+
         (binding.dropdownMenuTransaction.editText as? AutoCompleteTextView)?.apply {
             setAdapter(categoryDropdownAdapter)
+
             setOnItemClickListener { parent, _, position, _ ->
-                val selectedItem = parent.getItemAtPosition(position) as CategoryType
-                setText(selectedItem.label, false)
-                binding.layoutMostUse.isVisible = selectedItem == CategoryType.EXPENSE
-                binding.editTextAmount.setTextColor(
-                    if (selectedItem == CategoryType.EXPENSE) context.getColor(CommonR.color.red_expense)
-                    else context.getColor(
-                        CommonR.color.green_income
-                    )
-                )
+                val categoryType = parent.getItemAtPosition(position) as CategoryType
+
+                viewModel.updateCategoryType(categoryType)
             }
+
             post {
                 val dropdownWidth = (300 * resources.displayMetrics.density).toInt()
                 dropDownWidth = dropdownWidth
@@ -134,6 +135,14 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
                 setDropDownBackgroundResource(CommonR.drawable.rounded_background)
             }
+        }
+    }
+
+    fun getColorByCategoryType(categoryType: CategoryType, context: Context): Int {
+        return when (categoryType) {
+            CategoryType.EXPENSE -> context.getColor(CommonR.color.red_expense)
+            CategoryType.INCOME -> context.getColor(CommonR.color.green_income)
+            else -> context.getColor(CommonR.color.red_expense)
         }
     }
 
@@ -283,6 +292,10 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             }
         }
 
+        collectState(viewModel.currentCategoryType) { categoryType ->
+            updateUIForCategoryType(categoryType)
+        }
+
         collectState(viewModel.selectedCategory) { category ->
             adapter.setSelectedCategory(category)
             category?.let {
@@ -359,9 +372,12 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     } else {
                         "Transaction added successfully"
                     }
-                    Toast.makeText(
-                        context, message, Toast.LENGTH_SHORT
-                    ).show()
+                    context?.showWarningToast(
+                        message = message
+                    )
+//                    Toast.makeText(
+//                        context, message, Toast.LENGTH_SHORT
+//                    ).show()
                 }
 
                 is UIState.Error -> {
@@ -395,9 +411,10 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     private fun saveTransaction() {
         val selectedCategory = viewModel.selectedCategory.value
         if (selectedCategory == null) {
-            Toast.makeText(
-                context, "Please select a category", Toast.LENGTH_SHORT
-            ).show()
+            context?.showWarningToast("Please select a category")
+//            Toast.makeText(
+//                context, "Please select a category", Toast.LENGTH_SHORT
+//            ).show()
             return
         }
 
@@ -421,6 +438,22 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             iconCategory.setImageResource(category.iconRes)
             // Update category name
             textViewCategory.text = category.title.standardize()
+        }
+    }
+
+    private fun updateUIForCategoryType(categoryType: CategoryType) {
+        binding.apply {
+            binding.iconCategory.setImageResource(CommonR.drawable.ic_add_category_light)
+            dropdownMenuTransaction.editText?.setText(categoryType.label)
+            binding.layoutMostUse.isVisible = categoryType == CategoryType.EXPENSE
+            context?.let {
+                val color = getColorByCategoryType(categoryType, it)
+                binding.editTextAmount.apply {
+                    setTextColor(color)
+                    background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+                }
+                binding.textViewCurrency.setTextColor(color)
+            }
         }
     }
 

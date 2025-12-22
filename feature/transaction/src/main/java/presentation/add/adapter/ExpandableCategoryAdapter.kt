@@ -9,8 +9,7 @@ import com.example.transaction.databinding.ItemCategoryChildBinding
 import com.example.transaction.databinding.ItemCategoryParentBinding
 import helpers.standardize
 import transaction.model.Category
-import ui.animateExpandCollapse
-import ui.setChevronRotation
+import ui.toggleChevronRotation
 
 class ExpandableCategoryAdapter(
     private val onCategoryClick: (Category) -> Unit
@@ -106,12 +105,12 @@ class ExpandableCategoryAdapter(
 
         parentCategories.forEach { parent ->
             val childCategories = filteredCategories.filter { it.parentId == parent.id }
-            
+
             // Only show parent if it matches or has matching children
-            val shouldShowParent = searchQuery.isBlank() || 
+            val shouldShowParent = searchQuery.isBlank() ||
                     parent.title.standardize().lowercase().contains(searchQuery) ||
                     childCategories.isNotEmpty()
-            
+
             if (shouldShowParent) {
                 result.add(
                     CategoryItem(
@@ -122,9 +121,9 @@ class ExpandableCategoryAdapter(
                 )
 
                 // Auto-expand parent if searching
-                val shouldExpand = expandedParentIds.contains(parent.id) || 
+                val shouldExpand = expandedParentIds.contains(parent.id) ||
                         (searchQuery.isNotBlank() && childCategories.isNotEmpty())
-                
+
                 if (shouldExpand) {
                     childCategories.forEach { child ->
                         result.add(CategoryItem(child, isParent = false, hasChildren = false))
@@ -175,12 +174,14 @@ class ExpandableCategoryAdapter(
                 // Set category name
                 textViewCategoryName.text = category.title.standardize()
 
+                iconChevron.setOnClickListener {
+                    onToggle()
+                    iconChevron.toggleChevronRotation()
+                }
+
                 // Show/hide chevron based on whether category has children
                 if (hasChildren) {
                     iconChevron.visibility = android.view.View.VISIBLE
-                    iconChevron.setChevronRotation(isExpanded)
-                    iconChevron.setOnClickListener {
-                    }
                 } else {
                     iconChevron.visibility = android.view.View.INVISIBLE
                 }

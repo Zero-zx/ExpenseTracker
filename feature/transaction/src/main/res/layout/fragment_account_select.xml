@@ -24,7 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/icon_back" />
+            android:src="@drawable/v2_ic_back_gray"
+            app:tint="@color/gray_top_icon" />
 
         <TextView
             android:id="@+id/text_view_title"

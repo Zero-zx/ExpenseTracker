@@ -8,20 +8,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.lifecycleScope
 import base.BaseFragment
 import base.UIState
 import com.example.transaction.databinding.FragmentPayeeTabBinding
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import presentation.add.adapter.PayeeAdapter
 import presentation.add.model.PayeeTabType
-import presentation.add.viewModel.AddTransactionViewModel
 import presentation.add.viewModel.PayeeSelectViewModel
 import transaction.model.Payee
 import ui.ChipInputView
@@ -34,24 +31,16 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
     FragmentPayeeTabBinding::inflate
 ) {
     private val viewModel: PayeeSelectViewModel by viewModels()
-    private val addTransactionViewModel: AddTransactionViewModel by hiltNavGraphViewModels(
-        TransactionR.id.transaction_nav_graph
-    )
     private lateinit var adapter: PayeeAdapter
     private var tabType: PayeeTabType = PayeeTabType.RECENT
-    
-    // Cached views
-    private var chipInputView: ChipInputView? = null
-    private var editText: TextInputEditText? = null
-    private var confirmButton: MaterialButton? = null
-    
+
     // Cached parent fragment
     private val parentPayeeFragment: PayeeSelectFragment?
         get() = parentFragment as? PayeeSelectFragment
-    
+
     private val selectedPayeeNames: Set<String>
         get() = parentPayeeFragment?.getSelectedPayeeNames() ?: emptySet()
-    
+
     private var textChangeJob: Job? = null
     private val textChangeDelay = 1000L // 1 second delay before converting text to chip
 
@@ -60,13 +49,14 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
             onItemClick = { payee -> togglePayeeSelection(payee.name) },
             onItemUpdate = { payee -> handlePayeeEdit(payee) }
         )
-        
+
         // Setup recyclerView - use the one in layout_add_event
         binding.layoutAddEvent.post {
-            val recyclerViewInLayout = binding.layoutAddEvent.findViewById<androidx.recyclerview.widget.RecyclerView>(TransactionR.id.recycler_view_payees)
+            val recyclerViewInLayout =
+                binding.layoutAddEvent.findViewById<androidx.recyclerview.widget.RecyclerView>(
+                    TransactionR.id.recycler_view_payees
+                )
             recyclerViewInLayout?.adapter = adapter
-            // Cache views after layout is ready
-            cacheViews()
         }
         // Also set adapter to root recyclerView for backward compatibility
         binding.recyclerView.adapter = adapter
@@ -79,35 +69,29 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
         } else {
             ensureContactsPermissionAndLoad()
         }
+
+        observeSelectedPayee()
     }
-    
-    private fun cacheViews() {
-        chipInputView = binding.layoutAddEvent.findViewById(TransactionR.id.chip_input_view)
-        editText = chipInputView?.getEditText()
-        confirmButton = binding.layoutAddEvent.findViewById(TransactionR.id.button_save)
+
+    fun observeSelectedPayee() {
+        selectedPayeeNames.forEach {
+            addChipToInput(it)
+        }
     }
-    
+
+
     private fun togglePayeeSelection(payeeName: String) {
         parentPayeeFragment?.onPayeeToggled(payeeName)
-        moveCursorToEnd()
     }
-    
-    private fun moveCursorToEnd() {
-        editText?.let {
-            it.requestFocus()
-            it.setSelection(it.text?.length ?: 0)
-        }
-    }
-    
+
     private fun addChipToInput(payeeName: String) {
-        val inputView = chipInputView ?: return
+        val inputView = binding.chipInputView
         val existingChips = inputView.getAllChipTexts()
-        
+
         if (existingChips.contains(payeeName)) {
-            moveCursorToEnd()
             return
         }
-        
+
         inputView.addChip(payeeName) {
             // On remove chip - update parent fragment selection
             parentPayeeFragment?.let { parent ->
@@ -116,15 +100,13 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
                 }
             }
         }
-        
+
         // Update parent fragment selection if not already selected
         parentPayeeFragment?.let { parent ->
             if (!parent.getSelectedPayeeNames().contains(payeeName)) {
                 parent.onPayeeToggled(payeeName)
             }
         }
-        
-        moveCursorToEnd()
     }
 
     private fun ensureContactsPermissionAndLoad() {
@@ -170,71 +152,64 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
         binding.buttonAddTrip.setOnClickListener {
             showAddPayeeView()
         }
-
-        // Cache views if not already cached
-        if (chipInputView == null) {
-            cacheViews()
-        }
-        
+        val editText = binding.chipInputView.getEditText()
         // Handle text change with debounce - convert text to chip when user stops typing
-        editText?.addTextChangedListener(object : android.text.TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                textChangeJob?.cancel()
-                
-                val text = s?.toString()?.trim() ?: ""
-                if (text.isNotEmpty()) {
-                    textChangeJob = viewLifecycleOwner.lifecycleScope.launch {
-                        delay(textChangeDelay)
-                        editText?.text?.toString()?.trim()?.let { finalText ->
-                            if (finalText.isNotEmpty()) {
-                                addChipToInput(finalText)
-                                editText?.text?.clear()
+        binding.chipInputView.getEditText()
+            .addTextChangedListener(object : android.text.TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    textChangeJob?.cancel()
+
+                    val text = s?.toString()?.trim() ?: ""
+                    if (text.isNotEmpty()) {
+                        textChangeJob = viewLifecycleOwner.lifecycleScope.launch {
+                            delay(textChangeDelay)
+                            editText.text?.toString()?.trim()?.let { finalText ->
+                                if (finalText.isNotEmpty()) {
+                                    addChipToInput(finalText)
+                                    editText.text?.clear()
+                                }
                             }
                         }
                     }
                 }
-            }
-            
-            override fun afterTextChanged(s: android.text.Editable?) {}
-        })
 
-        setupConfirmButtonListener()
-    }
-    
-    private fun setupConfirmButtonListener() {
-        confirmButton?.let { 
+                override fun afterTextChanged(s: android.text.Editable?) {}
+            })
+
+        binding.buttonSave.let {
             setConfirmButtonClickListener(it)
-        } ?: run {
-            // If not found, cache views and try again
-            binding.layoutAddEvent.post {
-                cacheViews()
-                confirmButton?.let { setConfirmButtonClickListener(it) }
-            }
         }
     }
-    
+
+
     private fun setConfirmButtonClickListener(button: MaterialButton) {
         button.setOnClickListener {
             val parent = parentPayeeFragment ?: return@setOnClickListener
-            val inputView = chipInputView ?: return@setOnClickListener
-            
+            val inputView = binding.chipInputView
+
             // Handle any remaining text in editText - add it as chip
             handleRemainingText(inputView)
-            
+
             // Sync chips with parent selection
             syncChipsWithParentSelectionForConfirm(inputView, parent)
-            
+
             // Confirm selection and navigate back
             parent.onConfirmSelection()
         }
     }
-    
+
     private fun handleRemainingText(inputView: ChipInputView) {
-        val remainingText = editText?.text?.toString()?.trim() ?: return
+        val remainingText = binding.chipInputView.getEditText().text?.toString()?.trim() ?: return
         if (remainingText.isEmpty()) return
-        
+
         val existingChips = inputView.getAllChipTexts()
         if (!existingChips.contains(remainingText)) {
             inputView.addChip(remainingText) {
@@ -245,20 +220,23 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
                 }
             }
         }
-        editText?.text?.clear()
+        binding.chipInputView.getEditText().text?.clear()
     }
-    
-    private fun syncChipsWithParentSelectionForConfirm(inputView: ChipInputView, parent: PayeeSelectFragment) {
+
+    private fun syncChipsWithParentSelectionForConfirm(
+        inputView: ChipInputView,
+        parent: PayeeSelectFragment
+    ) {
         val chipTexts = inputView.getAllChipTexts().toSet()
         val parentSelected = parent.getSelectedPayeeNames().toMutableSet()
-        
+
         // Add chips that are in ChipInputView but not in parent selection
         chipTexts.forEach { chipText ->
             if (!parentSelected.contains(chipText)) {
                 parent.onPayeeToggled(chipText)
             }
         }
-        
+
         // Remove from parent selection any payees that are not in ChipInputView
         parentSelected.forEach { selectedName ->
             if (!chipTexts.contains(selectedName)) {
@@ -289,9 +267,11 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
                         }
                     }
                 }
+
                 is UIState.Error -> {
                     showEmptyView()
                 }
+
                 else -> {
                     showEmptyView()
                 }
@@ -310,25 +290,16 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
         binding.layoutEmpty.isVisible = false
         binding.recyclerView.isVisible = false
         binding.layoutAddEvent.isVisible = true
-        // Ensure button listener is set when view becomes visible
-        setupConfirmButtonListener()
     }
 
     fun showAddPayeeView() {
         binding.layoutEmpty.isVisible = false
         binding.recyclerView.isVisible = false
         binding.layoutAddEvent.isVisible = true
-        // Cache views and setup button listener when view becomes visible
-        cacheViews()
-        setupConfirmButtonListener()
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
-        // Clear cached views to prevent memory leaks
-        chipInputView = null
-        editText = null
-        confirmButton = null
         textChangeJob?.cancel()
     }
 
@@ -339,26 +310,24 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
             val selectedPayees = currentList.filter { selectedPayeeNames.contains(it.name) }
             adapter.setSelectedPayees(selectedPayees)
         }
-        
+
         // Sync chips in ChipInputView with parent selection
         if (binding.layoutAddEvent.isVisible) {
-            chipInputView?.let { inputView ->
-                syncChipsWithParentSelection(inputView)
-            }
+            syncChipsWithParentSelection(binding.chipInputView)
         }
     }
-    
+
     private fun syncChipsWithParentSelection(inputView: ChipInputView) {
         val currentChipTexts = inputView.getAllChipTexts().toSet()
         val parentSelectedNames = selectedPayeeNames
-        
+
         // Remove chips that are not in parent selection
         currentChipTexts.forEach { chipText ->
             if (!parentSelectedNames.contains(chipText)) {
                 inputView.removeChipByName(chipText)
             }
         }
-        
+
         // Add chips that are in parent selection but not in ChipInputView
         parentSelectedNames.forEach { selectedName ->
             if (!currentChipTexts.contains(selectedName)) {

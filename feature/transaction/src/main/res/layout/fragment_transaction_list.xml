@@ -23,17 +23,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/padding_medium">
+            android:orientation="horizontal">
 
             <!-- Back Button -->
             <ImageButton
                 android:id="@+id/buttonBack"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/top_icon_size"
+                android:layout_height="@dimen/top_icon_size"
                 android:background="@drawable/ripple_image_button"
                 android:contentDescription="Back"
-                android:src="@drawable/icon_back"
+                android:src="@drawable/v2_ic_back_gray"
                 app:tint="@color/black_chevron" />
 
             <!-- Title -->
@@ -68,8 +67,8 @@
             <!-- Search Icon -->
             <ImageButton
                 android:id="@+id/buttonSearch"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/top_icon_size"
+                android:layout_height="@dimen/top_icon_size"
                 android:background="@drawable/ripple_image_button"
                 android:contentDescription="Search"
                 android:src="@drawable/icon_search"
@@ -78,8 +77,8 @@
             <!-- Menu Icon -->
             <ImageButton
                 android:id="@+id/buttonMenu"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/top_icon_size"
+                android:layout_height="@dimen/top_icon_size"
                 android:background="@drawable/ripple_image_button"
                 android:contentDescription="Menu"
                 android:rotation="90"

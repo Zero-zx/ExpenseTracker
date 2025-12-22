@@ -55,11 +55,11 @@ internal class TransactionRepositoryImpl @Inject constructor(
     }
 
     override fun getTransactionsByDateRange(
-        accountId: Long,
+        userId: Long,
         startDate: Long,
         endDate: Long
     ): Flow<List<Transaction>> {
-        return transactionDao.getTransactionsByDateRange(accountId, startDate, endDate).map { it ->
+        return transactionDao.getTransactionsByDateRange(userId, startDate, endDate).map { it ->
             it.map {
                 it.toDomain()
             }

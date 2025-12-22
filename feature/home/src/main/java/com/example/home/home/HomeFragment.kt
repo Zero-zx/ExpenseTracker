@@ -164,25 +164,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
     private fun updateBarChart(income: Double, expense: Double) {
         val barChart = binding.barChart
 
-        // Find max value for scaling
-        val maxValue = maxOf(income, expense, 1.0) // At least 1 to avoid division by zero
+        val incomeVal = if (income > 0) income.toFloat() else 0.1f
+        val expenseVal = if (expense > 0) expense.toFloat() else 0.1f
 
-        // Minimum visible height as percentage (e.g., 5% of max value)
-        val minVisibleHeight = 0.01f
-
-        // Create entries - normalize to 0-1 range for display, with minimum height
-        val incomeNormalized = (income / maxValue).toFloat()
-        val expenseNormalized = (expense / maxValue).toFloat()
-
-        // Apply minimum height: if value is 0, show minVisibleHeight; otherwise show actual value
-        val incomeEntry = BarEntry(
-            0f,
-            if (income == 0.0) minVisibleHeight else maxOf(incomeNormalized, minVisibleHeight)
-        )
-        val expenseEntry = BarEntry(
-            1f,
-            if (expense == 0.0) minVisibleHeight else maxOf(expenseNormalized, minVisibleHeight)
-        )
+        val incomeEntry = BarEntry(0f, incomeVal)
+        val expenseEntry = BarEntry(1f, expenseVal)
 
         // Create datasets
         val incomeDataSet = BarDataSet(listOf(incomeEntry), "").apply {
@@ -193,6 +179,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         val expenseDataSet = BarDataSet(listOf(expenseEntry), "").apply {
             color = Color.parseColor("#F44336") // Red for expense
             setDrawValues(false)
+        }
+
+        barChart.axisLeft.apply {
+            axisMinimum = 0f
         }
 
         val barWidth = 0.9f

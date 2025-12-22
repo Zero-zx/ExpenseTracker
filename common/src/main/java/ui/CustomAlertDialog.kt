@@ -15,30 +15,13 @@ import androidx.core.content.ContextCompat
 import com.example.common.databinding.DialogCustomAlertBinding
 
 /**
- * CustomAlertDialog - A reusable and fully customizable alert dialog
+ * CustomAlertDialog - A reusable alert dialog
  *
- * Usage:
- * ```
- * CustomAlertDialog.Builder(context)
- *     .setTitle("Attention!")
- *     .setMessage("Are you sure?")
- *     .setIcon(R.drawable.ic_warning)
- *     .setPositiveButton("Yes") { dialog ->
- *         // Handle positive action
- *         dialog.dismiss()
- *     }
- *     .setNegativeButton("No") { dialog ->
- *         // Handle negative action
- *         dialog.dismiss()
- *     }
- *     .show()
- * ```
  */
 class CustomAlertDialog private constructor(
     private val context: Context,
     private val builder: Builder
 ) {
-
     private val dialog: Dialog = Dialog(context)
     private val binding: DialogCustomAlertBinding =
         DialogCustomAlertBinding.inflate(LayoutInflater.from(context))
@@ -49,7 +32,15 @@ class CustomAlertDialog private constructor(
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.setCancelable(builder.cancelable)
         dialog.setCanceledOnTouchOutside(builder.canceledOnTouchOutside)
+        setDialogWidth()
         setupDialog()
+    }
+
+    private fun setDialogWidth() {
+        dialog.window?.setLayout(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     private fun setupDialog() {
@@ -128,7 +119,8 @@ class CustomAlertDialog private constructor(
 
         // Hide button container if both buttons are gone
         if (binding.buttonPositive.visibility == View.GONE &&
-            binding.buttonNegative.visibility == View.GONE) {
+            binding.buttonNegative.visibility == View.GONE
+        ) {
             binding.layoutButtons.visibility = View.GONE
         }
 
