@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
     implementation("com.github.PhilJay:MPAndroidChart:3.1.0")
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
     androidx()
     hilt()
     testImplementation(libs.junit)

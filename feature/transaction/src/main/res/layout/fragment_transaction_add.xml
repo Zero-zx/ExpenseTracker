@@ -21,7 +21,7 @@
             android:padding="@dimen/padding_medium"
             android:scaleType="center"
             android:src="@drawable/icon_history"
-            android:tint="@color/gray_big_icon"
+            android:tint="@color/gray_top_icon"
             app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +63,7 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/gray_big_icon" />
+            app:tint="@color/gray_top_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView

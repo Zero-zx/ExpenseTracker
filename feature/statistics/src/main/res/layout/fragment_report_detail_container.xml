@@ -52,6 +52,7 @@
             android:layout_height="@dimen/top_icon_size"
             android:background="@drawable/ripple_image_button"
             android:src="@drawable/ic_share_code"
+            android:visibility="invisible"
             app:tint="@color/gray_big_icon" />
     </LinearLayout>
 

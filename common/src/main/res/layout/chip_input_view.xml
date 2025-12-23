@@ -16,13 +16,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.chip.ChipGroup
+        <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/chip_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/padding_normal"
-            app:chipSpacingHorizontal="8dp"
-            app:chipSpacingVertical="4dp"
+            android:paddingBottom="@dimen/padding_small"
+            app:alignItems="center"
+            app:chipSpacing="0dp"
+            app:flexWrap="wrap"
             app:singleLine="false">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -30,14 +32,15 @@
                 style="@style/TextAppearance.App.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_small"
                 android:background="@android:color/transparent"
                 android:cursorVisible="true"
-                android:gravity="center_vertical"
                 android:hint="@string/text_select_payee_name"
                 android:minWidth="24dp"
-                android:paddingVertical="@dimen/padding_normal" />
+                android:paddingVertical="@dimen/padding_normal"
+                app:layout_alignSelf="center" />
 
-        </com.google.android.material.chip.ChipGroup>
+        </com.google.android.flexbox.FlexboxLayout>
 
     </ScrollView>
 

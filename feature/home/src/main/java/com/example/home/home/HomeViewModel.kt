@@ -107,6 +107,10 @@ class HomeViewModel @Inject constructor(
     fun navigateToTransaction() {
         navigator.navigateToTransaction()
     }
+
+    fun navigateToReportDetailContainer() {
+        navigator.navigateToReportDetailContainer()
+    }
 }
 
 enum class TimePeriod(val displayName: String) {

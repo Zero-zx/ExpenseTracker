@@ -166,6 +166,7 @@
                     android:id="@+id/button_arrow"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:background="@drawable/rounded_ripple_image_button"
                     android:layout_marginTop="8dp"
                     app:cardBackgroundColor="#4DFFFFFF"
                     app:cardCornerRadius="8dp"

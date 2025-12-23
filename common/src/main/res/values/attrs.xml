@@ -27,4 +27,11 @@
         <attr name="strokeWidth" format="dimension" />
         <attr name="strokeColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="CustomRowView">
+        <attr name="rowText" format="string" />
+        <attr name="rowIcon" format="reference" />
+        <attr name="isTickVisible" format="boolean" />
+    </declare-styleable>
+
 </resources>

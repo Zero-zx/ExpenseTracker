@@ -49,7 +49,7 @@ import ui.listenForSelectionResult
 import ui.navigateBack
 import ui.openDatePicker
 import ui.openTimePicker
-import ui.showCustomToast
+import ui.showSuccessToast
 import ui.showWarningToast
 import ui.visible
 import javax.inject.Inject
@@ -283,9 +283,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 }
 
                 is UIState.Error -> {
-                    Toast.makeText(
-                        context, "Error loading categories: ${state.message}", Toast.LENGTH_SHORT
-                    ).show()
+                    context?.showWarningToast("Error loading categories: ${state.message}")
                 }
 
                 else -> {}
@@ -339,19 +337,15 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         collectState(viewModel.imageUploadState) { state ->
             when (state) {
                 is UIState.Loading -> {
-                    // Show loading indicator
-                    Toast.makeText(context, "Uploading image...", Toast.LENGTH_SHORT).show()
                 }
 
                 is UIState.Success -> {
-                    // Show success message
-                    Toast.makeText(context, "Image saved successfully", Toast.LENGTH_SHORT).show()
                     viewModel.clearImageUploadState()
                 }
 
                 is UIState.Error -> {
                     // Show error message
-                    Toast.makeText(context, "Error: ${state.message}", Toast.LENGTH_SHORT).show()
+                    context?.showWarningToast("Error: ${state.message}")
                     viewModel.clearImageUploadState()
                 }
 
@@ -372,12 +366,9 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     } else {
                         "Transaction added successfully"
                     }
-                    context?.showWarningToast(
+                    context?.showSuccessToast(
                         message = message
                     )
-//                    Toast.makeText(
-//                        context, message, Toast.LENGTH_SHORT
-//                    ).show()
                 }
 
                 is UIState.Error -> {
@@ -386,9 +377,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     } else {
                         "Error adding transaction: ${state.message}"
                     }
-                    Toast.makeText(
-                        context, message, Toast.LENGTH_SHORT
-                    ).show()
+                    context?.showWarningToast(message)
                 }
 
                 else -> {}
@@ -412,9 +401,6 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         val selectedCategory = viewModel.selectedCategory.value
         if (selectedCategory == null) {
             context?.showWarningToast("Please select a category")
-//            Toast.makeText(
-//                context, "Please select a category", Toast.LENGTH_SHORT
-//            ).show()
             return
         }
 
