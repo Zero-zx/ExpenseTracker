@@ -1,7 +1,6 @@
 package usecase
 
 import account.model.Account
-import session.repository.SessionRepository
 import transaction.model.Category
 import transaction.model.Event
 import transaction.model.Location
@@ -11,8 +10,7 @@ import transaction.repository.TransactionRepository
 import javax.inject.Inject
 
 class AddTransactionUseCase @Inject constructor(
-    private val transactionRepository: TransactionRepository,
-    private val sessionRepository: SessionRepository
+    private val transactionRepository: TransactionRepository
 ) {
     suspend operator fun invoke(
         amount: Double,
