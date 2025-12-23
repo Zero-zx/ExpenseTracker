@@ -21,11 +21,11 @@
             android:padding="@dimen/padding_medium"
             android:scaleType="center"
             android:src="@drawable/icon_history"
-            android:tint="@color/gray_top_icon"
             app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/gray_top_icon" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/dropdown_menu_transaction"
@@ -197,20 +197,36 @@
                         app:tint="@color/black_chevron" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:alpha="0.1"
+                    android:background="@android:color/black"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/layout_more_category" />
+
+                <ui.CustomChipsView
+                    android:id="@+id/button_select_borrower"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
+                    app:scaleType="centerCrop"
+                    app:src="@drawable/icon_add_cricle_light"
+                    app:text="Select borrower"
+                    app:textColor="@color/gray_text" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_most_use"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/layout_more_category">
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/divider">
 
-                    <View
-                        android:id="@+id/divider"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="@dimen/margin_normal"
-                        android:alpha="0.1"
-                        android:background="@android:color/black"
-                        app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
                         android:id="@+id/button_most_use"
@@ -270,24 +286,23 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
-                    android:paddingHorizontal="16dp">
+                    android:paddingHorizontal="@dimen/padding_normal">
 
                     <ImageView
                         android:id="@+id/icon_account"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_width="@dimen/big_icon_size"
+                        android:layout_height="@dimen/big_icon_size"
                         android:scaleType="center"
                         android:src="@drawable/account_wallet"
-                        app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintWidth_percent="0.12" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/text_view_account_name"
                         style="@style/TextAppearance.App.Normal.Black"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
+                        android:layout_marginHorizontal="@dimen/margin_normal"
                         android:gravity="center_vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/icon_account_chevron"
@@ -296,8 +311,9 @@
 
                     <ImageView
                         android:id="@+id/icon_account_chevron"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/big_icon_size"
+                        android:layout_height="@dimen/big_icon_size"
+                        android:scaleType="center"
                         android:src="@drawable/icon_chevron"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -309,32 +325,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:alpha="0.1"
-                    android:background="@android:color/white"
+                    android:background="@android:color/black"
                     app:layout_constraintTop_toBottomOf="@id/icon_category" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="16dp">
+                    android:paddingHorizontal="@dimen/padding_normal">
 
                     <ImageView
                         android:id="@+id/icon_date"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:padding="9dp"
+                        android:layout_width="@dimen/big_icon_size"
+                        android:layout_height="@dimen/big_icon_size"
+                        android:padding="4dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_v2_calendar"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintWidth_percent="0.12"
                         app:tint="@color/gray_small_icon" />
 
                     <TextView
                         android:id="@+id/text_view_date"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
+                        android:layout_marginHorizontal="@dimen/margin_normal"
                         android:background="@drawable/rounded_ripple_image_button"
                         android:clickable="true"
                         android:gravity="center_vertical"
@@ -368,12 +384,12 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="16dp">
+                    android:paddingHorizontal="@dimen/padding_normal">
 
                     <ImageView
                         android:id="@+id/icon_note"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_width="@dimen/big_icon_size"
+                        android:layout_height="@dimen/big_icon_size"
                         android:scaleType="center"
                         android:src="@drawable/icon_note"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -388,6 +404,7 @@
                         style="@style/TextAppearance.App.Normal.Black"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
+                        android:layout_marginHorizontal="@dimen/margin_normal"
                         android:backgroundTint="@android:color/transparent"
                         android:gravity="center_vertical"
                         android:hint="@string/text_description"

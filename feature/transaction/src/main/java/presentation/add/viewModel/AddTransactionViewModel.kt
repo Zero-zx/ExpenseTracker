@@ -22,12 +22,16 @@ import transaction.model.Payee
 import transaction.model.Transaction
 import transaction.model.TransactionImage
 import transaction.repository.TransactionImageRepository
+import transaction.usecase.AddBorrowerUseCase
 import transaction.usecase.AddEventUseCase
+import transaction.usecase.AddLenderUseCase
 import transaction.usecase.AddLocationUseCase
 import transaction.usecase.AddPayeeUseCase
 import transaction.usecase.DeleteTransactionImagesUseCase
+import transaction.usecase.GetBorrowerByIdUseCase
 import transaction.usecase.GetCategoriesByTypeUseCase
 import transaction.usecase.GetCategoryByIdUseCase
+import transaction.usecase.GetLenderByIdUseCase
 import transaction.usecase.GetLocationByIdUseCase
 import transaction.usecase.GetPayeeByIdUseCase
 import transaction.usecase.GetTransactionByIdUseCase
@@ -48,11 +52,15 @@ class AddTransactionViewModel @Inject constructor(
     private val getAccountsUseCase: GetAccountsUseCase,
     private val getLocationByIdUseCase: GetLocationByIdUseCase,
     private val getPayeeByIdUseCase: GetPayeeByIdUseCase,
+    private val getBorrowerByIdUseCase: GetBorrowerByIdUseCase,
+    private val getLenderByIdUseCase: GetLenderByIdUseCase,
     private val saveTransactionImageUseCase: SaveTransactionImageUseCase,
     private val deleteTransactionImagesUseCase: DeleteTransactionImagesUseCase,
     private val addEventUseCase: AddEventUseCase,
     private val addPayeeUseCase: AddPayeeUseCase,
     private val addLocationUseCase: AddLocationUseCase,
+    private val addBorrowerUseCase: AddBorrowerUseCase,
+    private val addLenderUseCase: AddLenderUseCase,
     private val imageRepository: TransactionImageRepository,
     private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<Long>() {
@@ -80,6 +88,12 @@ class AddTransactionViewModel @Inject constructor(
 
     private val _selectedLocation = MutableStateFlow<Location?>(null)
     val selectedLocation = _selectedLocation.asStateFlow()
+
+    private val _selectedBorrower = MutableStateFlow<transaction.model.Borrower?>(null)
+    val selectedBorrower = _selectedBorrower.asStateFlow()
+
+    private val _selectedLender = MutableStateFlow<transaction.model.Lender?>(null)
+    val selectedLender = _selectedLender.asStateFlow()
 
     private val _transactionImage = MutableStateFlow<TransactionImage?>(null)
     val transactionImage = _transactionImage.asStateFlow()
@@ -179,6 +193,28 @@ class AddTransactionViewModel @Inject constructor(
                     )
                 }
 
+                // Step 2.5: Persist borrower if it exists
+                val finalBorrower = _selectedBorrower.value?.let { borrower ->
+                    addBorrowerUseCase(
+                        name = borrower.name,
+                        phoneNumber = borrower.phoneNumber,
+                        email = borrower.email,
+                        accountId = borrower.accountId,
+                        notes = borrower.notes
+                    )
+                }
+
+                // Step 2.6: Persist lender if it exists
+                val finalLender = _selectedLender.value?.let { lender ->
+                    addLenderUseCase(
+                        name = lender.name,
+                        phoneNumber = lender.phoneNumber,
+                        email = lender.email,
+                        accountId = lender.accountId,
+                        notes = lender.notes
+                    )
+                }
+
                 val finalLocation = _selectedLocation.value
 
                 // Step 3: Save or update transaction with persisted entities
@@ -194,7 +230,9 @@ class AddTransactionViewModel @Inject constructor(
                         description = description,
                         createAt = createAt,
                         location = finalLocation,
-                        payees = finalPayees
+                        payees = finalPayees,
+                        borrower = finalBorrower,
+                        lender = finalLender
                     )
                     currentTransactionId
                 } else {
@@ -207,7 +245,9 @@ class AddTransactionViewModel @Inject constructor(
                         description = description,
                         createAt = createAt,
                         location = finalLocation,
-                        payees = finalPayees
+                        payees = finalPayees,
+                        borrower = finalBorrower,
+                        lender = finalLender
                     )
                 }
 
@@ -357,6 +397,62 @@ class AddTransactionViewModel @Inject constructor(
         _selectedLocation.value = null
     }
 
+    fun selectBorrower(name: String) {
+        val currentAccountId = getCurrentAccountId() ?: 1L
+        _selectedBorrower.value = transaction.model.Borrower(
+            id = -1L,
+            name = name,
+            accountId = currentAccountId
+        )
+    }
+
+    fun selectBorrowerById(borrowerId: Long) {
+        viewModelScope.launch {
+            try {
+                if (borrowerId > 0) {
+                    val borrower = getBorrowerByIdUseCase(borrowerId)
+                    if (borrower != null) {
+                        _selectedBorrower.value = borrower
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle error if needed
+            }
+        }
+    }
+
+    fun removeBorrower() {
+        _selectedBorrower.value = null
+    }
+
+    fun selectLender(name: String) {
+        val currentAccountId = getCurrentAccountId() ?: 1L
+        _selectedLender.value = transaction.model.Lender(
+            id = -1L,
+            name = name,
+            accountId = currentAccountId
+        )
+    }
+
+    fun selectLenderById(lenderId: Long) {
+        viewModelScope.launch {
+            try {
+                if (lenderId > 0) {
+                    val lender = getLenderByIdUseCase(lenderId)
+                    if (lender != null) {
+                        _selectedLender.value = lender
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle error if needed
+            }
+        }
+    }
+
+    fun removeLender() {
+        _selectedLender.value = null
+    }
+
     // Image management functions
     fun saveImage(imageUri: android.net.Uri) {
         viewModelScope.launch {
@@ -451,6 +547,10 @@ class AddTransactionViewModel @Inject constructor(
 
                     // Load payees
                     _selectedPayees.value = transaction.payees
+
+                    // Load borrower and lender
+                    _selectedBorrower.value = transaction.borrower
+                    _selectedLender.value = transaction.lender
 
                     // Load image if exists
                     transaction.images?.let { image ->

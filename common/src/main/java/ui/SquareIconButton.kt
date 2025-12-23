@@ -1,25 +1,33 @@
-package com.example.other.other.view
+package ui
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
-import com.example.other.databinding.ViewGridIconButtonBinding
-import ui.gone
-import ui.visible
+import com.example.common.R
+import com.example.common.databinding.SquareIconButtonBinding
 
-class GridIconButton @JvmOverloads constructor(
+class SquareIconButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val binding: ViewGridIconButtonBinding =
-        ViewGridIconButtonBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding: SquareIconButtonBinding =
+        SquareIconButtonBinding.inflate(LayoutInflater.from(context), this, true)
 
     init {
+        attrs?.let {
+            val typedArray = context.obtainStyledAttributes(it, R.styleable.SquareIconButton, 0, 0)
+            val imageSrc = typedArray.getResourceId(R.styleable.SquareIconButton_src, 0)
+            val text = typedArray.getString(R.styleable.SquareIconButton_text)
+
+            binding.iconItem.setImageResource(imageSrc)
+            binding.textItemTitle.text = text
+
+            typedArray.recycle()
+        }
         // Set clickable and focusable
         isClickable = true
         isFocusable = true
@@ -50,4 +58,3 @@ class GridIconButton @JvmOverloads constructor(
         binding.root.setOnClickListener(l)
     }
 }
-

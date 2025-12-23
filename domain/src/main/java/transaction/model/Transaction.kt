@@ -13,7 +13,9 @@ data class Transaction(
     val event: Event?,
     val location: Location? = null,
     val payees: List<Payee> = emptyList(),
-    val images: TransactionImage? = null
+    val images: TransactionImage? = null,
+    val borrower: Borrower? = null,
+    val lender: Lender? = null
 )
 
 

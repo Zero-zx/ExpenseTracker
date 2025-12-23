@@ -4,12 +4,12 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
+    android:background="@drawable/rounded_background"
     android:gravity="center"
+    android:minHeight="56dp"
     android:orientation="horizontal"
     android:paddingHorizontal="20dp"
-    android:paddingVertical="14dp"
-    android:minHeight="56dp">
+    android:paddingVertical="14dp">
 
     <!-- Start icon -->
     <ImageView

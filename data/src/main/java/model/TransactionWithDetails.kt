@@ -3,7 +3,6 @@ package model
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import transaction.model.Payee
 
 // Model used for query one-to-many relationship
 internal data class TransactionWithDetails(

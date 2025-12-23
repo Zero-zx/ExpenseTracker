@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.common.R
@@ -26,9 +27,15 @@ class CustomChipsView @JvmOverloads constructor(
             val text = typedArray.getString(R.styleable.CustomTextView_text)
             val textColor =
                 typedArray.getColor(R.styleable.CustomTextView_textColor, Color.BLACK)
+            val scaleType = typedArray.getString(R.styleable.CustomTextView_scaleType)
 
             if (imageSrc != 0) {
                 binding.imageView.setImageResource(imageSrc)
+            }
+            binding.imageView.scaleType = if (scaleType == "centerCrop") {
+                ImageView.ScaleType.CENTER_CROP
+            } else {
+                ImageView.ScaleType.CENTER
             }
             binding.textView.text = text
             binding.textView.setTextColor(textColor)

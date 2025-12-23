@@ -21,8 +21,6 @@ class CategoryDropdownAdapter(
             val oldPosition = field
             if (oldPosition != value) {
                 field = value
-                // ArrayAdapter doesn't have notifyItemChanged(), so we use notifyDataSetChanged()
-                // but only when position actually changes and is valid
                 if (value >= 0 && value < items.size) {
                     notifyDataSetChanged()
                 }

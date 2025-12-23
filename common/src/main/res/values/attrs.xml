@@ -9,9 +9,15 @@
         <attr name="text" />
         <attr name="textColor" format="color" />
         <attr name="textSize" format="dimension" />
+        <attr name="scaleType" format="string" />
     </declare-styleable>
 
     <declare-styleable name="CustomCardView">
+        <attr name="src" />
+        <attr name="text" />
+    </declare-styleable>
+
+    <declare-styleable name="SquareIconButton">
         <attr name="src" />
         <attr name="text" />
     </declare-styleable>

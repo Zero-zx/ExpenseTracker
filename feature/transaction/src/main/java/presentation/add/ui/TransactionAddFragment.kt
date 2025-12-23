@@ -298,7 +298,6 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             adapter.setSelectedCategory(category)
             category?.let {
                 updateSelectedCategory(it)
-                // Update dropdown menu to show the correct category type
                 updateDropdownForCategoryType(it.type)
             }
         }
@@ -429,9 +428,34 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     private fun updateUIForCategoryType(categoryType: CategoryType) {
         binding.apply {
+            hideAllLayout()
+            when (categoryType) {
+                CategoryType.EXPENSE -> {
+                    divider.visible()
+                    layoutMostUse.visible()
+                }
+
+                CategoryType.INCOME -> {
+                    hideAllLayout()
+                }
+
+                CategoryType.LEND -> {
+                    divider.visible()
+                    buttonSelectBorrower.visible()
+                    buttonSelectBorrower.getTextView().text = "Select borrower"
+                }
+
+                CategoryType.BORROWING -> {
+                    divider.visible()
+                    buttonSelectBorrower.visible()
+                    buttonSelectBorrower.getTextView().text = "Select lender"
+                }
+
+                else -> {}
+            }
+
             binding.iconCategory.setImageResource(CommonR.drawable.ic_add_category_light)
             dropdownMenuTransaction.editText?.setText(categoryType.label)
-            binding.layoutMostUse.isVisible = categoryType == CategoryType.EXPENSE
             context?.let {
                 val color = getColorByCategoryType(categoryType, it)
                 binding.editTextAmount.apply {
@@ -440,6 +464,15 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 }
                 binding.textViewCurrency.setTextColor(color)
             }
+        }
+    }
+
+    private fun hideAllLayout() {
+        binding.apply {
+            divider.gone()
+            layoutMostUse.gone()
+            layoutMore.gone()
+            buttonSelectBorrower.gone()
         }
     }
 
@@ -519,6 +552,33 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             }
         }
     }
+
+    private fun updateSelectedBorrower(borrower: transaction.model.Borrower?) {
+        binding.apply {
+            if (buttonSelectBorrower.isVisible) {
+                buttonSelectBorrower.getTextView().text = borrower?.name?.standardize()
+                    ?: when (viewModel.currentCategoryType.value) {
+                        CategoryType.LEND -> "Select borrower"
+                        CategoryType.BORROWING -> "Select lender"
+                        else -> "Select"
+                    }
+            }
+        }
+    }
+
+    private fun updateSelectedLender(lender: transaction.model.Lender?) {
+        binding.apply {
+            if (buttonSelectBorrower.isVisible) {
+                buttonSelectBorrower.getTextView().text = lender?.name?.standardize()
+                    ?: when (viewModel.currentCategoryType.value) {
+                        CategoryType.LEND -> "Select borrower"
+                        CategoryType.BORROWING -> "Select lender"
+                        else -> "Select"
+                    }
+            }
+        }
+    }
+
 
     fun toggleRecentlyCategory() {
         binding.apply {

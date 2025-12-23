@@ -15,7 +15,9 @@ internal fun Transaction.toEntity(): TransactionEntity {
         categoryId = category.id,
         accountId = account.id,
         eventId = event?.id,
-        locationId = location?.id
+        locationId = location?.id,
+        borrowerId = borrower?.id,
+        lenderId = lender?.id
     )
 }
 
@@ -29,6 +31,6 @@ internal fun TransactionWithDetails.toDomain(): Transaction {
         event = eventEntity?.toDomain(),
         createAt = transactionEntity.createAt,
         location = locationEntity?.toDomain(),
-        payees = payees.map { it.toDomain() }
+        payees = payees.map { it.toDomain() },
     )
 }

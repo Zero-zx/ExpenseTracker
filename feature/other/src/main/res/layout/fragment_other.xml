@@ -4,10 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_bg"
-    tools:context=".other.OtherFragment">
+    android:background="@color/white_bg">
 
-    <!-- Top Bar - Fixed, not scrollable -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
@@ -22,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
-            android:paddingTop="@dimen/padding_edges"
             android:paddingBottom="16dp">
 
             <com.google.android.material.card.MaterialCardView
@@ -232,82 +229,99 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:columnCount="4"
                     android:alignmentMode="alignMargins"
+                    android:columnCount="4"
                     android:useDefaultMargins="false">
 
                     <!-- Row 1 -->
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_feature_theme"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/ic_menu_theme"
+                        app:text="Theme" />
 
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
+                        android:id="@+id/button_feature_bill"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="4dp"
+                        app:text="Export bills" />
+
+                    <ui.SquareIconButton
                         android:id="@+id/button_feature_budget"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/chi_5_duoc_cho_tang"
+                        app:text="Budget" />
 
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_feature_categories"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custom_icon_category_v2"
+                        app:text="Categories" />
 
-                    <com.example.other.other.view.GridIconButton
+                    <!-- Row 2 -->
+                    <ui.SquareIconButton
                         android:id="@+id/button_feature_recurring"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:text="Recurring transaction" />
 
-                    <!-- Row 2 -->
-                    <com.example.other.other.view.GridIconButton
-                        android:id="@+id/button_feature_link_bank"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
-
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_feature_template"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custome_ic_template"
+                        app:text="Template record" />
 
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_feature_travel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custom_icon_event_trip"
+                        app:text="Travel" />
 
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_feature_income_plan"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custom_ic_setting_expenditure_v2"
+                        app:text="Income plan/Expense plan" />
 
                     <!-- Row 3 -->
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_feature_shopping_list"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custom_icon_shopping_v2"
+                        app:text="Shopping list" />
 
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_feature_website"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:text="Use on Website" />
 
                 </GridLayout>
 
@@ -335,75 +349,55 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:columnCount="4"
                     android:alignmentMode="alignMargins"
+                    android:columnCount="4"
                     android:useDefaultMargins="false">
 
                     <!-- Row 1 -->
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_utility_loan"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custom_ic_setting_interest_v2"
+                        app:text="Calculate loan interest" />
 
-                    <com.example.other.other.view.GridIconButton
-                        android:id="@+id/button_utility_income_tax"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
-
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_utility_exchange_rates"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custom_ic_exchange_rate_v2"
+                        app:text="Exchange rates utility" />
 
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_utility_savings"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custom_ic_setting_keeper_v2"
+                        app:text="Savings" />
 
-                    <!-- Row 2 -->
-                    <com.example.other.other.view.GridIconButton
-                        android:id="@+id/button_utility_split_money"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
-
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_utility_widget"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custom_ic_setting_widget_v2"
+                        app:text="Widget" />
 
-                    <com.example.other.other.view.GridIconButton
-                        android:id="@+id/button_utility_misa_asp"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
-
-                    <com.example.other.other.view.GridIconButton
-                        android:id="@+id/button_utility_premium"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
-
-                    <!-- Row 3 -->
-                    <com.example.other.other.view.GridIconButton
+                    <ui.SquareIconButton
                         android:id="@+id/button_utility_export"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_margin="4dp" />
+                        android:layout_margin="4dp"
+                        app:src="@drawable/custom_icon_exportdata"
+                        app:text="Export data" />
 
                 </GridLayout>
 
