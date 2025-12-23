@@ -23,5 +23,6 @@
     <dimen name="keyboard_number_min_height">45dp</dimen>
     <dimen name="top_icon_size">52dp</dimen>
     <dimen name="normal_icon_size">24dp</dimen>
+    <dimen name="big_icon_size">34dp</dimen>
 
 </resources>

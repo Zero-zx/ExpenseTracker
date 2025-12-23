@@ -9,9 +9,15 @@
         <attr name="text" />
         <attr name="textColor" format="color" />
         <attr name="textSize" format="dimension" />
+        <attr name="scaleType" format="string" />
     </declare-styleable>
 
     <declare-styleable name="CustomCardView">
+        <attr name="src" />
+        <attr name="text" />
+    </declare-styleable>
+
+    <declare-styleable name="SquareIconButton">
         <attr name="src" />
         <attr name="text" />
     </declare-styleable>
@@ -27,4 +33,11 @@
         <attr name="strokeWidth" format="dimension" />
         <attr name="strokeColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="CustomRowView">
+        <attr name="rowText" format="string" />
+        <attr name="rowIcon" format="reference" />
+        <attr name="isTickVisible" format="boolean" />
+    </declare-styleable>
+
 </resources>

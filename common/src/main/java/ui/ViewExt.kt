@@ -47,7 +47,7 @@ fun Context.showSuccessToast(
     showCustomToast(
         message = message,
         iconRes = R.drawable.ic_success_sync_40dp,
-        backgroundColor = R.color.bg_success,
+        backgroundColor = getColor(R.color.bg_success),
         duration = duration
     )
 }
@@ -63,7 +63,7 @@ fun Context.showWarningToast(
     showCustomToast(
         message = message,
         iconRes = R.drawable.ic_warning,
-        backgroundColor = R.color.bg_warning,
+        backgroundColor = getColor(R.color.bg_warning),
         duration = duration
     )
 }
@@ -103,7 +103,7 @@ fun Context.showCustomToast(
  */
 fun createSlideUpAnimation(context: Context?, view: View): Animation {
     val slideUpAnimation =
-        AnimationUtils.loadAnimation(context, com.example.common.R.anim.slide_up)
+        AnimationUtils.loadAnimation(context, R.anim.slide_up)
     slideUpAnimation.setAnimationListener(object : Animation.AnimationListener {
         override fun onAnimationStart(animation: Animation?) {}
 

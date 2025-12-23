@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clipChildren="false"
     android:orientation="vertical"
     android:padding="4dp">
 
@@ -11,7 +12,8 @@
         android:id="@+id/frame_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:clipChildren="false">
 
         <ImageView
             android:id="@+id/icon_item"
@@ -27,15 +29,15 @@
             android:layout_gravity="top|end"
             android:layout_marginTop="-4dp"
             android:layout_marginEnd="-4dp"
-            android:background="#F44336"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="#F44336"
             android:paddingHorizontal="4dp"
             android:paddingVertical="2dp"
             android:text="New"
             android:textColor="@android:color/white"
             android:textSize="8sp"
             android:textStyle="bold"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:visibility="gone" />
     </FrameLayout>
 
     <TextView

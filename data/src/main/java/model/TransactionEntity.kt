@@ -22,10 +22,26 @@ import androidx.room.PrimaryKey
             childColumns = arrayOf("category_id"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = BorrowerEntity::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("borrower_id"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.SET_NULL
+        ),
+        ForeignKey(
+            entity = LenderEntity::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("lender_id"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.SET_NULL
         )],
     indices = [
         Index(value = ["account_id"]),
-        Index(value = ["category_id"])
+        Index(value = ["category_id"]),
+        Index(value = ["borrower_id"]),
+        Index(value = ["lender_id"])
     ]
 )
 
@@ -48,5 +64,9 @@ internal data class TransactionEntity(
     @ColumnInfo(name = "event_id")
     val eventId: Long?,
     @ColumnInfo(name = "location_id")
-    val locationId: Long?
+    val locationId: Long?,
+    @ColumnInfo(name = "borrower_id")
+    val borrowerId: Long?,
+    @ColumnInfo(name = "lender_id")
+    val lenderId: Long?
 )

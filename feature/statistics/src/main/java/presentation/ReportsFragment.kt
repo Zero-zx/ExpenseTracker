@@ -31,7 +31,7 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
         binding.constraintLayoutIncomeAndOutcome.setOnClickListener {
             viewModel.navigateToExpenseVsIncome()
         }
-        
+
         binding.constraintLayoutCurrentFinance.setOnClickListener {
             viewModel.navigateToReportDetailContainer()
         }
@@ -51,13 +51,16 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
                 is UIState.Idle -> {
                     // Do nothing
                 }
+
                 is UIState.Loading -> {
                     // Show loading if needed
                 }
+
                 is UIState.Success -> {
                     updateFinancialSummary(state.data)
                     setupBarChart(state.data)
                 }
+
                 is UIState.Error -> {
                     // Handle error if needed
                 }
@@ -88,12 +91,15 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
         barChart.setDragEnabled(true)
         barChart.setScaleEnabled(true)
         barChart.setPinchZoom(false)
+        barChart.setDrawBorders(false)
+        barChart.setRadius(4)
         barChart.legend.isEnabled = false // Hide legend
 
         // Configure X-axis - only show month numbers
         val xAxis = barChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
+        xAxis.setDrawAxisLine(false)
         xAxis.granularity = 1f
         xAxis.labelCount = chartData.monthlyData.size
 
@@ -117,7 +123,8 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
 
         // Configure Y-axis (left) - set maximum to the highest combined value
         val leftAxis = barChart.axisLeft
-        leftAxis.setDrawGridLines(true)
+        leftAxis.setDrawGridLines(false)
+        leftAxis.setDrawAxisLine(false)
         leftAxis.gridColor = Color.parseColor("#E0E0E0")
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = (maxTotal * 1.1).toFloat() // Add 10% padding at top
@@ -141,7 +148,7 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
 
         // Create bar data with both datasets - RoundedCombinedBarChart will combine them
         val barData = BarData(expenseDataSet, incomeDataSet).apply {
-            barWidth = 0.6f
+            barWidth = 0.4f
         }
 
         barChart.data = barData

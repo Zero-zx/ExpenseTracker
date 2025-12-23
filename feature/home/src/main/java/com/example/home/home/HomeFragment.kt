@@ -44,7 +44,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
     override fun initListener() {
         binding.apply {
             buttonArrow.setOnClickListener {
-                // Navigate to accounts or balance detail
+                viewModel.navigateToReportDetailContainer()
             }
 
             iconRefresh.setOnClickListener {

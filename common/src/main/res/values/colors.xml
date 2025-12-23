@@ -38,6 +38,7 @@
     <color name="color_gray_lite">#eeeef0</color>
     <color name="bg_warning">#FEB11A</color>
     <color name="bg_success">#2DB84C</color>
+    <color name="bg_chip">#F3F4F6</color>
 
     <!--    material 3 colors -->
     <color name="my_app_background">#D1EBFA</color>
