@@ -1,9 +1,10 @@
 package com.example.home.home.usecase
 
+import category.model.Category
 import com.example.home.home.model.HomeReportData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import transaction.model.CategoryType
+import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.repository.TransactionRepository
 import javax.inject.Inject
@@ -101,7 +102,7 @@ class GetHomeReportDataUseCase @Inject constructor(
 
 
 data class CategoryExpenseData(
-    val category: transaction.model.Category?,
+    val category: Category?,
     val amount: Double,
     val percentage: Double = 0.0
 )

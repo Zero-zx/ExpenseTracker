@@ -9,7 +9,12 @@ interface TransactionRepository {
     suspend fun getTransactionById(transactionId: Long): Transaction?
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)
-    fun getTransactionsByDateRange(userId: Long, startDate: Long, endDate: Long): Flow<List<Transaction>>
+    fun getTransactionsByDateRange(
+        userId: Long,
+        startDate: Long,
+        endDate: Long
+    ): Flow<List<Transaction>>
+
     suspend fun getCategoryUsageCount(accountId: Long): Map<Long, Int>
     suspend fun insertTransactionWithPayees(transaction: Transaction): Long
 }

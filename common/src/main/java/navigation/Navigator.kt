@@ -11,6 +11,7 @@ interface Navigator {
     fun navigateToSelectAccount(selectedAccountId: Long = -1L)
     fun navigateToSelectEvent(selectedEventName: String = "")
     fun navigateToSelectPayee(selectedPayeeNames: Array<String> = emptyArray())
+    fun navigateToSelectBorrower(selectedBorrowerName: String = "")
     fun navigateToSelectLocation(selectedLocationId: Long = -1L)
     fun navigateToEventList()
     fun navigateToAddEvent()

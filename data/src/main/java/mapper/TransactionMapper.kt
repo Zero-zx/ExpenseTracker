@@ -32,5 +32,8 @@ internal fun TransactionWithDetails.toDomain(): Transaction {
         createAt = transactionEntity.createAt,
         location = locationEntity?.toDomain(),
         payees = payees.map { it.toDomain() },
+        borrower = borrowerEntity?.toDomain(),
+        lender = lenderEntity?.toDomain()
+
     )
 }

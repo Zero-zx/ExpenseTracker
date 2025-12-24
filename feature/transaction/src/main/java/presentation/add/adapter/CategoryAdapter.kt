@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemCategoryBinding
-import transaction.model.Category
+import category.model.Category
 import helpers.standardize
 
 

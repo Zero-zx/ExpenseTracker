@@ -8,9 +8,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import transaction.model.Category
-import transaction.model.CategoryType
-import transaction.usecase.GetCategoriesByTypeUseCase
+import category.model.Category
+import category.model.CategoryType
+import category.usecase.GetCategoriesByTypeUseCase
 import javax.inject.Inject
 
 @HiltViewModel

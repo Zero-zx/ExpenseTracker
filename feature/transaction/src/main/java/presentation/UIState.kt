@@ -1,6 +1,6 @@
 package presentation
 
-import transaction.model.Category
+import category.model.Category
 import transaction.model.Transaction
 
 /**

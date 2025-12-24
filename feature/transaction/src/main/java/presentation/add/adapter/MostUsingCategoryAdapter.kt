@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemCategoryMostUsingBinding
 import helpers.standardize
-import transaction.model.Category
+import category.model.Category
 
 class MostUsingCategoryAdapter(
     private val onCategoryClick: (Category) -> Unit

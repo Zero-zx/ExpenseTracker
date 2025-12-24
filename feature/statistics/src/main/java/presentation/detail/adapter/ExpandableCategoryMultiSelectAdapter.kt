@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.statistics.databinding.ItemCategoryMultiSelectChildBinding
 import com.example.statistics.databinding.ItemCategoryMultiSelectParentBinding
 import helpers.standardize
-import transaction.model.Category
+import category.model.Category
 import ui.setChevronRotation
 
 class ExpandableCategoryMultiSelectAdapter(

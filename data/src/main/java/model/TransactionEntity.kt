@@ -24,14 +24,21 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = BorrowerEntity::class,
+            entity = EventEntity::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("event_id"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.SET_NULL
+        ),
+        ForeignKey(
+            entity = PayeeEntity::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("borrower_id"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.SET_NULL
         ),
         ForeignKey(
-            entity = LenderEntity::class,
+            entity = PayeeEntity::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("lender_id"),
             onUpdate = ForeignKey.CASCADE,
@@ -40,6 +47,7 @@ import androidx.room.PrimaryKey
     indices = [
         Index(value = ["account_id"]),
         Index(value = ["category_id"]),
+        Index(value = ["event_id"]),
         Index(value = ["borrower_id"]),
         Index(value = ["lender_id"])
     ]

@@ -1,7 +1,7 @@
 package model
 
 import constants.CategoryIcon
-import transaction.model.CategoryType
+import category.model.CategoryType
 
 object InitCategory {
     // Income category icon names

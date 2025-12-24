@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.transaction.R
-import transaction.model.CategoryType
+import category.model.CategoryType
 
 class CategoryDropdownAdapter(
     context: Context,

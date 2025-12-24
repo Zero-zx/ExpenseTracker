@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import presentation.detail.model.ReportItem
-import transaction.model.CategoryType
+import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
 import java.util.Calendar

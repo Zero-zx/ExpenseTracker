@@ -1,7 +1,6 @@
 package presentation.detail
 
 import android.graphics.Color
-import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
@@ -19,7 +18,7 @@ import presentation.detail.adapter.MonthlyAnalysisAdapter
 import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
-import transaction.model.CategoryType
+import category.model.CategoryType
 import ui.listenForSelectionResult
 import java.text.NumberFormat
 import java.text.SimpleDateFormat

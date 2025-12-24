@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import presentation.add.adapter.PayeeAdapter
 import presentation.add.model.PayeeTabType
 import presentation.add.viewModel.PayeeSelectViewModel
-import transaction.model.Payee
+import payee.model.Payee
 import ui.ChipInputView
 import ui.CustomAlertDialog
 import ui.showEditPayeeDialog

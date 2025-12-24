@@ -36,5 +36,15 @@ internal data class TransactionWithDetails(
             entityColumn = "payeeId"
         )
     )
-    val payees: List<PayeeEntity>
+    val payees: List<PayeeEntity>,
+    @Relation(
+        parentColumn = "borrower_id",
+        entityColumn = "id",
+    )
+    val borrowerEntity: PayeeEntity?,
+    @Relation(
+        parentColumn = "lender_id",
+        entityColumn = "id",
+    )
+    val lenderEntity: PayeeEntity?
 )

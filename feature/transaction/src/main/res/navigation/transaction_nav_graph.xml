@@ -34,8 +34,12 @@
         android:id="@+id/transactionListFragment"
         android:name="presentation.list.TransactionListFragment"
         android:label="TransactionListFragment" />
+<!--    <fragment-->
+<!--        android:id="@+id/editTransactionFragment"-->
+<!--        android:name="presentation.edit.ui.EditTransactionFragment"-->
+<!--        android:label="EditTransactionFragment" />-->
     <fragment
-        android:id="@+id/editTransactionFragment"
-        android:name="presentation.edit.ui.EditTransactionFragment"
-        android:label="EditTransactionFragment" />
+        android:id="@+id/borrowerSelectFragment"
+        android:name="presentation.add.ui.BorrowerSelectFragment"
+        android:label="BorrowerSelectFragment" />
 </navigation>

@@ -70,6 +70,13 @@ class NavigatorImpl @Inject constructor() : Navigator {
         )
     }
 
+    override fun navigateToSelectBorrower(selectedBorrowerName: String) {
+        navController?.navigateWithAnim(
+            com.example.transaction.R.id.borrowerSelectFragment,
+            bundleOf("selected_borrower_name" to selectedBorrowerName)
+        )
+    }
+
     override fun navigateToSelectLocation(selectedLocationId: Long) {
         navController?.navigateWithAnim(
             R.id.locationSelectFragment,

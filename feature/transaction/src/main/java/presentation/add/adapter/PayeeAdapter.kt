@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemEventTransactionBinding
-import transaction.model.Payee
+import payee.model.Payee
 
 class PayeeAdapter(
     private val onItemClick: (Payee) -> Unit,

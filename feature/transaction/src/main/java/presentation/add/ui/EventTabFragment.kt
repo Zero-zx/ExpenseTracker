@@ -11,7 +11,7 @@ import presentation.add.model.EventTabType
 import presentation.add.viewModel.EventSelectViewModel
 import transaction.model.Event
 import ui.CustomAlertDialog
-import ui.showEditEventDialog
+import ui.showEditDialog
 
 @AndroidEntryPoint
 class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
@@ -98,8 +98,10 @@ class EventTabFragment : BaseFragment<FragmentEventTabBinding>(
 
 
     private fun handleEventEdit(event: Event) {
-        showEditEventDialog(
-            eventName = event.eventName,
+        showEditDialog(
+            title = "Edit Event",
+            inputHint = "Enter trip/event name",
+            name = event.eventName,
             isCompleted = !event.isActive,
             onUpdate = { name, isCompleted ->
                 viewModel.updateEvent(

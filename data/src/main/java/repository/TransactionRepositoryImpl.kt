@@ -72,6 +72,6 @@ internal class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertTransactionWithPayees(transaction: Transaction): Long {
-        return transactionDao.insertTransactionWithPayees(transaction.toEntity(), transaction.payees.map { it.toEntity() })
+        return transactionDao.insertTransactionWithPayees(transaction.toEntity(), transaction.payees.map { it.toEntity(transaction.account.id) })
     }
 }

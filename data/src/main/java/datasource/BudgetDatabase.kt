@@ -5,10 +5,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import converter.StringListConverter
 import dao.AccountDao
-import dao.BorrowerDao
 import dao.CategoryDao
 import dao.EventDao
-import dao.LenderDao
 import dao.LocationDao
 import dao.PayeeDao
 import dao.TransactionDao
@@ -16,10 +14,8 @@ import dao.TransactionImageDao
 import dao.TransactionPayeeDao
 import dao.UserDao
 import model.AccountEntity
-import model.BorrowerEntity
 import model.CategoryEntity
 import model.EventEntity
-import model.LenderEntity
 import model.LocationEntity
 import model.PayeeEntity
 import model.TransactionEntity
@@ -37,9 +33,7 @@ import model.UserEntity
         PayeeEntity::class,
         LocationEntity::class,
         TransactionPayeeEntity::class,
-        TransactionImageEntity::class,
-        BorrowerEntity::class,
-        LenderEntity::class
+        TransactionImageEntity::class
     ],
     exportSchema = false,
     version = 6
@@ -55,6 +49,4 @@ internal abstract class BudgetDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
     abstract fun transactionImageDao(): TransactionImageDao
     abstract fun transactionPayeeDao(): TransactionPayeeDao
-    abstract fun borrowerDao(): BorrowerDao
-    abstract fun lenderDao(): LenderDao
 }

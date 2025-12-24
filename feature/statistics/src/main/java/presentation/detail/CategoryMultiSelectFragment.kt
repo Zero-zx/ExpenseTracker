@@ -10,7 +10,7 @@ import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_IDS
 import constants.FragmentResultKeys.RESULT_CATEGORY_IDS
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.ExpandableCategoryMultiSelectAdapter
-import transaction.model.CategoryType
+import category.model.CategoryType
 import ui.navigateBack
 import ui.setSelectionResult
 

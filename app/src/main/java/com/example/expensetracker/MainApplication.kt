@@ -4,7 +4,7 @@ import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 import account.usecase.InitializeAdminUseCase
 import session.usecase.InitializeSessionUseCase
-import transaction.usecase.InitializeCategoriesUseCase
+import category.usecase.InitializeCategoriesUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

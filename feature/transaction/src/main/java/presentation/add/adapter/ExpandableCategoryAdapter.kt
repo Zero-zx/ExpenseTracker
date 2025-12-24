@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import category.model.Category
 import com.example.transaction.databinding.ItemCategoryChildBinding
 import com.example.transaction.databinding.ItemCategoryParentBinding
 import helpers.standardize
-import transaction.model.Category
 import ui.toggleChevronRotation
 
 class ExpandableCategoryAdapter(
@@ -18,7 +18,6 @@ class ExpandableCategoryAdapter(
 ) {
 
     private val expandedParentIds = mutableSetOf<Long>()
-    private var searchQuery: String = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return when (viewType) {
@@ -84,54 +83,37 @@ class ExpandableCategoryAdapter(
         super.submitList(categoryItems)
     }
 
-    fun filter(query: String) {
-        searchQuery = query.lowercase().trim()
-        val categoryItems = buildCategoryItems(allCategories)
-        super.submitList(categoryItems)
-    }
 
     private fun buildCategoryItems(categories: List<Category>): List<CategoryItem> {
-        val filteredCategories = if (searchQuery.isBlank()) {
-            categories
-        } else {
-            // Filter categories that match search query
-            categories.filter { category ->
-                category.title.standardize().lowercase().contains(searchQuery)
-            }
-        }
 
-        val parentCategories = filteredCategories.filter { it.parentId == null }
+        val parentCategories = categories.filter { it.parentId == null }
         val result = mutableListOf<CategoryItem>()
 
         parentCategories.forEach { parent ->
-            val childCategories = filteredCategories.filter { it.parentId == parent.id }
+            val childCategories = categories.filter { it.parentId == parent.id }
 
-            // Only show parent if it matches or has matching children
-            val shouldShowParent = searchQuery.isBlank() ||
-                    parent.title.standardize().lowercase().contains(searchQuery) ||
-                    childCategories.isNotEmpty()
-
-            if (shouldShowParent) {
-                result.add(
-                    CategoryItem(
-                        parent,
-                        isParent = true,
-                        hasChildren = childCategories.isNotEmpty()
-                    )
+            result.add(
+                CategoryItem(
+                    parent,
+                    isParent = true,
+                    hasChildren = childCategories.isNotEmpty()
                 )
+            )
 
-                // Auto-expand parent if searching
-                val shouldExpand = expandedParentIds.contains(parent.id) ||
-                        (searchQuery.isNotBlank() && childCategories.isNotEmpty())
-
-                if (shouldExpand) {
-                    childCategories.forEach { child ->
-                        result.add(CategoryItem(child, isParent = false, hasChildren = false))
-                    }
+            // Only expand if user has explicitly expanded this parent
+//            if (expandedParentIds.contains(parent.id)) {
+                childCategories.forEach { child ->
+                    result.add(CategoryItem(child, isParent = false, hasChildren = false))
                 }
-            }
+//            }
         }
 
+        val filterChildCategories =
+            categories.filter { it.parentId != null && parentCategories.none { parent -> parent.id == it.parentId } }
+
+        filterChildCategories.forEach {
+            result.add(CategoryItem(it, isParent = false, hasChildren = false))
+        }
         return result
     }
 
@@ -173,6 +155,9 @@ class ExpandableCategoryAdapter(
 
                 // Set category name
                 textViewCategoryName.text = category.title.standardize()
+
+                // Set initial chevron rotation based on expanded state
+                iconChevron.rotation = if (isExpanded) 180f else 0f
 
                 iconChevron.setOnClickListener {
                     onToggle()

@@ -6,6 +6,10 @@ import account.usecase.GetAccountsUseCase
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import base.UIState
+import category.model.Category
+import category.model.CategoryType
+import category.usecase.GetCategoriesByTypeUseCase
+import category.usecase.GetCategoryByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,27 +17,20 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import navigation.Navigator
+import payee.model.Payee
+import payee.model.PayeeType
+import payee.usecase.AddPayeeUseCase
+import payee.usecase.GetPayeeByIdUseCase
 import session.usecase.GetCurrentAccountIdUseCase
-import transaction.model.Category
-import transaction.model.CategoryType
 import transaction.model.Event
 import transaction.model.Location
-import transaction.model.Payee
 import transaction.model.Transaction
 import transaction.model.TransactionImage
 import transaction.repository.TransactionImageRepository
-import transaction.usecase.AddBorrowerUseCase
 import transaction.usecase.AddEventUseCase
-import transaction.usecase.AddLenderUseCase
 import transaction.usecase.AddLocationUseCase
-import transaction.usecase.AddPayeeUseCase
 import transaction.usecase.DeleteTransactionImagesUseCase
-import transaction.usecase.GetBorrowerByIdUseCase
-import transaction.usecase.GetCategoriesByTypeUseCase
-import transaction.usecase.GetCategoryByIdUseCase
-import transaction.usecase.GetLenderByIdUseCase
 import transaction.usecase.GetLocationByIdUseCase
-import transaction.usecase.GetPayeeByIdUseCase
 import transaction.usecase.GetTransactionByIdUseCase
 import transaction.usecase.SaveTransactionImageUseCase
 import usecase.AddTransactionUseCase
@@ -52,15 +49,11 @@ class AddTransactionViewModel @Inject constructor(
     private val getAccountsUseCase: GetAccountsUseCase,
     private val getLocationByIdUseCase: GetLocationByIdUseCase,
     private val getPayeeByIdUseCase: GetPayeeByIdUseCase,
-    private val getBorrowerByIdUseCase: GetBorrowerByIdUseCase,
-    private val getLenderByIdUseCase: GetLenderByIdUseCase,
     private val saveTransactionImageUseCase: SaveTransactionImageUseCase,
     private val deleteTransactionImagesUseCase: DeleteTransactionImagesUseCase,
     private val addEventUseCase: AddEventUseCase,
     private val addPayeeUseCase: AddPayeeUseCase,
     private val addLocationUseCase: AddLocationUseCase,
-    private val addBorrowerUseCase: AddBorrowerUseCase,
-    private val addLenderUseCase: AddLenderUseCase,
     private val imageRepository: TransactionImageRepository,
     private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<Long>() {
@@ -86,13 +79,13 @@ class AddTransactionViewModel @Inject constructor(
     private val _selectedPayees = MutableStateFlow<List<Payee>>(emptyList())
     val selectedPayees = _selectedPayees.asStateFlow()
 
+    private val _selectedBorrower = MutableStateFlow<Payee?>(null)
+    val selectedBorrower = _selectedBorrower.asStateFlow()
+
     private val _selectedLocation = MutableStateFlow<Location?>(null)
     val selectedLocation = _selectedLocation.asStateFlow()
 
-    private val _selectedBorrower = MutableStateFlow<transaction.model.Borrower?>(null)
-    val selectedBorrower = _selectedBorrower.asStateFlow()
-
-    private val _selectedLender = MutableStateFlow<transaction.model.Lender?>(null)
+    private val _selectedLender = MutableStateFlow<Payee?>(null)
     val selectedLender = _selectedLender.asStateFlow()
 
     private val _transactionImage = MutableStateFlow<TransactionImage?>(null)
@@ -112,6 +105,7 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun loadCategoriesByType(type: CategoryType) {
+        _selectedCategory.value = null
         _currentCategoryType.value = type
         viewModelScope.launch {
             getCategoriesByTypeUseCase(type)
@@ -168,50 +162,28 @@ class AddTransactionViewModel @Inject constructor(
 
             setLoading()
             try {
-                // Step 1: Persist event if it exists
-                // AddEventUseCase will check for duplicate name and return existing event if found,
-                // or create new one and return it with generated ID
                 val finalEvent = selectedEvent?.let { event ->
                     addEventUseCase(
-                        eventName = event.eventName,
-                        startDate = event.startDate,
-                        endDate = event.endDate,
-                        numberOfParticipants = event.numberOfParticipants ?: 0,
-                        accountId = event.accountId,
-                        participants = event.participants
+                        event
                     )
                 }
 
-                // Step 2: Persist payees if they exist
-                // AddPayeeUseCase will check for duplicate name and return existing payee if found,
-                // or create new one and return it with generated ID
                 val finalPayees = _selectedPayees.value.map { payee ->
                     addPayeeUseCase(
-                        name = payee.name,
-                        isFromContacts = payee.isFromContacts,
-                        contactId = payee.contactId
+                        payee
                     )
                 }
 
-                // Step 2.5: Persist borrower if it exists
                 val finalBorrower = _selectedBorrower.value?.let { borrower ->
-                    addBorrowerUseCase(
-                        name = borrower.name,
-                        phoneNumber = borrower.phoneNumber,
-                        email = borrower.email,
-                        accountId = borrower.accountId,
-                        notes = borrower.notes
+                    addPayeeUseCase(
+                        borrower
                     )
                 }
 
                 // Step 2.6: Persist lender if it exists
                 val finalLender = _selectedLender.value?.let { lender ->
-                    addLenderUseCase(
-                        name = lender.name,
-                        phoneNumber = lender.phoneNumber,
-                        email = lender.email,
-                        accountId = lender.accountId,
-                        notes = lender.notes
+                    addPayeeUseCase(
+                        lender
                     )
                 }
 
@@ -314,7 +286,8 @@ class AddTransactionViewModel @Inject constructor(
         _selectedPayees.value = payeeName.map {
             Payee(
                 id = -1L,
-                name = it
+                name = it,
+                payeeType = PayeeType.PAYEE
             )
         }
     }
@@ -348,28 +321,13 @@ class AddTransactionViewModel @Inject constructor(
         navigator.navigateToSelectPayee(selectedPayeeNames)
     }
 
+    fun toSelectBorrower() {
+        navigator.navigateToSelectBorrower(_selectedBorrower.value?.name ?: "")
+    }
+
     fun toSelectLocation() {
         navigator.navigateToSelectLocation(_selectedLocation.value?.id ?: -1L)
     }
-
-
-//    fun selectPayeesByNames(payeeIds: LongArray) {
-//        viewModelScope.launch {
-//            try {
-//                val payees = payeeIds.toList().mapNotNull { payeeId ->
-//                    // Check temporary payees first (negative IDs)
-//                    if (payeeId < 0) {
-//                        _temporaryPayees.value.find { it.id == payeeId }
-//                    } else {
-//                        getPayeeByIdUseCase(payeeId)
-//                    }
-//                }
-//                _selectedPayees.value = payees
-//            } catch (e: Exception) {
-//                // Handle error if needed
-//            }
-//        }
-//    }
 
     fun selectLocationById(locationId: Long) {
         viewModelScope.launch {
@@ -398,11 +356,10 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun selectBorrower(name: String) {
-        val currentAccountId = getCurrentAccountId() ?: 1L
-        _selectedBorrower.value = transaction.model.Borrower(
+        _selectedBorrower.value = Payee(
             id = -1L,
             name = name,
-            accountId = currentAccountId
+            payeeType = PayeeType.BORROWER
         )
     }
 
@@ -410,7 +367,7 @@ class AddTransactionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 if (borrowerId > 0) {
-                    val borrower = getBorrowerByIdUseCase(borrowerId)
+                    val borrower = getPayeeByIdUseCase(borrowerId)
                     if (borrower != null) {
                         _selectedBorrower.value = borrower
                     }
@@ -421,36 +378,14 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    fun removeBorrower() {
-        _selectedBorrower.value = null
-    }
 
     fun selectLender(name: String) {
         val currentAccountId = getCurrentAccountId() ?: 1L
-        _selectedLender.value = transaction.model.Lender(
+        _selectedLender.value = Payee(
             id = -1L,
             name = name,
-            accountId = currentAccountId
+            payeeType = PayeeType.LENDER
         )
-    }
-
-    fun selectLenderById(lenderId: Long) {
-        viewModelScope.launch {
-            try {
-                if (lenderId > 0) {
-                    val lender = getLenderByIdUseCase(lenderId)
-                    if (lender != null) {
-                        _selectedLender.value = lender
-                    }
-                }
-            } catch (e: Exception) {
-                // Handle error if needed
-            }
-        }
-    }
-
-    fun removeLender() {
-        _selectedLender.value = null
     }
 
     // Image management functions
@@ -525,8 +460,6 @@ class AddTransactionViewModel @Inject constructor(
                 setError(e.message ?: "Failed to create location")
             }
         }
-        // Return a placeholder ID for backward compatibility
-        // The actual persisted location will be set in the state
         return -1L
     }
 

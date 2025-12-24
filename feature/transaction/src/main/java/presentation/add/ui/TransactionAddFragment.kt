@@ -18,11 +18,13 @@ import camera.CameraHandler
 import com.example.transaction.databinding.FragmentTransactionAddBinding
 import com.google.android.material.chip.Chip
 import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
+import constants.FragmentResultKeys.REQUEST_SELECT_BORROWER_NAME
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_NAME
 import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_NAMES
 import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
+import constants.FragmentResultKeys.RESULT_BORROWER_NAME
 import constants.FragmentResultKeys.RESULT_CATEGORY_ID
 import constants.FragmentResultKeys.RESULT_EVENT_NAME
 import constants.FragmentResultKeys.RESULT_LOCATION_ID
@@ -34,10 +36,10 @@ import presentation.add.adapter.CategoryAdapter
 import presentation.add.adapter.CategoryDropdownAdapter
 import presentation.add.viewModel.AddTransactionViewModel
 import storage.FileProvider
-import transaction.model.Category
-import transaction.model.CategoryType
+import category.model.Category
+import category.model.CategoryType
 import transaction.model.Event
-import transaction.model.Payee
+import payee.model.Payee
 import ui.CalculatorManager
 import ui.CalculatorProvider
 import ui.GridSpacingItemDecoration
@@ -182,6 +184,13 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             val locationId = bundle.getLong(RESULT_LOCATION_ID)
             viewModel.selectLocationById(locationId)
         }
+
+        listenForSelectionResult(REQUEST_SELECT_BORROWER_NAME) { bundle ->
+            val borrowerName = bundle.getString(RESULT_BORROWER_NAME)
+            if (borrowerName != null) {
+                viewModel.selectBorrower(borrowerName)
+            }
+        }
     }
 
     override fun initListener() {
@@ -209,6 +218,10 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
             customViewPayee.setOnClickListener {
                 viewModel.toSelectPayee()
+            }
+
+            buttonSelectBorrower.setOnClickListener {
+                viewModel.toSelectBorrower()
             }
 
             customViewLocation.setOnClickListener {

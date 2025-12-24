@@ -5,9 +5,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.UIState
+import category.model.CategoryType
 import com.example.transaction.R
 import com.example.transaction.databinding.FragmentCategoryTabBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +15,6 @@ import presentation.add.adapter.ExpandableCategoryAdapter
 import presentation.add.adapter.MostUsingCategoryAdapter
 import presentation.add.viewModel.AddTransactionViewModel
 import presentation.add.viewModel.CategoryTabViewModel
-import transaction.model.CategoryType
 
 @AndroidEntryPoint
 class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
@@ -58,11 +57,6 @@ class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
     override fun initView() {
         binding.recyclerViewCategories.adapter = adapter
         binding.recyclerViewMostUsing.adapter = mostUsingAdapter
-        binding.recyclerViewMostUsing.layoutManager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.HORIZONTAL,
-            false
-        )
 
         // Setup search
         binding.editTextSearch.addTextChangedListener(object : TextWatcher {
@@ -70,8 +64,7 @@ class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val query = s?.toString() ?: ""
-                viewModel.updateSearchQuery(query)
-                adapter.filter(query)
+                viewModel.updateSearchQuery(query, categoryType)
             }
         })
     }
@@ -83,7 +76,10 @@ class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
                     // show loading if needed
                 }
 
-                is UIState.Success -> adapter.submitCategories(state.data)
+                is UIState.Success -> {
+                    adapter.submitCategories(state.data)
+                }
+
                 is UIState.Error -> {
                     // handle error if needed
                 }
@@ -109,6 +105,7 @@ class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
                         binding.recyclerViewMostUsing.visibility = android.view.View.VISIBLE
                     }
                 }
+
                 is UIState.Error -> {
                     // Hide most using section on error
                     binding.textViewMostUsing.visibility = android.view.View.GONE

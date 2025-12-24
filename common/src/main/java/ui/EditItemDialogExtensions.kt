@@ -10,14 +10,18 @@ import androidx.fragment.app.Fragment
 /**
  * Show edit dialog for Event
  */
-fun Fragment.showEditEventDialog(
-    eventName: String,
+fun Fragment.showEditDialog(
+    title: String,
+    inputHint: String?,
+    name: String,
     isCompleted: Boolean = false,
     onUpdate: (name: String, isCompleted: Boolean) -> Unit,
     onDelete: (() -> Unit)? = null
 ) {
-    requireContext().showEditEventDialog(
-        eventName = eventName,
+    requireContext().showEditDialog(
+        title = title,
+        inputHint = inputHint,
+        name = name,
         isCompleted = isCompleted,
         onUpdate = onUpdate,
         onDelete = onDelete
@@ -27,16 +31,18 @@ fun Fragment.showEditEventDialog(
 /**
  * Show edit dialog for Event (Context extension)
  */
-fun Context.showEditEventDialog(
-    eventName: String,
+fun Context.showEditDialog(
+    title: String,
+    inputHint: String?,
+    name: String,
     isCompleted: Boolean = false,
     onUpdate: (name: String, isCompleted: Boolean) -> Unit,
     onDelete: (() -> Unit)? = null
 ) {
     EditItemDialog.Builder(this)
-        .setTitle("Edit Event")
-        .setInitialName(eventName)
-        .setInputHint("Event name")
+        .setTitle(title)
+        .setInitialName(name)
+        .setInputHint(inputHint ?: "")
         .setShowCompletedCheckbox(true)
         .setCompleted(isCompleted)
         .setShowDeleteButton(onDelete != null)
