@@ -54,6 +54,12 @@ fun Fragment.setEventNameSelectionResult(selectedName: String) {
     )
 }
 
+fun Fragment.setBorrowerNameSelectionResult(selectedName: String) {
+    setSelectionResult(
+        FragmentResultKeys.REQUEST_SELECT_BORROWER_NAME,
+        bundleOf(FragmentResultKeys.RESULT_BORROWER_NAME to selectedName)
+    )
+}
 
 fun Fragment.setAccountIdSelectionResult(selectedId: Long) {
     setSelectionResult(

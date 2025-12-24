@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemTransactionCategoryBinding
-import transaction.model.CategoryType
+import category.model.CategoryType
 import transaction.model.Transaction
 import java.text.NumberFormat
 import java.util.Locale

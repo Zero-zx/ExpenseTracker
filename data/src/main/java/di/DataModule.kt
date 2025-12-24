@@ -20,18 +20,14 @@ import dao.TransactionPayeeDao
 import dao.UserDao
 import datasource.BudgetDatabase
 import datasource.PhoneContactDataSource
-import transaction.repository.BorrowerRepository
 import transaction.repository.CategoryRepository
 import transaction.repository.EventRepository
-import transaction.repository.LenderRepository
 import transaction.repository.LocationRepository
 import transaction.repository.PayeeRepository
 import transaction.repository.TransactionRepository
 import repository.AccountRepositoryImpl
-import repository.BorrowerRepositoryImpl
 import repository.CategoryRepositoryImpl
 import repository.EventRepositoryImpl
-import repository.LenderRepositoryImpl
 import repository.LocationRepositoryImpl
 import repository.PayeeRepositoryImpl
 import repository.PhoneContactRepositoryImpl
@@ -114,18 +110,6 @@ internal object DataModule {
 
     @Provides
     @Singleton
-    fun provideBorrowerDao(appDatabase: BudgetDatabase): dao.BorrowerDao {
-        return appDatabase.borrowerDao()
-    }
-
-    @Provides
-    @Singleton
-    fun provideLenderDao(appDatabase: BudgetDatabase): dao.LenderDao {
-        return appDatabase.lenderDao()
-    }
-
-    @Provides
-    @Singleton
     fun provideUserSessionManager(@ApplicationContext context: Context): UserSessionManager {
         return UserSessionManager(context)
     }
@@ -191,18 +175,6 @@ internal object DataModule {
     @Singleton
     fun providePhoneContactRepository(phoneContactDataSource: PhoneContactDataSource): PhoneContactRepository {
         return PhoneContactRepositoryImpl(phoneContactDataSource)
-    }
-
-    @Provides
-    @Singleton
-    fun provideBorrowerRepository(borrowerDao: dao.BorrowerDao): BorrowerRepository {
-        return BorrowerRepositoryImpl(borrowerDao)
-    }
-
-    @Provides
-    @Singleton
-    fun provideLenderRepository(lenderDao: dao.LenderDao): LenderRepository {
-        return LenderRepositoryImpl(lenderDao)
     }
 
     @Provides

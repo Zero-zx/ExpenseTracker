@@ -6,7 +6,7 @@ import base.setupWithTabs
 import com.example.transaction.databinding.FragmentCategorySelectBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import transaction.model.CategoryType
+import category.model.CategoryType
 import ui.navigateBack
 import ui.setCategoryIdSelectionResult
 

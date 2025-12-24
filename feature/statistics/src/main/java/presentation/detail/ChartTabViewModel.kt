@@ -11,7 +11,7 @@ import presentation.detail.model.ChartDataWithReportItems
 import presentation.detail.model.ReportItem
 import presentation.detail.model.TabType
 import session.usecase.GetCurrentAccountIdUseCase
-import transaction.model.CategoryType
+import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
 import java.util.Calendar

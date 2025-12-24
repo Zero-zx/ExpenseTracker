@@ -12,6 +12,7 @@
     <string name="text_set_as_address">Set as address</string>
     <string name="text_select_a_location">Select a location</string>
     <string name="text_with_whom">With whom</string>
+    <string name="text_borrower">Borrower</string>
     <string name="Expenses">Expenses</string>
     <string name="app_name">Misa Moneykeeper</string>
     <string name="Income">Income\n</string>
@@ -67,4 +68,6 @@
     <string name="text_trip_event">Trip/Event</string>
     <string name="text_select_payee_name">Select or enter payee name</string>
     <string name="text_financial_statement">Financial statement</string>
+    <string name="text_add_party">Add party</string>
+    <string name="text_no_payee_available">No payee available</string>
 </resources>

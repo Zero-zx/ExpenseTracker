@@ -8,14 +8,15 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import model.PayeeEntity
+import payee.model.PayeeType
 
 @Dao
 internal interface PayeeDao {
-    @Query("SELECT * FROM tb_payee WHERE userId = :accountId ORDER BY name ASC")
-    fun getAllPayeesByUserId(accountId: Long): Flow<List<PayeeEntity>>
+    @Query("SELECT * FROM tb_payee WHERE userId = :userId AND payeeType = :payeeType ORDER BY name ASC")
+    fun getAllPayeesByUserId(userId: Long, payeeType: PayeeType): Flow<List<PayeeEntity>>
 
-    @Query("SELECT * FROM tb_payee WHERE userId = :accountId AND isFromContacts = 0 ORDER BY name ASC")
-    fun getRecentPayeesByUserId(accountId: Long): Flow<List<PayeeEntity>>
+    @Query("SELECT * FROM tb_payee WHERE userId = :userId AND payeeType = :payeeType AND isFromContacts = 0 ORDER BY name ASC")
+    fun getRecentPayeesByType(userId: Long, payeeType: PayeeType): Flow<List<PayeeEntity>>
 
     @Query("SELECT * FROM tb_payee WHERE id = :payeeId")
     suspend fun getPayeeById(payeeId: Long): PayeeEntity?
@@ -31,4 +32,11 @@ internal interface PayeeDao {
 
     @Query("SELECT * FROM tb_payee WHERE name = :name AND userId = :accountId LIMIT 1")
     suspend fun getPayeeByName(name: String, accountId: Long): PayeeEntity?
+
+    @Query("SELECT * FROM tb_payee WHERE userId = :userId AND payeeType = :payeeType AND name LIKE '%' || :searchQuery || '%' ORDER BY name ASC")
+    fun searchPayeesByType(
+        userId: Long,
+        searchQuery: String,
+        payeeType: PayeeType
+    ): Flow<List<PayeeEntity>>
 }

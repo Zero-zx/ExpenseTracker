@@ -85,10 +85,10 @@
         android:id="@+id/reportDetailContainerFragment"
         android:name="presentation.detail.ReportDetailContainerFragment"
         android:label="ReportDetailContainerFragment" />
-    <fragment
-        android:id="@+id/editTransactionFragment"
-        android:name="presentation.edit.ui.EditTransactionFragment"
-        android:label="EditTransactionFragment" />
+<!--    <fragment-->
+<!--        android:id="@+id/editTransactionFragment"-->
+<!--        android:name="presentation.edit.ui.EditTransactionFragment"-->
+<!--        android:label="EditTransactionFragment" />-->
 
 
 </navigation>

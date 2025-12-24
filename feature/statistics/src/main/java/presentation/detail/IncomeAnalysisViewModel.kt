@@ -10,7 +10,7 @@ import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
 import session.usecase.GetCurrentAccountIdUseCase
-import transaction.model.CategoryType
+import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
 import java.util.Calendar

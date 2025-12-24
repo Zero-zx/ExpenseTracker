@@ -1,12 +1,10 @@
 package usecase
 
 import account.model.Account
-import transaction.model.Borrower
-import transaction.model.Category
+import category.model.Category
 import transaction.model.Event
-import transaction.model.Lender
 import transaction.model.Location
-import transaction.model.Payee
+import payee.model.Payee
 import transaction.model.Transaction
 import transaction.repository.TransactionRepository
 import javax.inject.Inject
@@ -24,8 +22,8 @@ class UpdateTransactionUseCase @Inject constructor(
         createAt: Long,
         location: Location? = null,
         payees: List<Payee> = emptyList(),
-        borrower: Borrower? = null,
-        lender: Lender? = null
+        borrower: Payee? = null,
+        lender: Payee? = null
     ) {
         val transaction = Transaction(
             id = transactionId,

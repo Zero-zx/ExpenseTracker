@@ -4,49 +4,43 @@ import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
 import contact.usecase.GetAllPhoneContactsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import navigation.Navigator
-import transaction.model.Payee
-import transaction.usecase.DeletePayeeUseCase
-import transaction.usecase.GetPayeesByAccountUseCase
-import transaction.usecase.GetRecentPayeesByAccountUseCase
-import transaction.usecase.UpdatePayeeUseCase
+import payee.model.Payee
+import payee.model.PayeeType
+import payee.usecase.DeletePayeeUseCase
+import payee.usecase.GetRecentPayeesByTypeUseCase
+import payee.usecase.SearchPayeesByTypeUseCase
+import payee.usecase.UpdatePayeeUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class PayeeSelectViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getPayeesByAccountUseCase: GetPayeesByAccountUseCase,
-    private val getRecentPayeesByAccountUseCase: GetRecentPayeesByAccountUseCase,
+    private val getRecentPayeesByAccountUseCase: GetRecentPayeesByTypeUseCase,
     private val getAllPhoneContactsUseCase: GetAllPhoneContactsUseCase,
     private val updatePayeeUseCase: UpdatePayeeUseCase,
-    private val deletePayeeUseCase: DeletePayeeUseCase
+    private val deletePayeeUseCase: DeletePayeeUseCase,
+    private val searchPayeesByTypeUseCase: SearchPayeesByTypeUseCase
 ) : BaseViewModel<List<Payee>>() {
 
-    companion object {
-        private const val ACCOUNT_ID = 1L // TODO: Get from account repository
-    }
+    private val _payeeType = MutableStateFlow(PayeeType.PAYEE)
+    val payeeType: StateFlow<PayeeType> = _payeeType
 
-    init {
-        loadPayees()
-    }
+    private val _isContact = MutableStateFlow(false)
+    val isContact: StateFlow<Boolean> = _isContact
 
-    fun loadPayees() {
-        viewModelScope.launch {
-            getPayeesByAccountUseCase(ACCOUNT_ID)
-                .catch { exception ->
-                    setError(exception.message ?: "Unknown error occurred")
-                }
-                .collect { payees ->
-                    setSuccess(payees)
-                }
-        }
+    fun updatePayeeType(type: PayeeType) {
+        _payeeType.value = type
     }
 
     fun loadRecentPayees() {
+        _isContact.value = false
         viewModelScope.launch {
-            getRecentPayeesByAccountUseCase(ACCOUNT_ID)
+            getRecentPayeesByAccountUseCase(_payeeType.value)
                 .catch { exception ->
                     setError(exception.message ?: "Unknown error occurred")
                 }
@@ -57,6 +51,7 @@ class PayeeSelectViewModel @Inject constructor(
     }
 
     fun getAllPhoneContacts() {
+        _isContact.value = true
         viewModelScope.launch {
             try {
                 setLoading()
@@ -66,7 +61,8 @@ class PayeeSelectViewModel @Inject constructor(
                     Payee(
                         id = contact.id,
                         name = contact.displayName,
-                        ACCOUNT_ID
+                        isFromContacts = true,
+                        payeeType = _payeeType.value
                     )
                 })
             } catch (e: Exception) {
@@ -96,6 +92,25 @@ class PayeeSelectViewModel @Inject constructor(
             } catch (e: Exception) {
                 setError(e.message ?: "Failed to delete payee")
             }
+        }
+    }
+
+    fun updateSearchQuery(query: String) {
+        viewModelScope.launch {
+            if (query.isBlank()) {
+                if (_isContact.value) getAllPhoneContacts()
+                else {
+                    loadRecentPayees()
+                }
+            } else {
+                // Search in database
+                searchPayeesByTypeUseCase(query, _payeeType.value).catch { exception ->
+                    setError(exception.message ?: "Unknown error occurred")
+                }.collect { payees ->
+                    setSuccess(payees)
+                }
+            }
+
         }
     }
 

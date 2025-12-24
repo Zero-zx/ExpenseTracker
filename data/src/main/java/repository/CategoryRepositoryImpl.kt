@@ -1,12 +1,12 @@
 package repository
 
+import category.model.Category
+import category.model.CategoryType
 import dao.CategoryDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import model.InitCategory
 import model.toDomain
-import transaction.model.Category
-import transaction.model.CategoryType
 import transaction.repository.CategoryRepository
 import javax.inject.Inject
 
@@ -40,5 +40,16 @@ internal class CategoryRepositoryImpl @Inject constructor(
 
     override suspend fun getCategoryById(id: Long): Category {
         return categoryDao.getCategoryById(id).toDomain()
+    }
+
+    override fun searchCategoriesByType(
+        searchQuery: String,
+        type: CategoryType
+    ): Flow<List<Category>> {
+        return categoryDao.searchCategoriesByType(searchQuery, type).map { list ->
+            list.map { it ->
+                it.toDomain()
+            }
+        }
     }
 }

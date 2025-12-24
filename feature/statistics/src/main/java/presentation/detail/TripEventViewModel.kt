@@ -8,8 +8,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import presentation.detail.model.TripEventData
-import transaction.model.CategoryType
-import transaction.model.Event
+import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetEventsByAccountUseCase
 import transaction.usecase.GetTransactionsByDateRangeUseCase

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import navigation.Navigator
-import transaction.model.CategoryType
+import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.DeleteTransactionUseCase
 import transaction.usecase.GetTransactionsByDateRangeUseCase

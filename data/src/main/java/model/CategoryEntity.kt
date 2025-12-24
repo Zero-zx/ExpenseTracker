@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import transaction.model.Category
-import transaction.model.CategoryType
+import category.model.Category
+import category.model.CategoryType
 
 @Entity(
     tableName = "tb_category",

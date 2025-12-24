@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import payee.model.PayeeType
 
 /**
  * Entity for Payee/Payer in Transactions
@@ -32,6 +33,8 @@ internal data class PayeeEntity(
     @ColumnInfo(name = "isFromContacts")
     val isFromContacts: Boolean = false,
     @ColumnInfo(name = "contactId")
-    val contactId: Long? = null
+    val contactId: Long? = null,
+    @ColumnInfo(name = "payeeType")
+    val payeeType: PayeeType
 )
 

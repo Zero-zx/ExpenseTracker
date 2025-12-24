@@ -30,7 +30,7 @@ class AddEventViewModel @Inject constructor(
         viewModelScope.launch {
             setLoading()
             try {
-                val event = addEventUseCase(
+                val eventId = addEventUseCase.addEvent(
                     eventName = eventName,
                     startDate = startDate,
                     endDate = endDate,
@@ -38,7 +38,7 @@ class AddEventViewModel @Inject constructor(
                     accountId = accountId,
                     participants = _participants.value
                 )
-                setSuccess(event.id)
+                setSuccess(eventId)
             } catch (e: Exception) {
                 setError(e.message ?: "Unknown error occurred")
             }
