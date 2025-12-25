@@ -6,60 +6,61 @@
     android:background="@color/white"
     android:paddingTop="@dimen/padding_edges">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <LinearLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="@dimen/margin_normal"
+        android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/tool_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/tool_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:title="Account"
-                app:titleTextAppearance="@style/TextAppearance.App.Title.Black" />
-
-            <ImageButton
-                android:id="@+id/button_sort"
+            <TextView
+                style="@style/TextAppearance.App.Title.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="@color/white"
-                android:src="@drawable/ic_option_sort"
-                app:layout_constraintBottom_toBottomOf="@id/tool_bar"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tool_bar" />
+                android:layout_marginStart="@dimen/margin_medium"
+                android:layout_weight="1"
+                android:text="@string/text_account" />
 
             <ImageButton
                 android:id="@+id/button_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/top_icon_size"
+                android:layout_height="@dimen/top_icon_size"
                 android:layout_marginEnd="16dp"
-                android:background="@color/white"
+                android:background="@drawable/ripple_image_button"
                 android:src="@drawable/ic_search_black_24"
-                app:layout_constraintBottom_toBottomOf="@id/tool_bar"
-                app:layout_constraintEnd_toStartOf="@id/button_sort"
-                app:layout_constraintTop_toTopOf="@id/tool_bar" />
+                android:tint="@color/gray_top_icon" />
 
+            <ImageButton
+                android:id="@+id/button_sort"
+                android:layout_width="@dimen/top_icon_size"
+                android:layout_height="@dimen/top_icon_size"
+                android:background="@drawable/ripple_image_button"
+                android:src="@drawable/ic_setting_v2"
+                android:tint="@color/gray_top_icon" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/button_sort"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@color/blue_bg"
-                app:tabIndicatorFullWidth="true"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/blue_bg" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+        </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/button_sort"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/blue_bg"
+            app:tabIndicatorFullWidth="true"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="@color/blue_bg" />
+    </LinearLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
@@ -71,5 +72,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="Add Account"
+        app:backgroundTint="@color/blue_bg"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+        app:srcCompat="@drawable/v2_ic_add_while"
+        app:tint="@android:color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

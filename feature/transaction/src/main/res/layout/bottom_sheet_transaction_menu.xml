@@ -1,108 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:background="@drawable/rounded_12dp_background"
+    android:orientation="vertical">
 
-    <!-- Select transaction option -->
-    <LinearLayout
-        android:id="@+id/layoutSelectTransaction"
+    <ui.BottomSheetItem
+        android:id="@+id/item_select_transaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground">
+        app:src="@drawable/ic_icon_checkbox"
+        app:text="Select transaction" />
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/checkbox_on_background"
-            android:contentDescription="Select transaction"
-            app:tint="@color/black_chevron" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:text="Select transaction"
-            android:textColor="@color/black_text"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <!-- Display settings option -->
-    <LinearLayout
-        android:id="@+id/layoutDisplaySettings"
+    <ui.BottomSheetItem
+        android:id="@+id/item_display_settings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground">
+        app:src="@drawable/v2_ic_setting_gray"
+        app:text="Display settings" />
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/icon_other"
-            android:contentDescription="Display settings"
-            app:tint="@color/black_chevron" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:text="Display settings"
-            android:textColor="@color/black_text"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <!-- Filter option -->
-    <LinearLayout
-        android:id="@+id/layoutFilterOption"
+    <ui.BottomSheetItem
+        android:id="@+id/item_filter_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?attr/selectableItemBackground">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_sort_by_size"
-            android:contentDescription="Filter option"
-            app:tint="@color/black_chevron" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:text="Filter option"
-            android:textColor="@color/black_text"
-            android:textSize="16sp" />
-    </LinearLayout>
+        app:src="@drawable/ic_setting_v2"
+        app:text="Filter option" />
 
 </LinearLayout>
 

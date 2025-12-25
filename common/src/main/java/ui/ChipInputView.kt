@@ -1,24 +1,18 @@
 package ui
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.example.common.R
 import com.example.common.databinding.ChipInputViewBinding
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.textfield.TextInputEditText
-import androidx.core.graphics.createBitmap
-import androidx.core.graphics.drawable.toDrawable
-import com.google.android.flexbox.AlignItems
-import com.google.android.flexbox.AlignSelf
-import com.google.android.flexbox.FlexboxLayout
+import helpers.createAvatarDrawable
+import helpers.dpToPx
 
 class ChipInputView @JvmOverloads constructor(
     context: Context,
@@ -45,7 +39,7 @@ class ChipInputView @JvmOverloads constructor(
         }
         chip.setEnsureMinTouchTargetSize(false)
         // Create circular avatar with first letter
-        chip.chipIcon = createAvatarDrawable(text)
+        chip.chipIcon = createAvatarDrawable(context, text)
         chip.isChipIconVisible = true
         chip.chipIconSize = 24.dpToPx(context).toFloat()
         chip.chipStrokeWidth = 0f
@@ -91,37 +85,6 @@ class ChipInputView @JvmOverloads constructor(
 
         binding.editTextInput.hint = ""
         return chip
-    }
-
-    private fun createAvatarDrawable(text: String): BitmapDrawable {
-        val size = 32.dpToPx(context)
-        val bitmap = createBitmap(size, size)
-        val canvas = Canvas(bitmap)
-
-        val backgroundColor = ContextCompat.getColor(context, R.color.blue_bg)
-
-
-        // Draw circle background
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.color = backgroundColor
-        canvas.drawCircle(size / 2f, size / 2f, size / 2f, paint)
-
-        // Draw first letter in white
-        paint.color = Color.WHITE
-        paint.textSize = (size * 0.5f)
-        paint.textAlign = Paint.Align.CENTER
-        val firstLetter = text.firstOrNull()?.uppercase() ?: "?"
-        val textBounds = android.graphics.Rect()
-        paint.getTextBounds(firstLetter, 0, firstLetter.length, textBounds)
-        val textHeight = textBounds.height()
-        val textY = size / 2f + textHeight / 2f
-        canvas.drawText(firstLetter, size / 2f, textY, paint)
-
-        return bitmap.toDrawable(context.resources)
-    }
-
-    private fun Int.dpToPx(context: Context): Int {
-        return (this * context.resources.displayMetrics.density).toInt()
     }
 
     fun removeChip(chip: Chip) {

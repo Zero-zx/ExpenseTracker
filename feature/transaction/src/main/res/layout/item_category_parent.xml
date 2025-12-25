@@ -16,10 +16,10 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:src="@drawable/icon_chevron"
-        android:tint="@color/gray_small_icon"
         app:layout_constraintBottom_toBottomOf="@id/image_icon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/image_icon" />
+        app:layout_constraintTop_toTopOf="@id/image_icon"
+        app:tint="@color/gray_small_icon" />
 
     <ImageView
         android:id="@+id/image_icon"

@@ -166,8 +166,8 @@
                     android:id="@+id/button_arrow"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:background="@drawable/rounded_ripple_image_button"
                     android:layout_marginTop="8dp"
+                    android:background="@drawable/rounded_ripple_image_button"
                     app:cardBackgroundColor="#4DFFFFFF"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="0dp"
@@ -285,7 +285,8 @@
                     android:id="@+id/layout_charts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"

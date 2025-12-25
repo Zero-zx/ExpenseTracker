@@ -16,8 +16,7 @@ class InitializeSessionUseCase @Inject constructor(
     suspend operator fun invoke() {
         // If no account is selected, select the first one
         if (sessionRepository.getCurrentAccountId() == null) {
-            val userId = sessionRepository.getCurrentUserId() ?: 1L
-            val accountList = accountRepository.getUserAccounts(userId).firstOrNull()
+            val accountList = accountRepository.getAccounts().firstOrNull()
 
             if (!accountList.isNullOrEmpty()) {
                 sessionRepository.setCurrentAccountId(accountList.first().id)

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -13,6 +14,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.example.common.databinding.DialogCustomAlertBinding
+import helpers.dpToPx
 
 /**
  * CustomAlertDialog - A reusable alert dialog
@@ -37,11 +39,19 @@ class CustomAlertDialog private constructor(
     }
 
     private fun setDialogWidth() {
+        val metrics = context.resources.displayMetrics
+        val screenWidth = metrics.widthPixels
+        val marginPx = 16.dpToPx(context)
+
+        // Calculate width: Screen width minus 16dp on both sides
+        val width = screenWidth - (2 * marginPx)
+
         dialog.window?.setLayout(
-            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            width,
             android.view.ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
+
 
     private fun setupDialog() {
         // Set title
@@ -152,7 +162,7 @@ class CustomAlertDialog private constructor(
         internal var titleColor: Int? = null
         internal var titleSize: Float? = null
 
-        internal var message: String? = null
+        internal var message: CharSequence? = null
         internal var messageColor: Int? = null
         internal var messageSize: Float? = null
 
@@ -213,7 +223,7 @@ class CustomAlertDialog private constructor(
         /**
          * Set the dialog message
          */
-        fun setMessage(message: String): Builder {
+        fun setMessage(message: CharSequence): Builder {
             this.message = message
             return this
         }

@@ -79,6 +79,7 @@ class ExpandableCategoryAdapter(
 
     fun submitCategories(categories: List<Category>) {
         allCategories = categories
+        expandedParentIds.addAll(allCategories.filter { it.parentId == null }.map { it.id })
         val categoryItems = buildCategoryItems(categories)
         super.submitList(categoryItems)
     }
@@ -101,11 +102,11 @@ class ExpandableCategoryAdapter(
             )
 
             // Only expand if user has explicitly expanded this parent
-//            if (expandedParentIds.contains(parent.id)) {
+            if (expandedParentIds.contains(parent.id)) {
                 childCategories.forEach { child ->
                     result.add(CategoryItem(child, isParent = false, hasChildren = false))
                 }
-//            }
+            }
         }
 
         val filterChildCategories =
@@ -157,7 +158,7 @@ class ExpandableCategoryAdapter(
                 textViewCategoryName.text = category.title.standardize()
 
                 // Set initial chevron rotation based on expanded state
-                iconChevron.rotation = if (isExpanded) 180f else 0f
+                iconChevron.rotation = if (isExpanded) 90f else 0f
 
                 iconChevron.setOnClickListener {
                     onToggle()

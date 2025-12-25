@@ -39,7 +39,9 @@ class HomeViewModel @Inject constructor(
 
         getHomeTransactionDataUseCase(accountId, startDate, endDate)
             .onEach { data ->
-                setSuccess(data)
+                if (data.hasData) {
+                    setSuccess(data)
+                }
             }
             .catch { exception ->
                 setError(exception.message ?: "Unknown error")

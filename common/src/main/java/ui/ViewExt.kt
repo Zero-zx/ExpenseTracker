@@ -2,6 +2,7 @@ package ui
 
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.text.format.DateFormat
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -36,6 +37,19 @@ fun View.visible() {
 fun Fragment.navigateBack() {
     findNavController().navigateUp()
 }
+
+fun Fragment.showNotImplementToast() {
+    context?.showWarningToast("This feature is not implemented yet")
+}
+
+fun Fragment.showWarningToast(message: String) {
+    context?.showWarningToast(message)
+}
+
+fun Fragment.showSuccessToast(message: String) {
+    context?.showSuccessToast(message)
+}
+
 
 /*
  * Show a success toast.
@@ -87,7 +101,7 @@ fun Context.showCustomToast(
 
     // Change background color using tint
     binding.toastCard.background = getDrawable(R.drawable.rounded_background)
-    binding.toastCard.setBackgroundColor(backgroundColor)
+    binding.toastCard.backgroundTintList = ColorStateList.valueOf(backgroundColor)
 
     // 3. Create and show the Toast
     Toast(applicationContext).apply {

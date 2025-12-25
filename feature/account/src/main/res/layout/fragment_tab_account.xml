@@ -31,7 +31,7 @@
             style="@style/TextAppearance.App.Normal.Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_amount"
+            android:text="@string/text_total_amount"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,24 +62,60 @@
     <LinearLayout
         android:id="@+id/layoutEmpty"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_medium"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp"
-        android:visibility="gone">
+        android:translationZ="@dimen/margin_medium"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <ImageView
+            android:id="@+id/image_view_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No accounts yet"
-            android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+            android:src="@drawable/ic_have_not_account_light" />
 
         <TextView
+            android:id="@+id/text_view_empty"
+            style="@style/TextAppearance.App.Normal.Gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Add your first account"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+            android:textAlignment="center"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:text="@string/text_account_empty"
+            android:textColor="@color/gray_hint" />
+
+        <LinearLayout
+            android:id="@+id/button_add_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_medium"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="@color/blue_bg"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="6dp">
+
+            <ImageView
+                android:layout_width="@dimen/normal_icon_size"
+                android:layout_height="@dimen/normal_icon_size"
+                android:scaleType="fitXY"
+                android:src="@drawable/v2_ic_add_while"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/text_view_add_account"
+                style="@style/TextAppearance.App.Title.White"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_normal"
+                android:text="@string/text_add_account"
+                android:textStyle="bold"
+                app:icon="@drawable/icon_add" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Error State -->
@@ -114,18 +150,4 @@
             android:text="Retry" />
     </LinearLayout>
 
-    <!-- FAB for adding new account -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:contentDescription="Add Account"
-        app:backgroundTint="@color/blue_bg"
-        app:tint="@android:color/white"
-        app:srcCompat="@drawable/v2_ic_add_while"
-        app:fabSize="normal"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
