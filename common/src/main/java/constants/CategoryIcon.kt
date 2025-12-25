@@ -88,7 +88,13 @@ enum class CategoryIcon(
     INTEREST(R.drawable.thu_tien_lai, "thu_tien_lai", "interest"),
     OTHER(R.drawable.thu_khac, "thu_khac", "other"),
     SAVING_INTEREST(R.drawable.thu_lai_tiet_kiem, "thu_lai_tiet_kiem", "saving interest"),
-    INCOME(R.drawable.thu_tien_vao, "thu_tien_vao", "income");
+    INCOME(R.drawable.thu_tien_vao, "thu_tien_vao", "income"),
+
+    // Lend
+    LEND(R.drawable.thu_cho_vay, "thu_cho_vay", "Lend"),
+    BORROW(R.drawable.thu_di_vay, "thu_di_vay", "Borrow"),
+    COLLECT_DEBT(R.drawable.thu_thu_no, "thu_thu_no", "Collecting debts"),
+    REPAYMENT(R.drawable.thu_tra_no, "thu_tra_no", "repayment");
 
     companion object {
         fun fromName(name: String): CategoryIcon {

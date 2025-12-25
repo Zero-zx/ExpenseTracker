@@ -2,18 +2,20 @@ package repository
 
 import dao.TransactionDao
 import dao.TransactionPayeeDao
-import model.TransactionPayeeEntity
-import transaction.model.Transaction
-import transaction.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import mapper.toDomain
 import mapper.toEntity
+import model.TransactionPayeeEntity
+import session.UserSessionManager
+import transaction.model.Transaction
+import transaction.repository.TransactionRepository
 import javax.inject.Inject
 
 internal class TransactionRepositoryImpl @Inject constructor(
     private val transactionDao: TransactionDao,
-    private val transactionPayeeDao: TransactionPayeeDao
+    private val transactionPayeeDao: TransactionPayeeDao,
+    private val sessionManager: UserSessionManager
 ) : TransactionRepository {
     override fun getAllTransactionByAccount(accountId: Long): Flow<List<Transaction>> {
         return transactionDao.getTransactionByAccountId(accountId).map { it ->
@@ -24,7 +26,8 @@ internal class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertTransaction(transaction: Transaction): Long {
-        return transactionDao.insert(transaction.toEntity())
+        val userId = sessionManager.getCurrentUserId()
+        return transactionDao.insert(transaction.toEntity(userId))
     }
 
     override suspend fun getTransactionById(transactionId: Long): Transaction? {
@@ -34,8 +37,9 @@ internal class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateTransaction(transaction: Transaction) {
-        transactionDao.update(transaction.toEntity())
-        
+        val userId = sessionManager.getCurrentUserId()
+        transactionDao.update(transaction.toEntity(userId))
+
         // Update payees - delete old ones and insert new ones
         transactionPayeeDao.deletePayeesByTransaction(transaction.id)
         val payeeIds = transaction.payees.map { it.id }
@@ -51,7 +55,8 @@ internal class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteTransaction(transaction: Transaction) {
-        transactionDao.delete(transaction.toEntity())
+        val userId = sessionManager.getCurrentUserId()
+        transactionDao.delete(transaction.toEntity(userId))
     }
 
     override fun getTransactionsByDateRange(
@@ -72,6 +77,9 @@ internal class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun insertTransactionWithPayees(transaction: Transaction): Long {
-        return transactionDao.insertTransactionWithPayees(transaction.toEntity(), transaction.payees.map { it.toEntity(transaction.account.id) })
+        val userId = sessionManager.getCurrentUserId()
+        return transactionDao.insertTransactionWithPayees(
+            transaction.toEntity(userId),
+            transaction.payees.map { it.toEntity(transaction.account.id) })
     }
 }

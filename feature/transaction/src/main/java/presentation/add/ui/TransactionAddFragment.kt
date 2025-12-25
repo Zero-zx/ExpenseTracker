@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import base.BaseFragment
 import base.UIState
 import camera.CameraHandler
+import category.model.Category
+import category.model.CategoryType
 import com.example.transaction.databinding.FragmentTransactionAddBinding
 import com.google.android.material.chip.Chip
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_BORROWER_NAME
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
@@ -31,15 +34,15 @@ import constants.FragmentResultKeys.RESULT_LOCATION_ID
 import constants.FragmentResultKeys.RESULT_PAYEE_NAMES
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.standardize
+import payee.model.Payee
 import permission.PermissionHandler
 import presentation.add.adapter.CategoryAdapter
 import presentation.add.adapter.CategoryDropdownAdapter
+import presentation.add.model.TransactionType
 import presentation.add.viewModel.AddTransactionViewModel
 import storage.FileProvider
-import category.model.Category
-import category.model.CategoryType
 import transaction.model.Event
-import payee.model.Payee
+import transaction.model.Location
 import ui.CalculatorManager
 import ui.CalculatorProvider
 import ui.GridSpacingItemDecoration
@@ -115,26 +118,24 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     }
 
     fun setUpDropdownMenu() {
-        val items = CategoryType.entries
+        val items = TransactionType.entries
         categoryDropdownAdapter = CategoryDropdownAdapter(requireContext(), items)
         categoryDropdownAdapter.selectedPosition = 0
 
-        (binding.dropdownMenuTransaction.editText as? AutoCompleteTextView)?.apply {
+        (binding.dropdownMenuTransaction.editText as? MaterialAutoCompleteTextView)?.apply {
             setAdapter(categoryDropdownAdapter)
 
             setOnItemClickListener { parent, _, position, _ ->
-                val categoryType = parent.getItemAtPosition(position) as CategoryType
-
-                viewModel.updateCategoryType(categoryType)
+                val transactionType = parent.getItemAtPosition(position) as TransactionType
+                viewModel.updateCategoryType(transactionType)
+                setText(transactionType.label)
             }
 
             post {
                 val dropdownWidth = (300 * resources.displayMetrics.density).toInt()
                 dropDownWidth = dropdownWidth
-
                 val buttonWidth = this.width
                 dropDownHorizontalOffset = -(dropdownWidth - buttonWidth) / 2
-
                 setDropDownBackgroundResource(CommonR.drawable.rounded_background)
             }
         }
@@ -329,6 +330,10 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             updateSelectedPayees(payees)
         }
 
+        collectState(viewModel.selectedBorrower) { borrower ->
+            updateSelectedBorrower(borrower)
+        }
+
         collectState(viewModel.selectedLocation) { location ->
             updateSelectedLocation(location)
         }
@@ -378,9 +383,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     } else {
                         "Transaction added successfully"
                     }
-                    context?.showSuccessToast(
-                        message = message
-                    )
+                    showSuccessToast(message)
                 }
 
                 is UIState.Error -> {
@@ -491,13 +494,20 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     private fun updateDropdownForCategoryType(categoryType: CategoryType) {
         // Find the position of the category type in the dropdown
-        val position = CategoryType.entries.indexOf(categoryType)
+
+        val position = when (categoryType) {
+            CategoryType.COLLECT_DEBT -> CategoryType.entries.indexOf(CategoryType.INCOME)
+            CategoryType.REPAYMENT -> CategoryType.entries.indexOf(CategoryType.EXPENSE)
+            else -> {
+                CategoryType.entries.indexOf(categoryType)
+            }
+        }
         if (position != -1) {
             categoryDropdownAdapter.selectedPosition = position
 
-            // Update the dropdown text without triggering the listener
+//            // Update the dropdown text without triggering the listener
             (binding.dropdownMenuTransaction.editText as? AutoCompleteTextView)?.apply {
-                setText(categoryType.label, false)
+                setText(TransactionType.entries[position].label, false)
             }
         }
     }
@@ -548,13 +558,13 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
     }
 
-    private fun updateSelectedLocation(location: transaction.model.Location?) {
+    private fun updateSelectedLocation(location: Location?) {
         binding.apply {
             customViewLocation.getTextView().isVisible = location == null
             customViewLocation.getChipGroup().removeAllViews()
 
             location?.let { loc ->
-                val chip = com.google.android.material.chip.Chip(requireContext())
+                val chip = Chip(requireContext())
                 chip.text = loc.name.standardize()
                 chip.isCloseIconVisible = true
                 chip.setOnCloseIconClickListener {
@@ -566,20 +576,20 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
     }
 
-    private fun updateSelectedBorrower(borrower: transaction.model.Borrower?) {
+    private fun updateSelectedBorrower(borrower: Payee?) {
         binding.apply {
-            if (buttonSelectBorrower.isVisible) {
-                buttonSelectBorrower.getTextView().text = borrower?.name?.standardize()
-                    ?: when (viewModel.currentCategoryType.value) {
-                        CategoryType.LEND -> "Select borrower"
-                        CategoryType.BORROWING -> "Select lender"
-                        else -> "Select"
-                    }
+            buttonSelectBorrower.getTextView().isVisible = borrower == null
+            buttonSelectBorrower.getChipGroup().removeAllViews()
+
+            borrower?.let {
+                buttonSelectBorrower.addChip(borrower.name) {
+                    viewModel.removeBorrower()
+                }
             }
         }
     }
 
-    private fun updateSelectedLender(lender: transaction.model.Lender?) {
+    private fun updateSelectedLender(lender: Payee?) {
         binding.apply {
             if (buttonSelectBorrower.isVisible) {
                 buttonSelectBorrower.getTextView().text = lender?.name?.standardize()

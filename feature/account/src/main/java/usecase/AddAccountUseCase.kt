@@ -18,7 +18,6 @@ class AddAccountUseCase @Inject constructor(
         val userId = sessionRepository.getCurrentUserId() ?: 1L
 
         val account = Account(
-            userId = userId,
             username = username,
             type = type,
             balance = balance,

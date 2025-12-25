@@ -16,17 +16,17 @@ class TransactionMenuBottomSheet(
 ) {
 
     override fun initListener() {
-        binding.layoutSelectTransaction.setOnClickListener {
+        binding.itemSelectTransaction.setOnClickListener {
             onSelectTransaction()
             dismiss()
         }
 
-        binding.layoutDisplaySettings.setOnClickListener {
+        binding.itemDisplaySettings.setOnClickListener {
             onDisplaySettings()
             dismiss()
         }
 
-        binding.layoutFilterOption.setOnClickListener {
+        binding.itemFilterOption.setOnClickListener {
             onFilterOption()
             dismiss()
         }

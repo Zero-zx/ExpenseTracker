@@ -11,9 +11,11 @@ interface AccountRepository {
     /**
      * Get all accounts for a specific user
      */
-    fun getUserAccounts(userId: Long): Flow<List<Account>>
+    fun getAccounts(): Flow<List<Account>>
 
     suspend fun getAccountById(accountId: Long): Account?
 
     suspend fun insertAccount(account: Account): Long
+    suspend fun updateAccount(account: Account)
+    suspend fun deleteAccount(account: Account)
 }

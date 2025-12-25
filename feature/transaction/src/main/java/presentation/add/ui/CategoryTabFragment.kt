@@ -120,10 +120,6 @@ class CategoryTabFragment : BaseFragment<FragmentCategoryTabBinding>(
     companion object {
         private const val ARG_CATEGORY_TYPE = "category_type"
 
-        /**
-         * Factory method to create a new instance of CategoryTabFragment
-         * with the specified CategoryType filter
-         */
         fun newInstance(categoryType: CategoryType): CategoryTabFragment {
             return CategoryTabFragment().apply {
                 arguments = Bundle().apply {

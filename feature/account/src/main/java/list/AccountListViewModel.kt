@@ -1,6 +1,7 @@
 package list
 
 import account.model.Account
+import account.usecase.DeleteAccountUseCase
 import account.usecase.GetUserAccountsUseCase
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
@@ -9,15 +10,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import navigation.Navigator
-import session.usecase.GetCurrentAccountIdUseCase
-import session.usecase.SelectAccountUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class AccountListViewModel @Inject constructor(
     private val getUserAccountsUseCase: GetUserAccountsUseCase,
-    private val selectAccountUseCase: SelectAccountUseCase,
-    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase,
     private val navigator: Navigator
 ) : BaseViewModel<List<Account>>() {
 
@@ -40,18 +38,14 @@ class AccountListViewModel @Inject constructor(
         }
     }
 
-    fun goToAddAccount() {
-        navigator.navigateToAddAccount()
-    }
-
-    fun selectAccount(accountId: Long) {
+    fun deleteAccount(account: Account) {
         viewModelScope.launch {
-            selectAccountUseCase(accountId)
+            deleteAccountUseCase(account)
         }
     }
 
-    fun getCurrentAccountId(): Long? {
-        return getCurrentAccountIdUseCase()
+    fun navigateToAddAccount() {
+        navigator.navigateToAddAccount()
     }
 
     fun refresh() {

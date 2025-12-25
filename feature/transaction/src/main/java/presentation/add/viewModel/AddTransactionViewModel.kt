@@ -10,6 +10,7 @@ import category.model.Category
 import category.model.CategoryType
 import category.usecase.GetCategoriesByTypeUseCase
 import category.usecase.GetCategoryByIdUseCase
+import category.usecase.GetCategoryByTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +22,7 @@ import payee.model.Payee
 import payee.model.PayeeType
 import payee.usecase.AddPayeeUseCase
 import payee.usecase.GetPayeeByIdUseCase
+import presentation.add.model.TransactionType
 import session.usecase.GetCurrentAccountIdUseCase
 import transaction.model.Event
 import transaction.model.Location
@@ -44,6 +46,7 @@ class AddTransactionViewModel @Inject constructor(
     private val updateTransactionUseCase: UpdateTransactionUseCase,
     private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
     private val getCategoriesByTypeUseCase: GetCategoriesByTypeUseCase,
+    private val getCategoryByTypeUseCase: GetCategoryByTypeUseCase,
     private val getCategoryById: GetCategoryByIdUseCase,
     private val getAccountByIdUseCase: GetAccountByIdUseCase,
     private val getAccountsUseCase: GetAccountsUseCase,
@@ -64,7 +67,7 @@ class AddTransactionViewModel @Inject constructor(
     private val _categoryState = MutableStateFlow<UIState<List<Category>>>(UIState.Loading)
     val categoryState = _categoryState.asStateFlow()
 
-    private val _currentCategoryType = MutableStateFlow<CategoryType>(CategoryType.EXPENSE)
+    private val _currentCategoryType = MutableStateFlow(CategoryType.EXPENSE)
     val currentCategoryType = _currentCategoryType.asStateFlow()
 
     private val _selectedCategory = MutableStateFlow<Category?>(null)
@@ -125,7 +128,6 @@ class AddTransactionViewModel @Inject constructor(
         viewModelScope.launch {
             getAccountsUseCase()
                 .catch { exception ->
-                    // Silently fail - user can select account manually
                 }
                 .collect { accounts ->
                     // Select first account if no account is selected yet
@@ -136,8 +138,36 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    fun updateCategoryType(categoryType: CategoryType) {
-        _currentCategoryType.value = categoryType
+    fun updateCategoryType(transactionType: TransactionType) {
+        when (transactionType) {
+            TransactionType.EXPENSE -> {
+                _currentCategoryType.value = CategoryType.EXPENSE
+                _selectedCategory.value = null
+            }
+
+            TransactionType.INCOME -> {
+                _currentCategoryType.value = CategoryType.INCOME
+                _selectedCategory.value = null
+            }
+
+            TransactionType.LEND -> {
+                viewModelScope.launch {
+                    _currentCategoryType.value = CategoryType.LEND
+                    _selectedCategory.value = getCategoryByTypeUseCase(CategoryType.LEND)
+                }
+            }
+
+            TransactionType.BORROWING -> {
+                viewModelScope.launch {
+                    _currentCategoryType.value = CategoryType.BORROWING
+                    _selectedCategory.value = getCategoryByTypeUseCase(CategoryType.BORROWING)
+                }
+            }
+
+            else -> {
+                _selectedCategory.value = null
+            }
+        }
     }
 
     fun addTransaction(
@@ -347,8 +377,11 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun removePayee(payee: Payee) {
-        // Match by name since temporary payees all have id = -1L
         _selectedPayees.value = _selectedPayees.value.filter { it.name != payee.name }
+    }
+
+    fun removeBorrower() {
+        _selectedBorrower.value = null
     }
 
     fun removeLocation() {

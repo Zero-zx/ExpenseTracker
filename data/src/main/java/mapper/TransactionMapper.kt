@@ -5,10 +5,10 @@ import model.TransactionWithDetails
 import model.toDomain
 import transaction.model.Transaction
 
-internal fun Transaction.toEntity(): TransactionEntity {
+internal fun Transaction.toEntity(userId: Long): TransactionEntity {
     return TransactionEntity(
         id = id,
-        userId = account.userId,
+        userId = userId,
         amount = amount,
         createAt = createAt,
         description = description!!,

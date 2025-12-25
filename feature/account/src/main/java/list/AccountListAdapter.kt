@@ -10,7 +10,8 @@ import com.example.login.databinding.ItemAccountBinding
 import java.text.NumberFormat
 
 class AccountListAdapter(
-    private val onItemClick: (Account) -> Unit
+    private val onItemClick: (Account) -> Unit,
+    private val onMoreClick: (Account) -> Unit
 ) : ListAdapter<Account, AccountListAdapter.AccountViewHolder>(AccountDiffCallback()) {
 
     private var selectedAccountId: Long? = null
@@ -46,14 +47,10 @@ class AccountListAdapter(
 
         private val currencyFormatter = NumberFormat.getCurrencyInstance()
 
-        init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onItemClick(getItem(position))
-                }
-            }
-        }
+//        init {
+//            binding.
+//            }
+//        }
 
         fun bind(account: Account) {
             binding.apply {
@@ -61,10 +58,13 @@ class AccountListAdapter(
                 iconAccount.setImageResource(account.type.iconRes)
                 textViewBalance.text = currencyFormatter.format(account.balance)
 
-                // Show selection indicator
-                val isSelected = account.id == selectedAccountId
-                root.isSelected = isSelected
-                root.alpha = if (isSelected) 1.0f else 0.7f
+                root.setOnClickListener {
+                    onItemClick(account)
+                }
+
+                buttonMore.setOnClickListener {
+                    onMoreClick(account)
+                }
             }
         }
     }

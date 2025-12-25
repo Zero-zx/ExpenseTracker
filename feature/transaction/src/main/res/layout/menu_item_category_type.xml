@@ -22,7 +22,7 @@
 
     <!-- Text -->
     <TextView
-        android:id="@+id/text1"
+        android:id="@+id/text_view"
         style="@style/TextAppearance.App.Title.Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

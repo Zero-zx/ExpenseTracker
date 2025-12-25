@@ -1,11 +1,11 @@
 package account.usecase
 
-import account.repository.AccountRepository
 import account.model.Account
 import account.model.AccountType
+import account.repository.AccountRepository
 import session.repository.SessionRepository
-import user.repository.UserRepository
 import user.model.User
+import user.repository.UserRepository
 import javax.inject.Inject
 
 /**
@@ -31,7 +31,6 @@ class InitializeAdminUseCase @Inject constructor(
 
         // Then create admin account linked to that user
         val account = Account(
-            userId = 1L, // Link to default user
             username = "Hieu",
             type = AccountType.CASH,
             balance = 10000.0,

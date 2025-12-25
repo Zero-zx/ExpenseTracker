@@ -38,6 +38,18 @@ internal class CategoryRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getCategoriesByTypes(types: List<CategoryType>): Flow<List<Category>> {
+        return categoryDao.getCategoriesByTypes(types).map { list ->
+            list.map { it ->
+                it.toDomain()
+            }
+        }
+    }
+
+    override suspend fun getCategoryByType(type: CategoryType): Category {
+        return categoryDao.getCategoryByType(type).toDomain()
+    }
+
     override suspend fun getCategoryById(id: Long): Category {
         return categoryDao.getCategoryById(id).toDomain()
     }

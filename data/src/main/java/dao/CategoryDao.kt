@@ -21,6 +21,12 @@ internal interface CategoryDao {
     @Query("SELECT * FROM tb_category WHERE type = :type")
     fun getCategoriesByType(type: CategoryType): Flow<List<CategoryEntity>>
 
+    @Query("SELECT * FROM tb_category WHERE type IN (:types)")
+    fun getCategoriesByTypes(types: List<CategoryType>): Flow<List<CategoryEntity>>
+
+    @Query("SELECT * FROM tb_category WHERE type = :type")
+    suspend fun getCategoryByType(type: CategoryType): CategoryEntity
+
     @Query("SELECT * FROM tb_category WHERE id = :id")
     suspend fun getCategoryById(id: Long): CategoryEntity
 

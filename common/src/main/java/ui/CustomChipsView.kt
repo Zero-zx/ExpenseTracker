@@ -7,9 +7,12 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.example.common.R
 import com.example.common.databinding.CustomChipsViewBinding
+import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import helpers.createAvatarDrawable
 
 class CustomChipsView @JvmOverloads constructor(
     context: Context,
@@ -41,6 +44,28 @@ class CustomChipsView @JvmOverloads constructor(
             binding.textView.setTextColor(textColor)
 
             typedArray.recycle()
+        }
+    }
+
+    fun addChip(text: String, hasAvatar : Boolean? = false, onRemove: (() -> Unit)? = null) {
+        val chip = Chip(context)
+        chip.text = text
+        chip.isCloseIconVisible = true
+        chip.chipStrokeWidth = 0f
+        chip.setCloseIconResource(R.drawable.ic_chip_close)
+
+        chip.setOnCloseIconClickListener {
+            onRemove?.invoke()
+        }
+        chip.chipBackgroundColor = ContextCompat.getColorStateList(context, R.color.bg_chip)
+        chip.shapeAppearanceModel = chip.shapeAppearanceModel.toBuilder()
+            .setAllCornerSizes(16f)
+            .build()
+
+        binding.chipGroup.addView(chip)
+
+        if (hasAvatar == true) {
+            binding.imageView.setImageDrawable(createAvatarDrawable(context, text))
         }
     }
 

@@ -1,9 +1,11 @@
 package dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import model.AccountEntity
 
@@ -23,4 +25,10 @@ internal interface AccountDao {
 
     @Query("SELECT * FROM tb_account WHERE id = :accountId")
     fun getAccountById(accountId: Long): AccountEntity?
+
+    @Update
+    suspend fun update(account: AccountEntity)
+
+    @Delete
+    suspend fun delete(account: AccountEntity)
 }

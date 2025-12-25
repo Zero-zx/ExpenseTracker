@@ -2,12 +2,9 @@ package presentation.list
 
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.UIState
-import com.example.transaction.R as TransactionR
-import com.example.common.R as CommonR
 import com.example.transaction.databinding.FragmentTransactionListBinding
 import constants.FragmentResultKeys
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,6 +12,7 @@ import ui.listenForSelectionResult
 import ui.navigateBack
 import java.text.NumberFormat
 import java.util.Locale
+import com.example.common.R as CommonR
 
 @AndroidEntryPoint
 class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(

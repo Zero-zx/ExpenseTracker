@@ -10,11 +10,9 @@ import javax.inject.Inject
  * Use case to get accounts for the current logged-in user
  */
 class GetUserAccountsUseCase @Inject constructor(
-    private val accountRepository: AccountRepository,
-    private val sessionRepository: SessionRepository
+    private val accountRepository: AccountRepository
 ) {
     operator fun invoke(): Flow<List<Account>> {
-        val userId = sessionRepository.getCurrentUserId() ?: 1L
-        return accountRepository.getUserAccounts(userId)
+        return accountRepository.getAccounts()
     }
 }

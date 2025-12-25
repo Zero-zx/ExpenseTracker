@@ -52,6 +52,7 @@
     <string name="text_save_transaction">Save Transaction</string>
     <string name="text_save">Save</string>
     <string name="text_account">Account</string>
+    <string name="text_account_lower">account</string>
     <string name="text_dashboard">Dashboard</string>
     <string name="text_all_accounts">All accounts</string>
     <string name="text_record_history">Record history</string>
@@ -70,4 +71,15 @@
     <string name="text_financial_statement">Financial statement</string>
     <string name="text_add_party">Add party</string>
     <string name="text_no_payee_available">No payee available</string>
+    <string name="text_account_empty">You have no account!</string>
+    <string name="text_add_account">Add Account</string>
+    <string name="text_transfer">Transfer</string>
+    <string name="text_adjustment">Adjustment</string>
+    <string name="text_share_account">Share Account</string>
+    <string name="text_edit">Edit</string>
+    <string name="text_inactive">Inactive</string>
+    <string name="text_saving_account_empty">You have no deposit account!</string>
+    <string name="text_add_saving_account">Add saving account</string>
+    <string name="text_saving_goal_text">If you want to save &lt;b&gt;50.000.000&lt;/b&gt; for a year to buy a motorbike, please create a saving account for &lt;b&gt;Buy a motorbike. MoneyKeeper&lt;/b&gt; will help you manage this saving account.</string>
+    <string name="text_delete_account_warning">Deleting this account will also, <font color="#FF0000">delete all transactions under this account.</font> <b><font color="#FF0000">Deleted data cannot be recovered.</font></b> Are you sure you want to proceed?</string>
 </resources>

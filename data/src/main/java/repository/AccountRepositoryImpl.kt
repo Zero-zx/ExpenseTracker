@@ -7,14 +7,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import mapper.toDomain
 import mapper.toEntity
+import session.UserSessionManager
 import javax.inject.Inject
 
-internal class AccountRepositoryImpl @Inject constructor(private val accountDao: AccountDao) :
-    AccountRepository {
+internal class AccountRepositoryImpl @Inject constructor(
+    private val accountDao: AccountDao,
+    private val sessionManager: UserSessionManager
+) : AccountRepository {
     override suspend fun initializeAdmin(account: Account) {
         val existingAccount = accountDao.getAccountByUsername(account.username)
+        val userId = sessionManager.getCurrentUserId()
+
         if (existingAccount == null) {
-            accountDao.insert(account.toEntity())
+            accountDao.insert(account.toEntity(userId))
         }
     }
 
@@ -24,7 +29,9 @@ internal class AccountRepositoryImpl @Inject constructor(private val accountDao:
         }
     }
 
-    override fun getUserAccounts(userId: Long): Flow<List<Account>> {
+    override fun getAccounts(): Flow<List<Account>> {
+        val userId = sessionManager.getCurrentUserId()
+
         return accountDao.getAccountsByUserId(userId).map { entities ->
             entities.map { it.toDomain() }
         }
@@ -35,6 +42,20 @@ internal class AccountRepositoryImpl @Inject constructor(private val accountDao:
     }
 
     override suspend fun insertAccount(account: Account): Long {
-        return accountDao.insert(account.toEntity())
+        val userId = sessionManager.getCurrentUserId()
+
+        return accountDao.insert(account.toEntity(userId))
+    }
+
+    override suspend fun updateAccount(account: Account) {
+        val userId = sessionManager.getCurrentUserId()
+
+        return accountDao.update(account.toEntity(userId))
+    }
+
+    override suspend fun deleteAccount(account: Account) {
+        val userId = sessionManager.getCurrentUserId()
+
+        return accountDao.delete(account.toEntity(userId))
     }
 }

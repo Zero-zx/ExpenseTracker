@@ -3,6 +3,7 @@ package presentation.add.ui
 import android.Manifest
 import android.app.AlertDialog
 import android.content.pm.PackageManager
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -17,14 +18,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import payee.model.Payee
 import presentation.add.adapter.PayeeAdapter
 import presentation.add.model.PayeeTabType
 import presentation.add.viewModel.PayeeSelectViewModel
-import payee.model.Payee
 import ui.ChipInputView
 import ui.CustomAlertDialog
 import ui.showEditPayeeDialog
-import com.example.transaction.R as TransactionR
 
 @AndroidEntryPoint
 class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
@@ -34,7 +34,6 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
     private lateinit var adapter: PayeeAdapter
     private var tabType: PayeeTabType = PayeeTabType.RECENT
 
-    // Cached parent fragment
     private val parentPayeeFragment: PayeeSelectFragment?
         get() = parentFragment as? PayeeSelectFragment
 
@@ -50,16 +49,7 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
             onItemUpdate = { payee -> handlePayeeEdit(payee) }
         )
 
-        // Setup recyclerView - use the one in layout_add_event
-        binding.layoutAddEvent.post {
-            val recyclerViewInLayout =
-                binding.layoutAddEvent.findViewById<androidx.recyclerview.widget.RecyclerView>(
-                    TransactionR.id.recycler_view_payees
-                )
-            recyclerViewInLayout?.adapter = adapter
-        }
-        // Also set adapter to root recyclerView for backward compatibility
-        binding.recyclerView.adapter = adapter
+        binding.recyclerViewPayees.adapter = adapter
 
         val tabTypeArg = arguments?.getSerializable(ARG_TAB_TYPE) as? PayeeTabType
         tabType = tabTypeArg ?: PayeeTabType.RECENT
@@ -155,7 +145,7 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
         val editText = binding.chipInputView.getEditText()
         // Handle text change with debounce - convert text to chip when user stops typing
         binding.chipInputView.getEditText()
-            .addTextChangedListener(object : android.text.TextWatcher {
+            .addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -184,9 +174,7 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
                 override fun afterTextChanged(s: android.text.Editable?) {}
             })
 
-        binding.buttonSave.let {
-            setConfirmButtonClickListener(it)
-        }
+        setConfirmButtonClickListener(binding.buttonSave)
     }
 
 
@@ -281,21 +269,18 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
 
     fun showEmptyView() {
         binding.layoutEmpty.isVisible = true
-        binding.recyclerView.isVisible = false
-        binding.layoutAddEvent.isVisible = false
+        binding.layoutAddPayees.isVisible = false
         binding.buttonAddTrip.isVisible = tabType == PayeeTabType.RECENT
     }
 
     fun showRecyclerView() {
         binding.layoutEmpty.isVisible = false
-        binding.recyclerView.isVisible = false
-        binding.layoutAddEvent.isVisible = true
+        binding.layoutAddPayees.isVisible = true
     }
 
     fun showAddPayeeView() {
         binding.layoutEmpty.isVisible = false
-        binding.recyclerView.isVisible = false
-        binding.layoutAddEvent.isVisible = true
+        binding.layoutAddPayees.isVisible = true
     }
 
     override fun onDestroyView() {
@@ -312,7 +297,7 @@ class PayeeTabFragment : BaseFragment<FragmentPayeeTabBinding>(
         }
 
         // Sync chips in ChipInputView with parent selection
-        if (binding.layoutAddEvent.isVisible) {
+        if (binding.layoutAddPayees.isVisible) {
             syncChipsWithParentSelection(binding.chipInputView)
         }
     }

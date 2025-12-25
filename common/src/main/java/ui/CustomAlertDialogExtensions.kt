@@ -59,11 +59,12 @@ fun Context.showConfirmation(
  */
 fun Context.showDeleteConfirmation(
     itemName: String = "item",
+    message: CharSequence,
     onDelete: () -> Unit
 ) {
     CustomAlertDialog.Builder(this)
         .setTitle("Delete $itemName")
-        .setMessage("Are you sure you want to delete this $itemName? This action cannot be undone.")
+        .setMessage(message)
         .setIcon(R.drawable.ic_warning)
         .setIconTintRes(R.color.red_expense)
         .setPositiveButton("Delete") { dialog ->
@@ -159,7 +160,14 @@ fun Fragment.showConfirmation(
     onConfirm: (() -> Unit)? = null,
     onCancel: (() -> Unit)? = null
 ) {
-    requireContext().showConfirmation(title, message, positiveText, negativeText, onConfirm, onCancel)
+    requireContext().showConfirmation(
+        title,
+        message,
+        positiveText,
+        negativeText,
+        onConfirm,
+        onCancel
+    )
 }
 
 /**
@@ -167,9 +175,10 @@ fun Fragment.showConfirmation(
  */
 fun Fragment.showDeleteConfirmation(
     itemName: String = "item",
+    message: CharSequence,
     onDelete: () -> Unit
 ) {
-    requireContext().showDeleteConfirmation(itemName, onDelete)
+    requireContext().showDeleteConfirmation(itemName, message, onDelete)
 }
 
 /**
