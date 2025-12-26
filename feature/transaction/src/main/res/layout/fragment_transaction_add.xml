@@ -127,7 +127,7 @@
                         style="@style/TextAppearance.App.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/text_vnd"
+                        android:text="@string/text_usd"
                         android:textColor="@color/red_money"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -257,7 +257,7 @@
                             android:rotation="90"
                             android:scaleType="center"
                             android:src="@drawable/icon_chevron"
-                            android:tint="@color/gray_small_icon" />
+                            android:tint="@color/gray_icon" />
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -293,7 +293,7 @@
                         android:id="@+id/icon_account"
                         android:layout_width="@dimen/big_icon_size"
                         android:layout_height="@dimen/big_icon_size"
-                        android:scaleType="center"
+                        android:scaleType="centerInside"
                         android:src="@drawable/account_wallet"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -303,8 +303,8 @@
                         style="@style/TextAppearance.App.Normal.Black"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:layout_marginHorizontal="@dimen/margin_normal"
                         android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/margin_normal"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/icon_account_chevron"
                         app:layout_constraintStart_toEndOf="@id/icon_account"
@@ -331,30 +331,30 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/padding_normal">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/icon_date"
                         android:layout_width="@dimen/big_icon_size"
                         android:layout_height="@dimen/big_icon_size"
+                        android:layout_marginStart="@dimen/margin_normal"
                         android:padding="4dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_v2_calendar"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/v2_ic_new_date"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:tint="@color/gray_small_icon" />
+                        app:tint="@color/gray_icon" />
 
                     <TextView
                         android:id="@+id/text_view_date"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:layout_marginHorizontal="@dimen/margin_normal"
                         android:background="@drawable/rounded_ripple_image_button"
                         android:clickable="true"
                         android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/margin_normal"
                         android:text="Today - 27/11/2025"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/text_view_time"
@@ -368,6 +368,7 @@
                         android:background="@drawable/rounded_ripple_image_button"
                         android:clickable="true"
                         android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/padding_normal"
                         android:src="@drawable/icon_chevron"
                         android:text="12:00"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -392,25 +393,23 @@
                         android:layout_width="@dimen/big_icon_size"
                         android:layout_height="@dimen/big_icon_size"
                         android:scaleType="center"
-                        android:src="@drawable/icon_note"
+                        android:src="@drawable/v2_ic_new_description"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintWidth_percent="0.12"
-                        app:tint="@color/gray_small_icon" />
+                        app:tint="@color/gray_icon" />
 
                     <EditText
                         android:id="@+id/edit_text_note"
                         style="@style/TextAppearance.App.Normal.Black"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:layout_marginHorizontal="@dimen/margin_normal"
                         android:backgroundTint="@android:color/transparent"
                         android:gravity="center_vertical"
                         android:hint="@string/text_description"
                         android:inputType="text"
-                        android:padding="4dp"
+                        android:paddingHorizontal="@dimen/margin_normal"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -418,6 +417,13 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ui.CustomDateView
+                    android:id="@+id/date_view_borrow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endSrc="@drawable/chip_delete_icon_20dp"
+                    app:src="@drawable/ic_date_tra_no" />
             </LinearLayout>
 
             <LinearLayout
@@ -433,7 +439,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_background"
                     android:orientation="vertical"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:layout_constraintDimensionRatio="8:1"
                     app:layout_constraintTop_toBottomOf="@+id/layout_addition">
 
@@ -441,6 +447,7 @@
                         android:id="@+id/custom_view_event"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        app:src="@drawable/v2_ic_new_event"
                         app:text="Trip, event"
                         app:textColor="@color/gray_hint" />
 
@@ -454,7 +461,7 @@
                         android:id="@+id/custom_view_payee"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:src="@drawable/icon_person"
+                        app:src="@drawable/v2_ic_new_person"
                         app:text="Who pay"
                         app:textColor="@color/gray_hint"
                         app:textSize="14sp" />
@@ -469,7 +476,7 @@
                         android:id="@+id/custom_view_location"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:src="@drawable/icon_salary"
+                        app:src="@drawable/ic_new_location"
                         app:text="Location"
                         app:textColor="@color/gray_hint"
                         app:textSize="14sp" />
@@ -564,6 +571,44 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:layout_marginBottom="54dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/ivMic"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_mic"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivChat"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_chat"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/ivScanInvoice"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:scaleType="centerInside"
+            android:src="@drawable/iv_scan_bill"
+            android:visibility="visible" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

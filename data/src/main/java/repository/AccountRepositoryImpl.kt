@@ -58,4 +58,10 @@ internal class AccountRepositoryImpl @Inject constructor(
 
         return accountDao.delete(account.toEntity(userId))
     }
+
+    override suspend fun updateBalance(accountId: Long, amount: Double) {
+        val userId = sessionManager.getCurrentUserId()
+
+        accountDao.updateBalance(accountId, userId, amount)
+    }
 }

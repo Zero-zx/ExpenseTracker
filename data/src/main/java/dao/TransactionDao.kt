@@ -18,7 +18,7 @@ import model.TransactionWithDetails
 internal interface TransactionDao {
     // Get all transactions for an account
     @Transaction
-    @Query("SELECT * FROM tb_transaction WHERE account_id = :accountId")
+    @Query("SELECT * FROM tb_transaction WHERE accountId = :accountId")
     fun getTransactionByAccountId(accountId: Long): Flow<List<TransactionWithDetails>>
 
     // insert new transaction to database
@@ -60,7 +60,7 @@ internal interface TransactionDao {
 
     // get all transactions in a date range for an account
     @Transaction
-    @Query("SELECT * FROM tb_transaction WHERE user_id = :userId AND create_at BETWEEN :startDate AND :endDate")
+    @Query("SELECT * FROM tb_transaction WHERE userId = :userId AND create_at BETWEEN :startDate AND :endDate ORDER BY create_at ASC")
     fun getTransactionsByDateRange(
         userId: Long,
         startDate: Long,
@@ -75,19 +75,28 @@ internal interface TransactionDao {
     // Get category usage count (number of times each category is used)
     @Query(
         """
-        SELECT category_id, COUNT(*) as usage_count
+        SELECT categoryId, COUNT(*) as usageCount
         FROM tb_transaction
-        WHERE account_id = :accountId
-        GROUP BY category_id
-        ORDER BY usage_count DESC
+        WHERE accountId = :accountId
+        GROUP BY categoryId
+        ORDER BY usageCount DESC
     """
     )
     suspend fun getCategoryUsageCount(accountId: Long): List<CategoryUsageCount>
+
+    @Query(
+        """
+        SELECT COALESCE(SUM(balance), 0)
+        FROM tb_account 
+        WHERE userId = :userId
+    """
+    )
+    fun getTotalBalance(userId: Long): Flow<Double>
 }
 
 data class CategoryUsageCount(
-    @ColumnInfo(name = "category_id")
+    @ColumnInfo(name = "categoryId")
     val categoryId: Long,
-    @ColumnInfo(name = "usage_count")
+    @ColumnInfo(name = "usageCount")
     val usageCount: Int
 )

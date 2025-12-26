@@ -20,7 +20,7 @@ class IncomeExpenseDetailFragment : BaseFragment<FragmentIncomeExpenseDetailBind
 
     private fun setupViewPager() {
         val tabs = listOf(
-            TabConfig("Now") { NowTabFragment() },
+            TabConfig("Current") { NowTabFragment() },
             TabConfig("Monthly") { ChartTabFragment.newInstance(TabType.MONTHLY) },
             TabConfig("Quarter") { ChartTabFragment.newInstance(TabType.QUARTER) },
             TabConfig("Year") { ChartTabFragment.newInstance(TabType.YEAR) },

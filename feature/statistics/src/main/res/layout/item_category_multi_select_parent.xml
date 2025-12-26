@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icon_chevron"
-        android:tint="@color/gray_small_icon"
+        android:tint="@color/gray_icon"
         app:layout_constraintBottom_toBottomOf="@id/image_icon"
         app:layout_constraintStart_toEndOf="@id/checkbox"
         app:layout_constraintTop_toTopOf="@id/image_icon" />

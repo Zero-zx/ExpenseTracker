@@ -12,5 +12,3 @@ class GetTransactionsUseCase @Inject constructor(
         return transactionRepository.getAllTransactionByAccount(accountId)
     }
 }
-
-

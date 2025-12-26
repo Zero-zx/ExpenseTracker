@@ -98,7 +98,7 @@
             app:layout_constraintBottom_toTopOf="@id/button_save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_input_layout_event_name"
+            app:layout_constraintTop_toBottomOf="@id/text_input_layout_borrower_name"
             tools:listitem="@layout/item_event_transaction" />
 
         <com.google.android.material.button.MaterialButton

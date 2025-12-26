@@ -54,6 +54,7 @@ import ui.listenForSelectionResult
 import ui.navigateBack
 import ui.openDatePicker
 import ui.openTimePicker
+import ui.showNotImplementToast
 import ui.showSuccessToast
 import ui.showWarningToast
 import ui.visible
@@ -282,6 +283,30 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 permissionHandler.setup(permissionLauncher)
             }
 
+            ivMic.setOnClickListener {
+                showNotImplementToast()
+            }
+
+            ivChat.setOnClickListener {
+                showNotImplementToast()
+            }
+
+            ivScanInvoice.setOnClickListener {
+                showNotImplementToast()
+            }
+
+            dateViewBorrow.apply {
+                setOnClickListener {
+                    openDatePicker(dateViewBorrow.getTextView(), false) { startOfDayMillis ->
+                        selectedDateStartMillis = startOfDayMillis
+                        showEndDrawable()
+                    }
+                }
+
+                setEndDrawableClickListener {
+                    clearText()
+                }
+            }
         }
     }
 
@@ -457,11 +482,15 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
                 CategoryType.LEND -> {
                     divider.visible()
+                    dateViewBorrow.visible()
+                    dateViewBorrow.setStartDrawable(CommonR.drawable.ic_date_thu_no)
                     buttonSelectBorrower.visible()
                     buttonSelectBorrower.getTextView().text = "Select borrower"
                 }
 
                 CategoryType.BORROWING -> {
+                    dateViewBorrow.visible()
+                    dateViewBorrow.setStartDrawable(CommonR.drawable.ic_date_tra_no)
                     divider.visible()
                     buttonSelectBorrower.visible()
                     buttonSelectBorrower.getTextView().text = "Select lender"
@@ -489,6 +518,10 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             layoutMostUse.gone()
             layoutMore.gone()
             buttonSelectBorrower.gone()
+            dateViewBorrow.apply {
+                gone()
+                hideEndDrawable()
+            }
         }
     }
 
@@ -582,7 +615,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             buttonSelectBorrower.getChipGroup().removeAllViews()
 
             borrower?.let {
-                buttonSelectBorrower.addChip(borrower.name) {
+                buttonSelectBorrower.addChip(borrower.name, true) {
                     viewModel.removeBorrower()
                 }
             }
@@ -701,7 +734,6 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     }
 
     private fun setupCalculator() {
-        // Get calculator view from activity that implements CalculatorProvider
         val calculatorProvider = activity as? CalculatorProvider
         val calculatorView = calculatorProvider?.getCalculatorView()
 

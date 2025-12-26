@@ -3,9 +3,8 @@ package presentation.detail.adapter
 import androidx.recyclerview.widget.DiffUtil
 import base.BaseListAdapter
 import com.example.statistics.databinding.ItemReportBinding
+import helpers.formatAsCurrency
 import presentation.detail.model.ReportItem
-import java.text.NumberFormat
-import java.util.Locale
 
 class ReportItemAdapter(
     onClick: ((ReportItem) -> Unit)? = null
@@ -24,21 +23,14 @@ class ReportItemAdapter(
     },
     onClick = onClick
 ) {
-    private val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault()).apply {
-        maximumFractionDigits = 0
-    }
 
     override fun onBind(item: ReportItem, binding: ItemReportBinding) {
         binding.apply {
             textViewTypeName.text = item.typeName
-            textViewIncome.text = "${formatAmount(item.income)}"
-            textViewOutcome.text = "${formatAmount(item.outcome)}"
-            textViewRest.text = "${formatAmount(item.rest)}"
+            textViewIncome.text = item.income.formatAsCurrency()
+            textViewOutcome.text = item.outcome.formatAsCurrency()
+            textViewRest.text = item.rest.formatAsCurrency()
         }
-    }
-
-    private fun formatAmount(amount: Double): String {
-        return numberFormat.format(amount)
     }
 }
 

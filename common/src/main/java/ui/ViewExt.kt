@@ -140,7 +140,11 @@ fun createSlideDownAnimation(context: Context?): Animation {
  * Calls [onSelected] with epoch millis at the start of the selected day (system zone).
  * Uses MaterialDatePicker under the hood.
  */
-fun Fragment.openDatePicker(target: TextView, onSelected: (Long) -> Unit = {}) {
+fun Fragment.openDatePicker(
+    target: TextView,
+    hasDayLabel: Boolean = true,
+    onSelected: (Long) -> Unit = {}
+) {
     val datePickerBuilder = MaterialDatePicker.Builder.datePicker()
     datePickerBuilder.setTitleText("Select Date")
 
@@ -180,7 +184,11 @@ fun Fragment.openDatePicker(target: TextView, onSelected: (Long) -> Unit = {}) {
                 SimpleDateFormat("EEEE", Locale.getDefault()).format(Date(selection))
             }
 
-            target.text = "$dayLabel - $formattedDate"
+            target.text = if (hasDayLabel) {
+                "$dayLabel - $formattedDate"
+            } else {
+                "$formattedDate"
+            }
 
             // compute epoch millis at start of selected day in system zone and call callback
             try {

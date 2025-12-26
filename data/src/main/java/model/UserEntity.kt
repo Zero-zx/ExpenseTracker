@@ -11,11 +11,11 @@ internal data class UserEntity(
     val id: Long = 1L,
     @ColumnInfo(name = "name")
     val name: String,
-    @ColumnInfo(name = "updated_at")
+    @ColumnInfo(name = "updatedAt")
     val updatedAt: Long,
-    @ColumnInfo(name = "created_at")
+    @ColumnInfo(name = "createdAt")
     val createdAt: Long,
-    @ColumnInfo(name = "firebase_uid")
+    @ColumnInfo(name = "firebaseUid")
     val firebaseUid: String?,
     @ColumnInfo(name = "email")
     val email: String?

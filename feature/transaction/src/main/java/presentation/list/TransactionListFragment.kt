@@ -8,6 +8,7 @@ import base.UIState
 import com.example.transaction.databinding.FragmentTransactionListBinding
 import constants.FragmentResultKeys
 import dagger.hilt.android.AndroidEntryPoint
+import helpers.formatAsCurrency
 import ui.listenForSelectionResult
 import ui.navigateBack
 import java.text.NumberFormat
@@ -32,7 +33,6 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
         }
     )
 
-    private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
 
     override fun initView() {
         setupRecyclerView()
@@ -152,10 +152,8 @@ class TransactionListFragment : BaseFragment<FragmentTransactionListBinding>(
             if (!viewModel.isSelectionMode.value) {
                 headerLayout.visibility = View.VISIBLE
                 textViewQuarter.text = data.selectedPeriod
-                val formattedIncome = currencyFormatter.format(data.totalIncome).replace("$", "₫")
-                val formattedExpense = currencyFormatter.format(data.totalExpense).replace("$", "₫")
-                textViewTotalIncome.text = formattedIncome
-                textViewTotalExpense.text = formattedExpense
+                textViewTotalIncome.text = data.totalIncome.formatAsCurrency("₫")
+                textViewTotalExpense.text = data.totalExpense.formatAsCurrency("₫")
             }
 
             // Update adapter selection state

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.statistics.databinding.ItemTripEventBinding
-import java.text.NumberFormat
+import helpers.formatAsCurrency
 import java.text.SimpleDateFormat
 import java.util.Locale
 import presentation.detail.model.TripEventData
@@ -18,7 +18,6 @@ class TripEventAdapter(
 ) {
 
     companion object {
-        private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
         private val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     }
 
@@ -54,8 +53,8 @@ class TripEventAdapter(
                 textViewDate.text = dateFormatter.format(event.startDate)
                 
                 // Set amount
-                textViewAmount.text = currencyFormatter.format(data.totalAmount)
-                
+                textViewAmount.text = data.totalAmount.formatAsCurrency()
+
                 root.setOnClickListener {
                     onItemClick?.invoke(data)
                 }

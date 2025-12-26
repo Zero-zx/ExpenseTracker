@@ -57,7 +57,6 @@
             android:layout_marginBottom="24dp"
             android:gravity="center"
             android:textAlignment="center"
-            android:textColor="@android:color/darker_gray"
             android:textSize="14sp"
             tools:text="These records will not be listed in any reports (except the Financial Statement report). Are you sure?" />
 

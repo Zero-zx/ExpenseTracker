@@ -14,7 +14,7 @@
     <color name="red_warning">#FB6272</color>
     <color name="orange_warning">#FB923C</color>
     <color name="gray_hint">#9DA4B0</color>
-    <color name="gray_small_icon">#6B727F</color>
+    <color name="gray_icon">#6B727F</color>
     <color name="gray_big_icon">#6B727F</color>
     <color name="gray_text">#6B727F</color>
     <color name="black_text">#010512</color>

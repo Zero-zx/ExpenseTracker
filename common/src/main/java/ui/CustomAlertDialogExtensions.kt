@@ -5,10 +5,6 @@ import androidx.fragment.app.Fragment
 import com.example.common.R
 
 /**
- * Extension functions for easy CustomAlertDialog usage
- */
-
-/**
  * Show a simple alert dialog
  */
 fun Context.showAlert(

@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.statistics.databinding.ItemAccountMultiSelectBinding
 import account.model.Account
-import java.text.NumberFormat
-import java.util.Locale
+import helpers.formatAsCurrency
 
 class AccountMultiSelectAdapter(
     private val onAccountToggle: (Long) -> Unit,
@@ -18,7 +17,6 @@ class AccountMultiSelectAdapter(
     AccountDiffCallback()
 ) {
 
-    private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
     private var fullList: List<Account> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountViewHolder {
@@ -57,7 +55,7 @@ class AccountMultiSelectAdapter(
         fun bind(account: Account, isSelected: Boolean) {
             binding.apply {
                 textViewName.text = account.username
-                textViewAmount.text = currencyFormatter.format(account.balance)
+                textViewAmount.text = account.balance.formatAsCurrency()
                 imageViewIconAccount.setImageResource(account.type.iconRes)
 
                 // Show/hide checkbox based on selection

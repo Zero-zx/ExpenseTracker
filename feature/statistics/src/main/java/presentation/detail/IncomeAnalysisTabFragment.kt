@@ -14,13 +14,13 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import constants.FragmentResultKeys.RESULT_ACCOUNT_IDS
 import constants.FragmentResultKeys.RESULT_CATEGORY_IDS
 import dagger.hilt.android.AndroidEntryPoint
+import helpers.formatAsCurrency
 import presentation.detail.adapter.MonthlyAnalysisAdapter
 import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
 import category.model.CategoryType
 import ui.listenForSelectionResult
-import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -30,7 +30,6 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
     FragmentTabAnalysisBinding::inflate
 ) {
     private val viewModel: IncomeAnalysisViewModel by viewModels()
-    private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
     private val dateFormatter = SimpleDateFormat("MM/yyyy", Locale.getDefault())
 
     private val monthlyAdapter = MonthlyAnalysisAdapter(
@@ -194,8 +193,8 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
     private fun updateUI(data: AnalysisData) {
         binding.apply {
             // Update summary
-            textViewTotalIncome.text = currencyFormatter.format(data.totalAmount)
-            textViewAverageIncome.text = currencyFormatter.format(data.averagePerMonth)
+            textViewTotalIncome.text = data.totalAmount.formatAsCurrency()
+            textViewAverageIncome.text = data.averagePerMonth.formatAsCurrency()
 
             // Update chart
             updateChart(data.monthlyData)

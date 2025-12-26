@@ -31,7 +31,7 @@ fun createAvatarDrawable(context: Context, text: String): BitmapDrawable {
     paint.color = Color.WHITE
     paint.textSize = (size * 0.5f)
     paint.textAlign = Paint.Align.CENTER
-    val firstLetter = text.firstOrNull()?.uppercase() ?: "?"
+    val firstLetter = text.firstOrNull().toString()
     val textBounds = android.graphics.Rect()
     paint.getTextBounds(firstLetter, 0, firstLetter.length, textBounds)
     val textHeight = textBounds.height()
@@ -44,3 +44,30 @@ fun createAvatarDrawable(context: Context, text: String): BitmapDrawable {
 fun Int.dpToPx(context: Context): Int {
     return (this * context.resources.displayMetrics.density).toInt()
 }
+
+/**
+ * Formats a Double value as currency, showing only integer part if there's no decimal component.
+ * @param currencySymbol The currency symbol to append (default: "$")
+ * @return Formatted currency string with symbol
+ */
+fun Double.formatAsCurrency(currencySymbol: String = "$"): String {
+    val formattedAmount = if (this % 1.0 == 0.0) {
+        this.toInt().toString()
+    } else {
+        this.toString()
+    }
+    return "$formattedAmount $currencySymbol"
+}
+
+/**
+ * Formats a Double value without currency symbol, showing only integer part if there's no decimal component.
+ * @return Formatted number string
+ */
+fun Double.formatAsAmount(): String {
+    return if (this % 1.0 == 0.0) {
+        this.toInt().toString()
+    } else {
+        this.toString()
+    }
+}
+

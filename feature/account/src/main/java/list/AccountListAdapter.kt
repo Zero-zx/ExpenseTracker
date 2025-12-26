@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.login.databinding.ItemAccountBinding
-import java.text.NumberFormat
+import helpers.formatAsCurrency
 
 class AccountListAdapter(
     private val onItemClick: (Account) -> Unit,
@@ -45,18 +45,11 @@ class AccountListAdapter(
         private val binding: ItemAccountBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val currencyFormatter = NumberFormat.getCurrencyInstance()
-
-//        init {
-//            binding.
-//            }
-//        }
-
         fun bind(account: Account) {
             binding.apply {
                 textViewUsername.text = account.username
                 iconAccount.setImageResource(account.type.iconRes)
-                textViewBalance.text = currencyFormatter.format(account.balance)
+                textViewBalance.text = account.balance.formatAsCurrency()
 
                 root.setOnClickListener {
                     onItemClick(account)

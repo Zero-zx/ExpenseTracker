@@ -18,4 +18,6 @@ interface AccountRepository {
     suspend fun insertAccount(account: Account): Long
     suspend fun updateAccount(account: Account)
     suspend fun deleteAccount(account: Account)
+
+    suspend fun updateBalance(accountId: Long, amount: Double)
 }

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemTransactionCategoryBinding
 import category.model.CategoryType
+import helpers.formatAsCurrency
 import transaction.model.Transaction
 import java.text.NumberFormat
 import java.util.Locale
@@ -19,7 +20,6 @@ class TransactionCategoryAdapter(
     private var selectedTransactionIds: Set<Long> = emptySet()
 ) : ListAdapter<Transaction, TransactionCategoryAdapter.CategoryViewHolder>(TransactionDiffCallback()) {
 
-    private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
 
     fun setSelectionMode(isSelectionMode: Boolean) {
         this.isSelectionMode = isSelectionMode
@@ -73,8 +73,7 @@ class TransactionCategoryAdapter(
                     CategoryType.BORROWING -> "←"
                     else -> ""
                 }
-                val formattedAmount = currencyFormatter.format(transaction.amount).replace("$", "₫")
-                textAmount.text = buildString { append(sign); append(formattedAmount) }
+                textAmount.text = "$sign${transaction.amount.formatAsCurrency("₫")}"
 
                 val amountColor = when (transaction.category.type) {
                     CategoryType.INCOME -> binding.root.context.getColor(com.example.common.R.color.green_income)

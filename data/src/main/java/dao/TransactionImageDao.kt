@@ -9,7 +9,7 @@ import model.TransactionImageEntity
 
 @Dao
 interface TransactionImageDao {
-    @Query("SELECT * FROM transaction_images WHERE transaction_id = :transactionId")
+    @Query("SELECT * FROM transaction_images WHERE transactionId = :transactionId")
     fun getImagesForTransaction(transactionId: Long): Flow<List<TransactionImageEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,6 +21,6 @@ interface TransactionImageDao {
     @Query("DELETE FROM transaction_images WHERE id = :imageId")
     suspend fun deleteImage(imageId: Long)
 
-    @Query("DELETE FROM transaction_images WHERE transaction_id = :transactionId")
+    @Query("DELETE FROM transaction_images WHERE transactionId = :transactionId")
     suspend fun deleteImagesForTransaction(transactionId: Long)
 }

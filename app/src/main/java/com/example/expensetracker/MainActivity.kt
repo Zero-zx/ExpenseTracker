@@ -54,9 +54,13 @@ class MainActivity : AppCompatActivity(), CalculatorProvider {
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             if (item.itemId != binding.bottomNavigationView.selectedItemId) {
                 val options = NavOptions.Builder()
-                    .setPopUpTo(navController.graph.startDestinationId, false, true)
+                    .setPopUpTo(navController.graph.startDestinationId,
+                        inclusive = false,
+                        saveState = true
+                    )
                     .setLaunchSingleTop(true)
                     .setRestoreState(true)
+                    .setEnterAnim(android.R.anim.fade_in)
                     .build()
                 navController.navigate(item.itemId, null, options)
             }
@@ -85,10 +89,8 @@ class MainActivity : AppCompatActivity(), CalculatorProvider {
                     val currentTime = System.currentTimeMillis()
 
                     if (currentTime - backPressedTime < backPressInterval) {
-                        // Second press within interval - exit app
                         finish()
                     } else {
-                        // First press - show toast and update timestamp
                         backPressedTime = currentTime
                         Toast.makeText(
                             this@MainActivity,
@@ -97,7 +99,6 @@ class MainActivity : AppCompatActivity(), CalculatorProvider {
                         ).show()
                     }
                 } else {
-                    // Not on root - navigate back normally
                     if (!navController.popBackStack()) {
                         finish()
                     }
@@ -110,10 +111,6 @@ class MainActivity : AppCompatActivity(), CalculatorProvider {
         return navigator.navigateUp() || super.onSupportNavigateUp()
     }
 
-    /**
-     * Implementation of CalculatorProvider interface
-     * Provides calculator view to feature modules
-     */
     override fun getCalculatorView(): CalculatorView {
         return binding.calculatorView
     }
