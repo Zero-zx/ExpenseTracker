@@ -17,7 +17,7 @@ internal interface AccountDao {
     @Query("SELECT * FROM tb_account ORDER BY createAt DESC")
     fun getAllAccounts(): Flow<List<AccountEntity>>
 
-    @Query("SELECT * FROM tb_account WHERE user_id = :userId ORDER BY createAt DESC")
+    @Query("SELECT * FROM tb_account WHERE userId = :userId ORDER BY createAt DESC")
     fun getAccountsByUserId(userId: Long): Flow<List<AccountEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -28,6 +28,17 @@ internal interface AccountDao {
 
     @Update
     suspend fun update(account: AccountEntity)
+
+    @Query(
+        """
+        UPDATE tb_account 
+        SET balance = balance + :amount
+        WHERE id = :accountId 
+        AND userId = :userId
+        """
+    )
+    suspend fun updateBalance(accountId: Long, userId: Long, amount: Double) : Int
+
 
     @Delete
     suspend fun delete(account: AccountEntity)

@@ -12,44 +12,44 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = AccountEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("account_id"),
+            childColumns = arrayOf("accountId"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = CategoryEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("category_id"),
+            childColumns = arrayOf("categoryId"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = EventEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("event_id"),
+            childColumns = arrayOf("eventId"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.SET_NULL
         ),
         ForeignKey(
             entity = PayeeEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("borrower_id"),
+            childColumns = arrayOf("borrowerId"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.SET_NULL
         ),
         ForeignKey(
             entity = PayeeEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("lender_id"),
+            childColumns = arrayOf("lenderId"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.SET_NULL
         )],
     indices = [
-        Index(value = ["account_id"]),
-        Index(value = ["category_id"]),
-        Index(value = ["event_id"]),
-        Index(value = ["borrower_id"]),
-        Index(value = ["lender_id"])
+        Index(value = ["accountId"]),
+        Index(value = ["categoryId"]),
+        Index(value = ["eventId"]),
+        Index(value = ["borrowerId"]),
+        Index(value = ["lenderId"])
     ]
 )
 
@@ -57,7 +57,7 @@ import androidx.room.PrimaryKey
 internal data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = "user_id")
+    @ColumnInfo(name = "userId")
     val userId: Long,
     @ColumnInfo(name = "amount")
     val amount: Double,
@@ -65,16 +65,16 @@ internal data class TransactionEntity(
     val createAt: Long,
     @ColumnInfo(name = "description")
     val description: String,
-    @ColumnInfo(name = "category_id")
+    @ColumnInfo(name = "categoryId")
     val categoryId: Long,
-    @ColumnInfo(name = "account_id")
+    @ColumnInfo(name = "accountId")
     val accountId: Long,
-    @ColumnInfo(name = "event_id")
+    @ColumnInfo(name = "eventId")
     val eventId: Long?,
-    @ColumnInfo(name = "location_id")
+    @ColumnInfo(name = "locationId")
     val locationId: Long?,
-    @ColumnInfo(name = "borrower_id")
+    @ColumnInfo(name = "borrowerId")
     val borrowerId: Long?,
-    @ColumnInfo(name = "lender_id")
+    @ColumnInfo(name = "lenderId")
     val lenderId: Long?
 )

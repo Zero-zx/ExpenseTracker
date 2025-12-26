@@ -47,7 +47,7 @@ class CustomChipsView @JvmOverloads constructor(
         }
     }
 
-    fun addChip(text: String, hasAvatar : Boolean? = false, onRemove: (() -> Unit)? = null) {
+    fun addChip(text: String, hasAvatar: Boolean? = false, onRemove: (() -> Unit)? = null) {
         val chip = Chip(context)
         chip.text = text
         chip.isCloseIconVisible = true

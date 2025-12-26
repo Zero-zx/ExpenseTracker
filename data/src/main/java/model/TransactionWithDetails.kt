@@ -8,22 +8,22 @@ import androidx.room.Relation
 internal data class TransactionWithDetails(
     @Embedded val transactionEntity: TransactionEntity,
     @Relation(
-        parentColumn = "category_id",
+        parentColumn = "categoryId",
         entityColumn = "id"
     )
     val categoryEntity: CategoryEntity,
     @Relation(
-        parentColumn = "account_id",
+        parentColumn = "accountId",
         entityColumn = "id"
     )
     val accountEntity: AccountEntity,
     @Relation(
-        parentColumn = "event_id",
+        parentColumn = "eventId",
         entityColumn = "id"
     )
     val eventEntity: EventEntity?,
     @Relation(
-        parentColumn = "location_id",
+        parentColumn = "locationId",
         entityColumn = "id"
     )
     val locationEntity: LocationEntity?,
@@ -38,12 +38,12 @@ internal data class TransactionWithDetails(
     )
     val payees: List<PayeeEntity>,
     @Relation(
-        parentColumn = "borrower_id",
+        parentColumn = "borrowerId",
         entityColumn = "id",
     )
     val borrowerEntity: PayeeEntity?,
     @Relation(
-        parentColumn = "lender_id",
+        parentColumn = "lenderId",
         entityColumn = "id",
     )
     val lenderEntity: PayeeEntity?

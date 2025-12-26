@@ -204,7 +204,7 @@
                     android:paddingBottom="16dp">
 
                     <TextView
-                        style="@style/TextAppearance.App.Small.Black"
+                        style="@style/TextAppearance.App.Normal.Black"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

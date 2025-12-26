@@ -12,31 +12,31 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = TransactionEntity::class,
             parentColumns = ["id"],
-            childColumns = ["transaction_id"],
+            childColumns = ["transactionId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("transaction_id")]
+    indices = [Index("transactionId")]
 )
 data class TransactionImageEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
-    @ColumnInfo(name = "transaction_id")
+    @ColumnInfo(name = "transactionId")
     val transactionId: Long,
 
-    @ColumnInfo(name = "file_path")
+    @ColumnInfo(name = "filePath")
     val filePath: String,
 
-    @ColumnInfo(name = "file_name")
+    @ColumnInfo(name = "fileName")
     val fileName: String,
 
-    @ColumnInfo(name = "mime_type")
+    @ColumnInfo(name = "mimeType")
     val mimeType: String,
 
-    @ColumnInfo(name = "file_size")
+    @ColumnInfo(name = "fileSize")
     val fileSize: Long,
 
-    @ColumnInfo(name = "created_at")
+    @ColumnInfo(name = "createdAt")
     val createdAt: Long
 )

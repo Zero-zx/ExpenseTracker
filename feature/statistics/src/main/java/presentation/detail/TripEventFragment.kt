@@ -10,7 +10,6 @@ import com.example.statistics.databinding.FragmentTripEventBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.TripEventAdapter
-import presentation.detail.model.TripEventData
 
 @AndroidEntryPoint
 class TripEventFragment : BaseFragment<FragmentTripEventBinding>(
@@ -39,7 +38,7 @@ class TripEventFragment : BaseFragment<FragmentTripEventBinding>(
             tabs = tabs
         )
         tabMediator = mediator
-        
+
         // Set default selected tab to "In progress"
         binding.viewPager.setCurrentItem(0, false)
     }
@@ -58,20 +57,21 @@ class TripEventFragment : BaseFragment<FragmentTripEventBinding>(
 }
 
 @AndroidEntryPoint
-class TripEventTabFragment : BaseFragment<com.example.statistics.databinding.FragmentTripEventTabBinding>(
-    com.example.statistics.databinding.FragmentTripEventTabBinding::inflate
-) {
+class TripEventTabFragment :
+    BaseFragment<com.example.statistics.databinding.FragmentTripEventTabBinding>(
+        com.example.statistics.databinding.FragmentTripEventTabBinding::inflate
+    ) {
     private val viewModel: TripEventViewModel by viewModels()
     private val adapter = TripEventAdapter { tripEventData ->
         // TODO: Navigate to event detail
     }
-    
+
     private var isActive: Boolean = true
 
     override fun initView() {
         val isActiveArg = arguments?.getBoolean(ARG_IS_ACTIVE, true) ?: true
         isActive = isActiveArg
-        
+
         setupRecyclerView()
         viewModel.loadTripEvents(isActive)
     }
@@ -96,6 +96,7 @@ class TripEventTabFragment : BaseFragment<com.example.statistics.databinding.Fra
                         adapter.submitList(state.data)
                     }
                 }
+
                 is UIState.Error -> {
                     showEmptyView()
                 }

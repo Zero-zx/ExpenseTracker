@@ -6,20 +6,14 @@ import base.BaseFragment
 import base.UIState
 import com.example.statistics.databinding.FragmentFinancialStatementBinding
 import dagger.hilt.android.AndroidEntryPoint
+import helpers.formatAsCurrency
 import presentation.detail.adapter.FinancialStatementAdapter
-import java.text.NumberFormat
-import java.util.Locale
 
 @AndroidEntryPoint
 class FinancialStatementFragment : BaseFragment<FragmentFinancialStatementBinding>(
     FragmentFinancialStatementBinding::inflate
 ) {
     private val viewModel: FinancialStatementViewModel by viewModels()
-    
-    // Lazy initialization để chỉ tạo khi cần
-    private val currencyFormatter by lazy { 
-        NumberFormat.getCurrencyInstance(Locale.getDefault()) 
-    }
     
     private val assetsAdapter = FinancialStatementAdapter { accountId ->
         // TODO: Handle asset item click - navigate to account detail
@@ -79,7 +73,7 @@ class FinancialStatementFragment : BaseFragment<FragmentFinancialStatementBindin
 
     private fun updateNetWorth(netWorth: Double) {
         binding.textViewNetWorth.apply {
-            text = currencyFormatter.format(netWorth)
+            text = netWorth.formatAsCurrency()
             setTextColor(
                 requireContext().getColor(
                     if (netWorth < 0) com.example.common.R.color.red_expense
@@ -91,7 +85,7 @@ class FinancialStatementFragment : BaseFragment<FragmentFinancialStatementBindin
 
     private fun updateTotalAmount(totalAmount: Double, assetCount: Int) {
         binding.textViewTotalAmount.apply {
-            text = currencyFormatter.format(totalAmount)
+            text = totalAmount.formatAsCurrency()
             setTextColor(
                 requireContext().getColor(
                     if (totalAmount < 0) com.example.common.R.color.red_expense
@@ -104,7 +98,7 @@ class FinancialStatementFragment : BaseFragment<FragmentFinancialStatementBindin
 
     private fun updateLiabilities(totalLiabilities: Double, liabilityCount: Int) {
         binding.textViewLiabilitiesAmount.apply {
-            text = currencyFormatter.format(totalLiabilities)
+            text = totalLiabilities.formatAsCurrency()
             setTextColor(requireContext().getColor(com.example.common.R.color.red_expense))
         }
         binding.textViewLiabilitiesLabel.text = "Liabilities ($liabilityCount)"

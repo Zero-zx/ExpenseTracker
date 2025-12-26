@@ -18,7 +18,7 @@ internal interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: UserEntity): Long
 
-    @Query("SELECT * FROM tb_user WHERE firebase_uid = :firebaseUid")
+    @Query("SELECT * FROM tb_user WHERE firebaseUid = :firebaseUid")
     suspend fun getUserByFirebaseUid(firebaseUid: String): UserEntity?
 }
 

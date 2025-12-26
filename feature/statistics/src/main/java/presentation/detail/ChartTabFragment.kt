@@ -23,6 +23,7 @@ import presentation.detail.adapter.ChartHeaderAdapter
 import presentation.detail.adapter.ReportItemAdapter
 import presentation.detail.model.ChartDataWithReportItems
 import presentation.detail.model.TabType
+import ui.showNotImplementToast
 
 @AndroidEntryPoint
 class ChartTabFragment : BaseFragment<FragmentTabWithChartBinding>(
@@ -56,6 +57,14 @@ class ChartTabFragment : BaseFragment<FragmentTabWithChartBinding>(
         val tabTypeArg = arguments?.getSerializable(ARG_TAB_TYPE) as? TabType
         tabType = tabTypeArg ?: TabType.MONTHLY
         viewModel.loadData(tabType)
+    }
+
+    override fun initListener() {
+        binding.apply {
+            layoutHeader.setOnClickListener {
+                showNotImplementToast()
+            }
+        }
     }
 
     override fun observeData() {

@@ -12,6 +12,7 @@ import base.UIState
 import com.example.common.R
 import com.example.login.databinding.FragmentTabAccountBinding
 import dagger.hilt.android.AndroidEntryPoint
+import helpers.formatAsCurrency
 import model.AccountTabType
 import ui.gone
 import ui.showDeleteConfirmation
@@ -75,12 +76,15 @@ class AccountTabFragment : BaseFragment<FragmentTabAccountBinding>(
                 is UIState.Error -> showError(state.message)
             }
         }
+
+        collectState(viewModel.totalAmount) { totalAmount ->
+            binding.textViewAmount.text = totalAmount.formatAsCurrency()
+        }
     }
 
     private fun setUpTabView() {
         when (accountTabType) {
-            AccountTabType.ACCOUNT -> {
-            }
+            AccountTabType.ACCOUNT -> {}
 
             AccountTabType.SAVINGS -> {
                 binding.apply {

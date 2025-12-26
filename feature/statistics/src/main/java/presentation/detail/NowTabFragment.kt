@@ -7,7 +7,7 @@ import base.UIState
 import com.example.statistics.databinding.FragmentTabNowBinding
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.ReportItemAdapter
-import presentation.detail.model.ReportItem
+import ui.showNotImplementToast
 
 @AndroidEntryPoint
 class NowTabFragment : BaseFragment<FragmentTabNowBinding>(
@@ -23,6 +23,14 @@ class NowTabFragment : BaseFragment<FragmentTabNowBinding>(
         }
     }
 
+    override fun initListener() {
+        binding.apply {
+            layoutHeader.setOnClickListener {
+                showNotImplementToast()
+            }
+        }
+    }
+
     override fun observeData() {
         collectFlow(viewModel.uiState) { state ->
             when (state) {
@@ -31,6 +39,7 @@ class NowTabFragment : BaseFragment<FragmentTabNowBinding>(
                 is UIState.Success -> {
                     adapter.submitList(state.data)
                 }
+
                 is UIState.Error -> {}
             }
         }

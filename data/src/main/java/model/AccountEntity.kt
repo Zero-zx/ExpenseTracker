@@ -14,17 +14,17 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = UserEntity::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("user_id"),
+            childColumns = arrayOf("userId"),
             onUpdate = ForeignKey.CASCADE,
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index(value = ["user_id"])]
+    indices = [Index(value = ["userId"])]
 )
 internal data class AccountEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    @ColumnInfo(name = "user_id")
+    @ColumnInfo(name = "userId")
     val userId: Long,
     @ColumnInfo(name = "username")
     val username: String,

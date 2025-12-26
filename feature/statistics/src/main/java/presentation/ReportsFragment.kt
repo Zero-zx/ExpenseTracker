@@ -11,15 +11,13 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.NumberFormat
-import java.util.Locale
+import helpers.formatAsCurrency
 
 @AndroidEntryPoint
 class ReportsFragment : BaseFragment<FragmentReportsBinding>(
     FragmentReportsBinding::inflate
 ) {
     private val viewModel: ReportsViewModel by viewModels()
-    private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
 
     override fun initView() {
         // Set rounded corners for the combined chart: 8dp radius
@@ -71,13 +69,13 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
     private fun updateFinancialSummary(chartData: IncomeExpenseChartData) {
         binding.apply {
             // Update total income
-            textViewTotalIncome.text = currencyFormatter.format(chartData.totalIncome)
+            textViewTotalIncome.text = chartData.totalIncome.formatAsCurrency()
 
             // Update total expense
-            textViewTotalOutcome.text = currencyFormatter.format(chartData.totalExpense)
+            textViewTotalOutcome.text = chartData.totalExpense.formatAsCurrency()
 
             // Update balance (income - expense)
-            textViewBalance.text = currencyFormatter.format(chartData.balance)
+            textViewBalance.text = chartData.balance.formatAsCurrency()
         }
     }
 

@@ -17,6 +17,8 @@ interface TransactionRepository {
 
     suspend fun getCategoryUsageCount(accountId: Long): Map<Long, Int>
     suspend fun insertTransactionWithPayees(transaction: Transaction): Long
+
+    fun getTotalBalance(): Flow<Double>
 }
 
 

@@ -7,15 +7,13 @@ import session.repository.SessionRepository
 import javax.inject.Inject
 
 class AddAccountUseCase @Inject constructor(
-    private val repository: AccountRepository,
-    private val sessionRepository: SessionRepository
+    private val repository: AccountRepository
 ) {
     suspend operator fun invoke(
         username: String,
         type: AccountType,
         balance: Double
     ): Long {
-        val userId = sessionRepository.getCurrentUserId() ?: 1L
 
         val account = Account(
             username = username,
@@ -24,7 +22,6 @@ class AddAccountUseCase @Inject constructor(
             createAt = System.currentTimeMillis()
         )
         require(account.username.isNotBlank()) { "Username cannot be blank" }
-        require(account.balance >= 0) { "Balance must be greater than or equal to 0" }
 
         return repository.insertAccount(account)
     }

@@ -48,6 +48,7 @@
     <string name="Done">Done</string>
     <string name="text_0">0</string>
     <string name="text_vnd">đ</string>
+    <string name="text_usd">$</string>
     <string name="text_empty_event">You have no trips or events</string>
     <string name="text_save_transaction">Save Transaction</string>
     <string name="text_save">Save</string>
@@ -81,5 +82,9 @@
     <string name="text_saving_account_empty">You have no deposit account!</string>
     <string name="text_add_saving_account">Add saving account</string>
     <string name="text_saving_goal_text">If you want to save &lt;b&gt;50.000.000&lt;/b&gt; for a year to buy a motorbike, please create a saving account for &lt;b&gt;Buy a motorbike. MoneyKeeper&lt;/b&gt; will help you manage this saving account.</string>
-    <string name="text_delete_account_warning">Deleting this account will also, <font color="#FF0000">delete all transactions under this account.</font> <b><font color="#FF0000">Deleted data cannot be recovered.</font></b> Are you sure you want to proceed?</string>
+    <string name="text_delete_account_warning">
+        Deleting this account will also,
+        &lt;font color=red&gt;delete all transactions under this account. &lt;b&gt;
+        Deleted data cannot be recovered.&lt;/b&gt;&lt;/font&gt;
+        Are you sure you want to proceed?</string>
 </resources>

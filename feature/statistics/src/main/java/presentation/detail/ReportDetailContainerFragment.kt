@@ -91,7 +91,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
         }
 
         // Update text if needed
-        val autoCompleteTextView = binding.autoCompleteReportType as MaterialAutoCompleteTextView
+        val autoCompleteTextView = binding.autoCompleteReportType
         if (!preserveCurrentText || autoCompleteTextView.text.isNullOrEmpty()) {
             autoCompleteTextView.setText(currentReportType.getDisplayName(), false)
         }

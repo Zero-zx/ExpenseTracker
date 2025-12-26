@@ -82,4 +82,9 @@ internal class TransactionRepositoryImpl @Inject constructor(
             transaction.toEntity(userId),
             transaction.payees.map { it.toEntity(transaction.account.id) })
     }
+
+    override fun getTotalBalance(): Flow<Double> {
+        val userId = sessionManager.getCurrentUserId()
+        return transactionDao.getTotalBalance(userId)
+    }
 }

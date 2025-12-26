@@ -6,20 +6,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.statistics.databinding.ItemMonthlyAnalysisBinding
-import java.text.NumberFormat
-import java.util.Locale
+import helpers.formatAsCurrency
 import presentation.detail.model.MonthlyAnalysisItem
 
 class MonthlyAnalysisAdapter(
     private val onItemClick: ((MonthlyAnalysisItem) -> Unit)? = null,
-    private val isExpense: Boolean = true // true for expense (red), false for income (green)
+    private val isExpense: Boolean = true
 ) : ListAdapter<MonthlyAnalysisItem, MonthlyAnalysisAdapter.MonthlyAnalysisViewHolder>(
     MonthlyAnalysisDiffCallback()
 ) {
 
-    companion object {
-        private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthlyAnalysisViewHolder {
         val binding = ItemMonthlyAnalysisBinding.inflate(
@@ -43,8 +39,8 @@ class MonthlyAnalysisAdapter(
         fun bind(item: MonthlyAnalysisItem) {
             binding.apply {
                 textViewMonth.text = item.monthLabel
-                textViewAmount.text = currencyFormatter.format(item.amount)
-                
+                textViewAmount.text = item.amount.formatAsCurrency()
+
                 // Set color based on expense/income
                 textViewAmount.setTextColor(
                     root.context.getColor(

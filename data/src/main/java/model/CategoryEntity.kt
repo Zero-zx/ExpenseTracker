@@ -14,12 +14,12 @@ import category.model.CategoryType
         ForeignKey(
             entity = CategoryEntity::class,
             parentColumns = ["id"],
-            childColumns = ["parent_id"],
+            childColumns = ["parentId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
-        Index(value = ["parent_id"])
+        Index(value = ["parentId"])
     ]
 )
 
@@ -27,7 +27,7 @@ import category.model.CategoryType
 internal data class CategoryEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
-    @ColumnInfo(name = "parent_id")
+    @ColumnInfo(name = "parentId")
     val parentId: Long? = null,
     @ColumnInfo(name = "title")
     val title: String,

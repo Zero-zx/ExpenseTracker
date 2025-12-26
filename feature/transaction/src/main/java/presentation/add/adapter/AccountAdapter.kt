@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemAccountTransactionBinding
+import helpers.formatAsCurrency
 
 class AccountAdapter(
     private val onItemClick: (Account) -> Unit
@@ -52,7 +53,7 @@ class AccountAdapter(
                 itemView.isSelected = selected
                 imageViewChecked.isVisible = selected
                 textViewName.text = account.username
-                textViewAmount.text = account.balance.toString()
+                textViewAmount.text = account.balance.formatAsCurrency()
                 imageViewIconAccount.setImageResource(account.type.iconRes)
             }
         }

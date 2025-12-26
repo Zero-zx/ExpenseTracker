@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemTransactionBinding
+import helpers.formatAsCurrency
 import transaction.model.Transaction
 import java.text.NumberFormat
 import java.util.Locale
@@ -18,7 +19,6 @@ class TransactionListAdapter(
     private val onItemSelect: ((Transaction) -> Unit)? = null
 ) : ListAdapter<TransactionListItem, RecyclerView.ViewHolder>(TransactionListItemDiffCallback()) {
 
-    private val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
     private val viewPool = RecyclerView.RecycledViewPool()
     private var isSelectionMode: Boolean = false
     private var selectedTransactionIds: Set<Long> = emptySet()
@@ -73,8 +73,7 @@ class TransactionListAdapter(
             binding.apply {
                 textViewDate.text = header.date
                 textViewDayLabel.text = header.dayName
-                val formattedAmount = currencyFormatter.format(header.totalAmount)
-                textViewDayAmount.text = formattedAmount.replace("$", "₫")
+                textViewDayAmount.text = header.totalAmount.formatAsCurrency("₫")
 
                 textViewDayAmount.setTextColor(
                     if (header.totalAmount < 0) {

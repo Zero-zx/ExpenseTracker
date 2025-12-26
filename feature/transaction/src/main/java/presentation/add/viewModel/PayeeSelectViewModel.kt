@@ -110,7 +110,6 @@ class PayeeSelectViewModel @Inject constructor(
                     setSuccess(payees)
                 }
             }
-
         }
     }
 

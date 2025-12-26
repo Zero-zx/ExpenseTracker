@@ -3,6 +3,7 @@ package presentation.detail
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
+import category.model.CategoryType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -10,8 +11,6 @@ import kotlinx.coroutines.flow.onEach
 import presentation.detail.model.ChartDataWithReportItems
 import presentation.detail.model.ReportItem
 import presentation.detail.model.TabType
-import session.usecase.GetCurrentAccountIdUseCase
-import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
 import java.util.Calendar
@@ -19,8 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChartTabViewModel @Inject constructor(
-    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
-    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
+    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase
 ) : BaseViewModel<ChartDataWithReportItems>() {
 
     private var tabType: TabType = TabType.MONTHLY
@@ -28,11 +26,6 @@ class ChartTabViewModel @Inject constructor(
     fun loadData(tabType: TabType) {
         this.tabType = tabType
         setLoading()
-
-        val accountId = getCurrentAccountIdUseCase() ?: run {
-            setError("No account selected. Please select an account.")
-            return
-        }
 
         val (startDate, endDate) = getDateRangeForTabType(tabType)
 
@@ -92,7 +85,7 @@ class ChartTabViewModel @Inject constructor(
             else -> emptyMap()
         }
 
-        val labels = groupedData.keys.sorted().toList()
+        val labels = groupedData.keys.toList()
         val chartDataList = labels.map { key ->
             val (income, expense) = groupedData[key] ?: Pair(0.0, 0.0)
             ChartDataWithReportItems.IncomeExpenseData(income, expense)
@@ -124,19 +117,16 @@ class ChartTabViewModel @Inject constructor(
                 timeInMillis = transaction.createAt
             }
             val monthName = monthNames[cal.get(Calendar.MONTH)]
-            val key = monthName
 
-            val (currentIncome, currentExpense) = map[key] ?: Pair(0.0, 0.0)
+            val (currentIncome, currentExpense) = map[monthName] ?: Pair(0.0, 0.0)
             when (transaction.category.type) {
-                CategoryType.INCOME, CategoryType.LEND -> {
-                    map[key] = Pair(currentIncome + transaction.amount, currentExpense)
+                CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> {
+                    map[monthName] = Pair(currentIncome + transaction.amount, currentExpense)
                 }
 
-                CategoryType.EXPENSE, CategoryType.BORROWING -> {
-                    map[key] = Pair(currentIncome, currentExpense + transaction.amount)
+                CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> {
+                    map[monthName] = Pair(currentIncome, currentExpense + transaction.amount)
                 }
-
-                else -> {}
             }
         }
 

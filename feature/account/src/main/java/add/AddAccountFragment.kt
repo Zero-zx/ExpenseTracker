@@ -1,12 +1,15 @@
 package add
 
-import account.model.AccountType
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import base.BaseFragment
 import base.UIState
 import com.example.login.databinding.FragmentAddAccountBinding
 import dagger.hilt.android.AndroidEntryPoint
+import ui.CalculatorManager
+import ui.CalculatorProvider
+import ui.navigateBack
+import ui.showNotImplementToast
 
 @AndroidEntryPoint
 class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(
@@ -14,6 +17,11 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(
 ) {
 
     private val viewModel: AddAccountViewModel by activityViewModels()
+    private lateinit var calculatorManager: CalculatorManager
+
+    override fun initView() {
+        setupCalculator()
+    }
 
     override fun initListener() {
         binding.buttonSubmit.setOnClickListener {
@@ -29,35 +37,18 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(
             bottomSheet.show(parentFragmentManager, "AccountTypeBottomSheet")
         }
 
+        binding.textViewCurrency.setOnClickListener {
+            showNotImplementToast()
+        }
+
         binding.buttonBack.setOnClickListener {
-            viewModel.navigateBack()
+            navigateBack()
         }
     }
 
     fun createAccount() {
         val username = binding.editeTextAccountName.text?.toString() ?: ""
-        val accountTypeText = binding.textViewAccountType.getText()
         val balanceText = binding.editTextAmount.text?.toString() ?: "0"
-
-        if (username.isBlank()) {
-            Toast.makeText(
-                context,
-                "Please enter a username",
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
-
-        val accountType = try {
-            AccountType.valueOf(accountTypeText.uppercase())
-        } catch (e: IllegalArgumentException) {
-            Toast.makeText(
-                context,
-                "Please select a valid account type",
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
 
         val balance = balanceText.toDoubleOrNull() ?: 0.0
         if (balance < 0) {
@@ -71,7 +62,6 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(
 
         viewModel.addAccount(
             username = username,
-            type = accountType,
             balance = balance
         )
     }
@@ -114,8 +104,26 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(
 
         collectState(viewModel.selectedAccountType)
         { accountType ->
-            binding.textViewAccountType.setText(
-                accountType?.rawValue ?: AccountType.CASH.rawValue
+            binding.textViewAccountType.apply {
+                setText(
+                    accountType.rawValue
+                )
+
+                setImage(accountType.iconRes)
+
+            }
+        }
+    }
+
+    private fun setupCalculator() {
+        val calculatorProvider = activity as? CalculatorProvider
+        val calculatorView = calculatorProvider?.getCalculatorView()
+
+        if (calculatorView != null) {
+            calculatorManager = CalculatorManager(
+                calculatorView = calculatorView,
+                amountEditText = binding.editTextAmount,
+                context = requireContext()
             )
         }
     }
@@ -123,6 +131,11 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(
     override fun onResume() {
         super.onResume()
         viewModel.resetState()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        calculatorManager.hide()
     }
 }
 
