@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/statistics_nav_graph"
+    app:startDestination="@id/ReportsFragment"
+    app:enterAnim="@anim/slide_in_right"
+    app:exitAnim="@anim/slide_out_left"
+    app:popEnterAnim="@android:anim/slide_in_left"
+    app:popExitAnim="@android:anim/slide_out_right">
+
+    <fragment
+        android:id="@+id/ReportsFragment"
+        android:name="presentation.ReportsFragment"
+        android:label="Statistics">
+        <action
+            android:id="@+id/action_statisticsFragment_to_incomeExpenseDetailFragment"
+            app:destination="@id/incomeExpenseDetailFragment" />
+        <action
+            android:id="@+id/action_statisticsFragment_to_reportDetailContainerFragment"
+            app:destination="@id/reportDetailContainerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/incomeExpenseDetailFragment"
+        android:name="presentation.detail.IncomeExpenseDetailFragment"
+        android:label="Income vs Expense Detail" />
+
+    <fragment
+        android:id="@+id/reportDetailContainerFragment"
+        android:name="presentation.detail.ReportDetailContainerFragment"
+        android:label="Report Detail">
+        <argument
+            android:name="report_type"
+            app:argType="string"
+            android:defaultValue="FINANCIAL_STATEMENT" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountMultiSelectFragment"
+        android:name="presentation.detail.AccountMultiSelectFragment"
+        android:label="AccountMultiSelectFragment" />
+    <fragment
+        android:id="@+id/categoryMultiSelectFragment"
+        android:name="presentation.detail.CategoryMultiSelectFragment"
+        android:label="CategoryMultiSelectFragment" />
+
+</navigation>
+

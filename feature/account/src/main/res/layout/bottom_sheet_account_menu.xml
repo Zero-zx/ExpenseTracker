@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_12dp_background"
+    android:orientation="vertical">
+
+    <ui.BottomSheetItem
+        android:id="@+id/item_transfer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:src="@drawable/ic_popup_transfer"
+        app:text="@string/text_transfer" />
+
+    <ui.BottomSheetItem
+        android:id="@+id/item_adjustment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:src="@drawable/ic_popup_adjusment_v2"
+        app:text="@string/text_adjustment" />
+
+    <ui.BottomSheetItem
+        android:id="@+id/item_share_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:src="@drawable/ic_share_black_24dp"
+        app:text="@string/text_share_account" />
+
+    <ui.BottomSheetItem
+        android:id="@+id/item_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:src="@drawable/ic_popup_edit"
+        app:text="@string/text_edit" />
+
+    <ui.BottomSheetItem
+        android:id="@+id/item_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:src="@drawable/ic_popup_delete"
+        app:text="@string/text_delete" />
+
+    <ui.BottomSheetItem
+        android:id="@+id/item_inactive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:src="@drawable/ic_popup_inactive"
+        app:text="@string/text_inactive" />
+
+</LinearLayout>
+

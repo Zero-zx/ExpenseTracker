@@ -16,10 +16,18 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
 rootProject.name = "ExpenseTracker"
 include(":app")
-include(":features:login")
-include(":features:budget")
+include(":feature:account")
+include(":feature:budget")
+include(":data")
+include(":feature:transaction")
+include(":feature:statistics")
+include(":common")
+include(":domain")
+include(":feature:home")
+include(":feature:other")

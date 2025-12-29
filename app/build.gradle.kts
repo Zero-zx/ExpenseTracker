@@ -1,12 +1,21 @@
+import build.BuildConfig
+import deps.androidx
+import deps.hilt
+import deps.room
+import release.ReleaseConfig
+import test.TestBuildConfig
+
 plugins {
-    id(BuildPlugins.ANDROID_APPLICATION)
-    id(BuildPlugins.KOTLIN_ANDROID)
+    id(build.BuildPlugins.ANDROID_APPLICATION)
+    id(build.BuildPlugins.KOTLIN_ANDROID)
+    id(build.BuildPlugins.HILT)
+    id(build.BuildPlugins.KSP)
 }
 
 android {
     namespace = BuildConfig.APP_ID
     compileSdk {
-        version = release(BuildConfig.COMPILE_SDK_VERSION)
+        version = release(36)
     }
 
     defaultConfig {
@@ -28,6 +37,10 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -38,11 +51,20 @@ android {
 }
 
 dependencies {
-    implementation(Dependencies.ANDROIDX_CORE_KTX)
-    implementation(Dependencies.ANDROIDX_APPCOMPAT)
-    implementation(Dependencies.MATERIAL)
-    implementation(Dependencies.ANDROIDX_ACTIVITY)
-    implementation(Dependencies.ANDROIDX_CONSTRAINT_LAYOUT)
+//    implementation(libs.glide)
+    implementation(project(":common"))
+    implementation(project(":domain"))
+    implementation(project(":data"))
+    implementation(project(":feature:statistics"))
+    implementation(project(":feature:transaction"))
+    implementation(project(":feature:account"))
+    implementation(project(":feature:home"))
+    implementation(project(":feature:other"))
+    implementation(libs.androidx.navigation.fragment)
+    implementation("androidx.navigation:navigation-ui-ktx:2.9.6")
+    androidx()
+    hilt()
+    room()
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

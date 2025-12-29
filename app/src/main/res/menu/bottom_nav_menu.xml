@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home_nav_graph"
+        android:icon="@drawable/ic_home"
+        android:title="@string/text_dashboard" />
+    <item
+        android:id="@+id/account_nav_graph"
+        android:icon="@drawable/ic_wallet"
+        android:title="@string/text_account" />
+    <item
+        android:id="@+id/transaction_nav_graph"
+        android:icon="@drawable/ic_v2_add_transaction"
+        android:title="@string/text_transaction" />
+    <item
+        android:id="@+id/statistics_nav_graph"
+        android:icon="@drawable/ic_exclude_report"
+        android:title="@string/text_reports" />
+    <item
+        android:id="@+id/other_nav_graph"
+        android:icon="@drawable/ic_more"
+        android:title="@string/text_other" />
+</menu>

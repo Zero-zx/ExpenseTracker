@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_expense_category">Expense category</string>
+    <string name="text_all_expense_categories">All expense categories</string>
+    <string name="text_all_income_categories">All income categories</string>
+    <string name="text_all_accounts">All accounts</string>
+    <string name="text_unit_thousand">(Unit: Thousand)</string>
+</resources>

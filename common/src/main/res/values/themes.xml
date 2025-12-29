@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.App" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/blue_bg</item>
+        <item name="android:windowBackground">@color/app_background</item>
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.Material3.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.Material3.DisplayMedium
+        </item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.Material3.DisplaySmall</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Material3.HeadlineLarge
+        </item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Material3.HeadlineMedium
+        </item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Material3.HeadlineSmall
+        </item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Material3.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Material3.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Material3.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Material3.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Material3.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.Material3.LabelSmall</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Material3.SmallComponent
+        </item>
+        <item name="shapeAppearanceMediumComponent">
+            @style/ShapeAppearance.Material3.MediumComponent
+        </item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Material3.LargeComponent
+        </item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="materialSwitchStyle">@style/Widget.App.Switch</item>
+    </style>
+
+    <style name="Widget.App.ExposedDropdownMenu" parent="Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.ExposedDropdownMenu</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="hintTextColor">?attr/colorOnSurface</item>
+        <item name="endIconTint">?attr/colorOnSurface</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="ThemeOverlay.App.ExposedDropdownMenu" parent="">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnSurface">@color/blue_spinner</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.App.Title</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.App.Normal</item>
+        <item name="autoCompleteTextViewStyle">
+            @style/Widget.Material3.AutoCompleteTextView.OutlinedBox
+        </item>
+    </style>
+
+
+    <!-- Normal text: 14sp -->
+    <style name="TextAppearance.App.Normal" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.App.Normal.Black" parent="TextAppearance.App.Normal">
+        <item name="android:textColor">@color/black_text</item>
+    </style>
+
+    <style name="TextAppearance.App.Normal.White" parent="TextAppearance.App.Normal">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextAppearance.App.Normal.Gray" parent="TextAppearance.App.Normal">
+        <item name="android:textColor">@color/gray_text</item>
+    </style>
+
+    <style name="TextAppearance.App.Normal.Blue" parent="TextAppearance.App.Normal">
+        <item name="android:textColor">@color/blue_bg</item>
+    </style>
+
+    <!-- Medium text: 16sp -->
+    <style name="TextAppearance.App.Medium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.App.Medium.Black" parent="TextAppearance.App.Medium">
+        <item name="android:textColor">@color/black_text</item>
+    </style>
+
+    <!-- Title text: 20sp -->
+    <style name="TextAppearance.App.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextAppearance.App.Title.Black" parent="TextAppearance.App.Title">
+        <item name="android:textColor">@color/black_text</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.App.Title.White" parent="TextAppearance.App.Title">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Small text: 12sp -->
+    <style name="TextAppearance.App.Small" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextAppearance.App.Small.Black" parent="TextAppearance.App.Small">
+        <item name="android:textColor">@color/black_text</item>
+    </style>
+
+    <style name="TextAppearance.App.Small.White" parent="TextAppearance.App.Small">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Hint text: 14sp + gray color -->
+    <style name="TextAppearance.App.Hint" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/gray_hint</item>
+    </style>
+
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="colorOnSurfaceVariant">@color/gray_icon</item>
+        <item name="colorOnSecondaryContainer">@color/blue_bg</item>
+        <item name="colorSecondaryContainer">@color/white</item>
+    </style>
+
+    <style name="Widget.App.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Switch" parent="">
+        <item name="colorPrimary">@color/blue_bg</item>
+        <item name="colorSurfaceVariant">@color/blue_category_bg</item>
+    </style>
+
+    <style name="ButtonWidgetStyle">
+        <item name="android:textSize">@dimen/font_size_normal_small</item>
+        <!--        <item name="android:textColor">@color/background_main_gold</item>-->
+        <item name="android:gravity">left|center_horizontal|clip_horizontal</item>
+        <!--        <item name="android:background">@drawable/selector_button_number</item>-->
+        <item name="android:layout_marginRight">0.4dp</item>
+        <item name="android:layout_marginBottom">@dimen/margin_s</item>
+        <item name="android:layout_marginEnd">@dimen/margin_s</item>
+        <item name="backgroundTint">@color/white</item>
+    </style>
+
+    <style name="KeyboardNumber">
+        <item name="android:theme">@style/Platform.MaterialComponents.Light</item>
+        <item name="android:textSize">@dimen/keyboard_number_text_size</item>
+        <item name="android:textColor">@color/color_text_main</item>
+        <item name="android:background">@drawable/selector_button_number_light_gray</item>
+        <item name="android:height">@dimen/keyboard_number_min_height</item>
+    </style>
+
+    <style name="KeyboardNumberBold">
+        <item name="android:theme">@style/Platform.MaterialComponents.Light</item>
+        <item name="android:textSize">@dimen/keyboard_number_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/color_text_main</item>
+        <item name="android:background">@drawable/selector_button_number_light_gray</item>
+        <item name="android:height">@dimen/keyboard_number_min_height</item>
+    </style>
+
+</resources>

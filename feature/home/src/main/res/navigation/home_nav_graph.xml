@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/homeFragment"
+    app:enterAnim="@anim/slide_in_right"
+    app:exitAnim="@anim/slide_out_left"
+    app:popEnterAnim="@android:anim/slide_in_left"
+    app:popExitAnim="@android:anim/slide_out_right">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.home.home.HomeFragment"
+        android:label="HomeFragment" />
+</navigation>

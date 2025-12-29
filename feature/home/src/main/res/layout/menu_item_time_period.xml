@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="14dp"
+    android:minHeight="56dp">
+
+    <!-- Text -->
+    <TextView
+        android:id="@+id/text_time_period"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="This Month"
+        android:textColor="@color/black_text"
+        android:textSize="16sp" />
+
+    <!-- Check icon (only visible when selected) -->
+    <ImageView
+        android:id="@+id/icon_check"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="12dp"
+        android:contentDescription="Selected"
+        android:src="@drawable/ic_check_primary_20dp"
+        android:visibility="gone"
+        app:tint="@color/blue_bg" />
+
+</LinearLayout>
+

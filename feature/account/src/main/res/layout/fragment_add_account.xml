@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/blue_white_background"
+    android:clipToPadding="false"
+    android:paddingTop="@dimen/padding_edges">
+
+    <LinearLayout
+        android:id="@+id/dropdown_menu_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/button_back"
+            android:layout_width="@dimen/top_icon_size"
+            android:layout_height="@dimen/top_icon_size"
+            android:background="@drawable/ripple_image_button"
+            android:src="@drawable/v2_ic_back_gray"
+            app:tint="@color/gray_top_icon" />
+
+        <TextView
+            style="@style/TextAppearance.App.Title.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Create new account"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/button_submit"
+            android:layout_width="@dimen/top_icon_size"
+            android:layout_height="@dimen/top_icon_size"
+            android:background="@drawable/ripple_image_button"
+            android:src="@drawable/icon_submit"
+            app:layout_constraintBottom_toBottomOf="@id/dropdown_menu_transaction"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_medium"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_background"
+        android:elevation="4dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/padding_small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dropdown_menu_transaction">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amount"
+            android:textAlignment="center" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_text_amount"
+                style="@style/TextAppearance.App.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_underline_selector"
+                android:maxLength="13"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="@color/my_app_on_primary"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/TextAppearance.App.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_tiny"
+                android:text="@string/text_usd"
+                android:textColor="@color/my_app_on_primary"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_medium"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_background"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        app:layout_constraintDimensionRatio="8:1"
+        app:layout_constraintTop_toBottomOf="@+id/layout_amount">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded_ripple_image_button"
+            android:paddingHorizontal="@dimen/padding_normal">
+
+            <ImageView
+                android:id="@+id/icon_name_account"
+                android:layout_width="@dimen/big_icon_size"
+                android:layout_height="@dimen/big_icon_size"
+                android:scaleType="centerInside"
+                android:src="@drawable/account_master"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/edite_text_account_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@android:color/transparent"
+                android:hint="Account name"
+                android:paddingStart="16dp"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/icon_name_account" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.1"
+            android:background="@android:color/black" />
+
+        <ui.CustomTextView
+            android:id="@+id/text_view_account_type"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:src="@drawable/account_wallet"
+            app:text="Cash"
+            app:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.1"
+            android:background="@android:color/black" />
+
+        <ui.CustomTextView
+            android:id="@+id/text_view_currency"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:src="@drawable/icon_person"
+            app:text="USD"
+            app:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.1"
+            android:background="@android:color/black" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded_ripple_image_button"
+            android:paddingHorizontal="@dimen/padding_normal">
+
+            <ImageView
+                android:id="@+id/icon_note_account"
+                android:layout_width="@dimen/big_icon_size"
+                android:layout_height="@dimen/big_icon_size"
+                android:scaleType="centerInside"
+                android:src="@drawable/icon_note"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.1"
+                app:tint="@color/gray_icon" />
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@android:color/transparent"
+                android:hint="Desciption"
+                android:paddingStart="16dp"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/icon_note_account" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_medium"
+        android:background="@drawable/rounded_background"
+        android:text="Save"
+        app:backgroundTint="@android:color/holo_blue_dark"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+

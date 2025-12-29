@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home_nav_graph">
+
+    <include app:graph="@navigation/transaction_nav_graph" />
+    <include app:graph="@navigation/statistics_nav_graph" />
+    <include app:graph="@navigation/home_nav_graph" />
+    <include app:graph="@navigation/account_nav_graph" />
+    <include app:graph="@navigation/other_nav_graph" />
+
+    <fragment
+        android:id="@+id/transactionListFragment"
+        android:name="presentation.list.TransactionListFragment" />
+
+
+    <fragment
+        android:id="@+id/accountListFragment"
+        android:name="list.AccountListFragment">
+        <action
+            android:id="@+id/action_accountListFragment_to_addAccountFragment"
+            app:destination="@id/addAccountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addAccountFragment"
+        android:name="add.AddAccountFragment" />
+
+    <fragment
+        android:id="@+id/eventListFragment"
+        android:name="com.example.home.event.list.EventListFragment"
+        android:label="Events">
+        <action
+            android:id="@+id/action_eventListFragment_to_addEventFragment"
+            app:destination="@id/addEventFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addEventFragment"
+        android:name="com.example.home.event.add.AddEventFragment"
+        android:label="Add Event">
+        <action
+            android:id="@+id/action_addEventFragment_to_addParticipantsFragment"
+            app:destination="@id/addParticipantsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addParticipantsFragment"
+        android:name="com.example.home.event.add.AddParticipantsFragment"
+        android:label="Add Participants" />
+    <fragment
+        android:id="@+id/transactionAddFragment"
+        android:name="presentation.add.ui.TransactionAddFragment"
+        android:label="TransactionAddFragment" />
+
+    <fragment
+        android:id="@+id/dataSettingFragment"
+        android:name="presentation.datasetting.DataSettingFragment"
+        android:label="Data Setting" />
+    <fragment
+        android:id="@+id/eventSelectFragment"
+        android:name="presentation.add.ui.EventSelectFragment"
+        android:label="EventSelectFragment" />
+    <fragment
+        android:id="@+id/accountSelectFragment"
+        android:name="presentation.add.ui.AccountSelectFragment"
+        android:label="AccountSelectFragment" />
+    <fragment
+        android:id="@+id/categorySelectFragment"
+        android:name="presentation.add.ui.CategorySelectFragment"
+        android:label="CategorySelectFragment" />
+    <fragment
+        android:id="@+id/locationSelectFragment"
+        android:name="presentation.add.ui.LocationSelectFragment"
+        android:label="LocationSelectFragment" />
+    <fragment
+        android:id="@+id/payeeSelectFragment"
+        android:name="presentation.add.ui.PayeeSelectFragment"
+        android:label="PayeeSelectFragment" />
+    <fragment
+        android:id="@+id/incomeExpenseDetailFragment"
+        android:name="presentation.detail.IncomeExpenseDetailFragment"
+        android:label="IncomeExpenseDetailFragment" />
+    <fragment
+        android:id="@+id/reportDetailContainerFragment"
+        android:name="presentation.detail.ReportDetailContainerFragment"
+        android:label="ReportDetailContainerFragment" />
+<!--    <fragment-->
+<!--        android:id="@+id/editTransactionFragment"-->
+<!--        android:name="presentation.edit.ui.EditTransactionFragment"-->
+<!--        android:label="EditTransactionFragment" />-->
+
+
+</navigation>

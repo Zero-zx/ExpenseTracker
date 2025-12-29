@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="padding_edges">40dp</dimen>
+    <dimen name="margin_normal">8dp</dimen>
+    <dimen name="margin_s">8dp</dimen>
+    <dimen name="margin_large_small">8dp</dimen>
+    <dimen name="margin_medium_normal">16dp</dimen>
+    <dimen name="v2_size_icon_large_normal">24dp</dimen>
+    <dimen name="font_size_small">14sp</dimen>
+    <dimen name="widget_icon_account">24dp</dimen>
+    <dimen name="font_size_normal_small">16sp</dimen>
+    <dimen name="margin_small">4dp</dimen>
+    <dimen name="margin_tiny">2dp</dimen>
+    <dimen name="text_size_s">14sp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="margin_setting_medium">14dp</dimen>
+    <dimen name="width_stroke_number_keyboard">0.3dp</dimen>
+    <dimen name="padding_normal">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="font_size_medium">19sp</dimen>
+    <dimen name="keyboard_number_text_size">20sp</dimen>
+    <dimen name="keyboard_number_min_height">45dp</dimen>
+    <dimen name="top_icon_size">52dp</dimen>
+    <dimen name="normal_icon_size">24dp</dimen>
+    <dimen name="big_icon_size">34dp</dimen>
+
+</resources>

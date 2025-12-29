@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/rounded_background"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/image_view_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/background_current_finance_header"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_view_name"
+        style="@style/TextAppearance.App.Normal.Black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Cash"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/image_view_icon"
+        app:layout_constraintEnd_toStartOf="@id/text_view_amount"
+        app:layout_constraintStart_toEndOf="@id/image_view_icon"
+        app:layout_constraintTop_toTopOf="@id/image_view_icon" />
+
+    <TextView
+        android:id="@+id/text_view_amount"
+        style="@style/TextAppearance.App.Normal.Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="-1,064,644 ₫"
+        android:textColor="@color/red_expense"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/image_view_icon"
+        app:layout_constraintEnd_toStartOf="@id/image_view_arrow"
+        app:layout_constraintTop_toTopOf="@id/image_view_icon" />
+
+    <ImageView
+        android:id="@+id/image_view_arrow"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/icon_chevron"
+        app:layout_constraintBottom_toBottomOf="@id/image_view_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image_view_icon"
+        app:tint="@color/gray_big_icon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
