@@ -10,37 +10,23 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import category.model.Category
 import category.model.CategoryType
-import category.usecase.GetCategoriesByTypeUseCase
+import category.usecase.GetReportCategoriesByTypeUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class CategoryMultiSelectViewModel @Inject constructor(
-    private val getCategoriesByTypeUseCase: GetCategoriesByTypeUseCase
+    private val getReportCategoriesByTypeUseCase: GetReportCategoriesByTypeUseCase
 ) : BaseViewModel<List<Category>>() {
-
-    private val _allCategoryIds = MutableLiveData<List<Long>>()
-    val allCategoryIds: LiveData<List<Long>> = _allCategoryIds
 
     fun loadCategories(categoryType: CategoryType) {
         viewModelScope.launch {
-            getCategoriesByTypeUseCase(categoryType)
+            getReportCategoriesByTypeUseCase(categoryType)
                 .onStart { setLoading() }
                 .catch { exception ->
                     setError(exception.message ?: "Unknown error occurred")
                 }
                 .collect { categories ->
                     setSuccess(categories)
-                    _allCategoryIds.value = categories.map { it.id }
-                }
-        }
-    }
-
-    fun getAllCategoryIdsWithChildren(categoryType: CategoryType) {
-        viewModelScope.launch {
-            getCategoriesByTypeUseCase(categoryType)
-                .collect { categories ->
-                    // Update all category IDs including both parent and child
-                    _allCategoryIds.value = categories.map { it.id }
                 }
         }
     }

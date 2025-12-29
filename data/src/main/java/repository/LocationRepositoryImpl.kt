@@ -34,6 +34,14 @@ internal class LocationRepositoryImpl @Inject constructor(
         return locationDao.insertLocation(location.toEntity())
     }
 
+    override suspend fun updateLocation(location: Location) {
+        locationDao.updateLocation(location.toEntity())
+    }
+
+    override suspend fun deleteLocation(location: Location) {
+        locationDao.deleteLocation(location.toEntity())
+    }
+
     override suspend fun getLocationByName(name: String, accountId: Long): Location? {
         return locationDao.getLocationByName(name, accountId)?.toDomain()
     }

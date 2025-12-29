@@ -12,7 +12,7 @@ interface Navigator {
     fun navigateToSelectEvent(selectedEventName: String = "")
     fun navigateToSelectPayee(selectedPayeeNames: Array<String> = emptyArray())
     fun navigateToSelectBorrower(selectedBorrowerName: String = "", selectedType: String = "PAYEE")
-    fun navigateToSelectLocation(selectedLocationId: Long = -1L)
+    fun navigateToSelectLocation(selectedLocationName: String = "")
     fun navigateToEventList()
     fun navigateToAddEvent()
     fun navigateToAddParticipants()

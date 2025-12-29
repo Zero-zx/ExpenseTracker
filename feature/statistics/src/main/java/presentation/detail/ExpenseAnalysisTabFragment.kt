@@ -99,13 +99,20 @@ class ExpenseAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
             constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_IDS
         ) { bundle ->
             val categoryIds = bundle.getLongArray(RESULT_CATEGORY_IDS)
-            categoryIds?.let {
-                viewModel.loadExpenseAnalysis(
-                    categoryIds = it.toList(),
-                    accountIds = viewModel.getSelectedAccountIds()
-                )
-                updateCategoryDisplay()
+            // Convert to list: 
+            // - null means no filter (show all) - default state
+            // - empty array means deselect all (show nothing)
+            // - non-empty array means filter by selected categories
+            val categoryIdsList = when {
+                categoryIds == null -> null // No filter, show all
+                categoryIds.isEmpty() -> emptyList() // Deselect all, show nothing
+                else -> categoryIds.toList() // Filter by selected
             }
+            viewModel.loadExpenseAnalysis(
+                categoryIds = categoryIdsList,
+                accountIds = viewModel.getSelectedAccountIds()
+            )
+            updateCategoryDisplay()
         }
 
         listenForSelectionResult(

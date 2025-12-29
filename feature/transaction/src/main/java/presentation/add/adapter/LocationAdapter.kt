@@ -35,11 +35,12 @@ class LocationAdapter(
             binding.apply {
                 itemView.isSelected = isSelected
                 textViewName.text = location.name
-
+                textViewIconEvent.text = location.name.firstOrNull()?.toString() ?: ""
                 itemView.setOnClickListener {
                     val position = bindingAdapterPosition
                     if (position != RecyclerView.NO_POSITION) {
                         onItemClick(getItem(position))
+                        // Selection state will be updated via setSelectedLocation
                     }
                 }
 

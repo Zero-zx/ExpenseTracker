@@ -82,6 +82,13 @@ fun Fragment.setLocationIdSelectionResult(selectedId: Long) {
     )
 }
 
+fun Fragment.setLocationNameSelectionResult(selectedName: String) {
+    setSelectionResult(
+        FragmentResultKeys.REQUEST_SELECT_LOCATION_NAME,
+        bundleOf(FragmentResultKeys.RESULT_LOCATION_NAME to selectedName)
+    )
+}
+
 fun Fragment.setCategoryIdsSelectionResult(selectedIds: LongArray) {
     setSelectionResult(
         FragmentResultKeys.REQUEST_SELECT_CATEGORY_IDS,

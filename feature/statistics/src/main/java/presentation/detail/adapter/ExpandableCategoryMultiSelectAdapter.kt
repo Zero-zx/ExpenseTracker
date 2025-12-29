@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import category.model.Category
 import com.example.statistics.databinding.ItemCategoryMultiSelectChildBinding
 import com.example.statistics.databinding.ItemCategoryMultiSelectParentBinding
 import helpers.standardize
-import category.model.Category
-import ui.setChevronRotation
+import ui.toggleChevronRotation
 
 class ExpandableCategoryMultiSelectAdapter(
     private val onCategoryToggle: (Long) -> Unit,
@@ -57,8 +57,8 @@ class ExpandableCategoryMultiSelectAdapter(
                     onToggle = { toggleExpansion(item.category.id) },
                     hasChildren = item.hasChildren,
                     isSelected = selectedIds.contains(item.category.id),
-                    onCategoryToggle = { 
-                        onParentCategoryToggle?.invoke(item.category.id, childCategoryIds) 
+                    onCategoryToggle = {
+                        onParentCategoryToggle?.invoke(item.category.id, childCategoryIds)
                             ?: onCategoryToggle(item.category.id)
                     }
                 )
@@ -93,8 +93,12 @@ class ExpandableCategoryMultiSelectAdapter(
 
     fun submitCategories(categories: List<Category>) {
         allCategories = categories
+        // Only auto-expand if not already expanded
+        val newParentIds = allCategories.filter { it.parentId == null }.map { it.id }
+        expandedParentIds.addAll(newParentIds.filter { !expandedParentIds.contains(it) })
         val categoryItems = buildCategoryItems(categories)
-        super.submitList(categoryItems)
+        // Always submit a new list to ensure rebinding
+        super.submitList(categoryItems.toList())
     }
 
     fun filter(query: String) {
@@ -103,11 +107,41 @@ class ExpandableCategoryMultiSelectAdapter(
         super.submitList(categoryItems)
     }
 
+    /**
+     * Update checkbox state for specific category IDs without rebinding entire item
+     * This is the most efficient way - only updates checkbox, not the whole ViewHolder
+     */
+    fun updateCheckboxState(recyclerView: RecyclerView, categoryIds: List<Long>) {
+        if (categoryIds.isEmpty()) return
+        
+        categoryIds.forEach { categoryId ->
+            // Find position of this category
+            for (i in 0 until itemCount) {
+                val item = getItem(i)
+                if (item.category.id == categoryId) {
+                    // Find ViewHolder for this position
+                    val viewHolder = recyclerView.findViewHolderForAdapterPosition(i)
+                    if (viewHolder is CategoryViewHolder) {
+                        val isSelected = selectedCategoryIds().contains(categoryId)
+                        viewHolder.updateCheckboxState(isSelected)
+                    }
+                    break
+                }
+            }
+        }
+    }
+    
+    /**
+     * Force refresh all items (use only when necessary, e.g., select all)
+     */
+    fun refresh() {
+        notifyItemRangeChanged(0, itemCount)
+    }
+
     private fun buildCategoryItems(categories: List<Category>): List<CategoryItem> {
         val filteredCategories = if (searchQuery.isBlank()) {
             categories
         } else {
-            // Filter categories that match search query
             categories.filter { category ->
                 category.title.lowercase().contains(searchQuery)
             }
@@ -118,12 +152,12 @@ class ExpandableCategoryMultiSelectAdapter(
 
         parentCategories.forEach { parent ->
             val childCategories = filteredCategories.filter { it.parentId == parent.id }
-            
-            // Only show parent if it matches or has matching children
-            val shouldShowParent = searchQuery.isBlank() || 
+
+            // Only show parent if it matches or has matching children when searching
+            val shouldShowParent = searchQuery.isBlank() ||
                     parent.title.lowercase().contains(searchQuery) ||
                     childCategories.isNotEmpty()
-            
+
             if (shouldShowParent) {
                 result.add(
                     CategoryItem(
@@ -133,11 +167,8 @@ class ExpandableCategoryMultiSelectAdapter(
                     )
                 )
 
-                // Auto-expand parent if searching
-                val shouldExpand = expandedParentIds.contains(parent.id) || 
-                        (searchQuery.isNotBlank() && childCategories.isNotEmpty())
-                
-                if (shouldExpand) {
+                // Only expand if user has explicitly expanded this parent
+                if (expandedParentIds.contains(parent.id)) {
                     childCategories.forEach { child ->
                         result.add(CategoryItem(child, isParent = false, hasChildren = false))
                     }
@@ -145,6 +176,12 @@ class ExpandableCategoryMultiSelectAdapter(
             }
         }
 
+        val filterChildCategories =
+            filteredCategories.filter { it.parentId != null && parentCategories.none { parent -> parent.id == it.parentId } }
+
+        filterChildCategories.forEach {
+            result.add(CategoryItem(it, isParent = false, hasChildren = false))
+        }
         return result
     }
 
@@ -158,11 +195,14 @@ class ExpandableCategoryMultiSelectAdapter(
         }
     ) {
         abstract fun bind(category: Category, isSelected: Boolean, onCategoryToggle: () -> Unit)
+        abstract fun updateCheckboxState(isSelected: Boolean)
     }
 
     inner class ParentCategoryViewHolder(
         private val binding: ItemCategoryMultiSelectParentBinding
     ) : CategoryViewHolder(binding) {
+        
+        private var onCategoryToggleCallback: (() -> Unit)? = null
 
         fun bind(
             category: Category,
@@ -172,6 +212,7 @@ class ExpandableCategoryMultiSelectAdapter(
             isSelected: Boolean,
             onCategoryToggle: () -> Unit
         ) {
+            onCategoryToggleCallback = onCategoryToggle
             binding.apply {
                 // Set icon
                 imageIcon.setImageResource(category.iconRes)
@@ -179,13 +220,17 @@ class ExpandableCategoryMultiSelectAdapter(
                 // Set category name
                 textViewCategoryName.text = category.title.standardize()
 
+                // Set initial chevron rotation based on expanded state
+                iconChevron.rotation = if (isExpanded) 90f else 0f
+
+                iconChevron.setOnClickListener {
+                    onToggle()
+                    iconChevron.toggleChevronRotation()
+                }
+
                 // Show/hide chevron based on whether category has children
                 if (hasChildren) {
                     iconChevron.visibility = android.view.View.VISIBLE
-                    iconChevron.setChevronRotation(isExpanded)
-                    iconChevron.setOnClickListener {
-                        onToggle()
-                    }
                 } else {
                     iconChevron.visibility = android.view.View.INVISIBLE
                 }
@@ -193,15 +238,13 @@ class ExpandableCategoryMultiSelectAdapter(
                 // Hide nested RecyclerView (we're using flat list instead)
                 recyclerViewChildCategories.visibility = ViewGroup.GONE
 
-                // Setup checkbox
+                // Setup checkbox - detach listener before setting checked programmatically
                 checkbox.setOnCheckedChangeListener(null)
                 checkbox.isChecked = isSelected
+                
+                // Attach listener to toggle selection
                 checkbox.setOnCheckedChangeListener { _, _ ->
                     onCategoryToggle()
-                }
-
-                root.setOnClickListener {
-                    checkbox.isChecked = !checkbox.isChecked
                 }
             }
         }
@@ -209,26 +252,49 @@ class ExpandableCategoryMultiSelectAdapter(
         override fun bind(category: Category, isSelected: Boolean, onCategoryToggle: () -> Unit) {
             // Not used for parent
         }
+        
+        override fun updateCheckboxState(isSelected: Boolean) {
+            binding.checkbox.setOnCheckedChangeListener(null)
+            binding.checkbox.isChecked = isSelected
+            // Re-attach listener if available
+            onCategoryToggleCallback?.let { callback ->
+                binding.checkbox.setOnCheckedChangeListener { _, _ ->
+                    callback()
+                }
+            }
+        }
     }
 
     inner class ChildCategoryViewHolder(
         private val binding: ItemCategoryMultiSelectChildBinding
     ) : CategoryViewHolder(binding) {
+        
+        private var onCategoryToggleCallback: (() -> Unit)? = null
 
         override fun bind(category: Category, isSelected: Boolean, onCategoryToggle: () -> Unit) {
+            onCategoryToggleCallback = onCategoryToggle
             binding.apply {
                 imageIcon.setImageResource(category.iconRes)
                 textViewCategoryName.text = category.title.standardize()
 
-                // Setup checkbox
+                // Setup checkbox - detach listener before setting checked programmatically
                 checkbox.setOnCheckedChangeListener(null)
                 checkbox.isChecked = isSelected
+                
+                // Attach listener to toggle selection
                 checkbox.setOnCheckedChangeListener { _, _ ->
                     onCategoryToggle()
                 }
-
-                root.setOnClickListener {
-                    checkbox.isChecked = !checkbox.isChecked
+            }
+        }
+        
+        override fun updateCheckboxState(isSelected: Boolean) {
+            binding.checkbox.setOnCheckedChangeListener(null)
+            binding.checkbox.isChecked = isSelected
+            // Re-attach listener if available
+            onCategoryToggleCallback?.let { callback ->
+                binding.checkbox.setOnCheckedChangeListener { _, _ ->
+                    callback()
                 }
             }
         }
@@ -256,4 +322,3 @@ class ExpandableCategoryMultiSelectAdapter(
         private const val VIEW_TYPE_CHILD = 1
     }
 }
-
