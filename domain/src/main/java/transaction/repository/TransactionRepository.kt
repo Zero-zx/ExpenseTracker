@@ -1,5 +1,6 @@
 package transaction.repository
 
+import category.model.CategoryType
 import kotlinx.coroutines.flow.Flow
 import transaction.model.Transaction
 
@@ -10,10 +11,16 @@ interface TransactionRepository {
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)
     fun getTransactionsByDateRange(
-        userId: Long,
         startDate: Long,
         endDate: Long
     ): Flow<List<Transaction>>
+
+    fun getTransactionsByTypeDateRange(
+        startDate: Long,
+        endDate: Long,
+        types: List<CategoryType>
+    ): Flow<List<Transaction>>
+
 
     suspend fun getCategoryUsageCount(accountId: Long): Map<Long, Int>
     suspend fun insertTransactionWithPayees(transaction: Transaction): Long

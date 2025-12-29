@@ -32,12 +32,6 @@ class OtherViewModel @Inject constructor(
     private fun loadUserProfile() {
         viewModelScope.launch {
             // TODO: Load from repository/use case
-            _userProfile.value = UserProfile(
-                username = "zero25122003",
-                email = "zero25122003@gmail.com",
-                coins = 100,
-                referralCode = "4555898"
-            )
         }
     }
 

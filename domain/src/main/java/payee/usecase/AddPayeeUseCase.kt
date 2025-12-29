@@ -15,7 +15,7 @@ class AddPayeeUseCase @Inject constructor(
         require(payee.name.isNotBlank()) { "Payee name cannot be blank" }
         val userId = sessionRepository.getCurrentUserId()
         // Check if payee already exists
-        val existingPayee = repository.getPayeeByName(payee.name, userId)
+        val existingPayee = repository.getPayeeByNameAndType(payee.name, payee.payeeType, userId)
         if (existingPayee != null) {
             return existingPayee
         }

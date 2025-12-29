@@ -31,11 +31,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="NAME"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/image_view_checked"
+        app:layout_constraintEnd_toStartOf="@id/image_view_edit"
         app:layout_constraintStart_toEndOf="@id/text_view_icon_event"
-        app:layout_constraintTop_toTopOf="@id/text_view_icon_event" />
+        app:layout_constraintTop_toTopOf="@id/text_view_icon_event"
+        tools:text="NAME" />
 
 
     <ImageView
@@ -48,6 +48,7 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.1" />
+        app:layout_constraintWidth_percent="0.1"
+        app:tint="@color/gray_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

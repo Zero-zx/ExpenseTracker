@@ -42,8 +42,8 @@ internal class PayeeRepositoryImpl @Inject constructor(
         payeeDao.deletePayee(payee.toEntity(userId))
     }
 
-    override suspend fun getPayeeByName(name: String, accountId: Long): Payee? {
-        return payeeDao.getPayeeByName(name, accountId)?.toDomain()
+    override suspend fun getPayeeByNameAndType(name: String, payeeType: PayeeType, accountId: Long): Payee? {
+        return payeeDao.getPayeeByNameAndType(name, payeeType, accountId)?.toDomain()
     }
 
     override fun searchPayeesByType(

@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import category.model.CategoryType
 import kotlinx.coroutines.flow.Flow
 import model.PayeeEntity
 import model.TransactionEntity
@@ -65,6 +66,24 @@ internal interface TransactionDao {
         userId: Long,
         startDate: Long,
         endDate: Long
+    ): Flow<List<TransactionWithDetails>>
+
+    // get all transaction in a date range with a type
+    @Transaction
+    @Query(
+        """
+    SELECT t.* FROM tb_transaction t
+    INNER JOIN tb_category c ON t.categoryId = c.id
+    WHERE t.userId = :userId 
+    AND t.create_at BETWEEN :startDate AND :endDate 
+    AND c.type IN (:types)
+"""
+    )
+    fun getTransactionsByTypeDateRange(
+        userId: Long,
+        startDate: Long,
+        endDate: Long,
+        types: List<CategoryType>
     ): Flow<List<TransactionWithDetails>>
 
     // get transaction by id

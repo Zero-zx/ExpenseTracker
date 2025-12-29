@@ -34,6 +34,14 @@
             app:argType="string"
             android:defaultValue="FINANCIAL_STATEMENT" />
     </fragment>
+    <fragment
+        android:id="@+id/accountMultiSelectFragment"
+        android:name="presentation.detail.AccountMultiSelectFragment"
+        android:label="AccountMultiSelectFragment" />
+    <fragment
+        android:id="@+id/categoryMultiSelectFragment"
+        android:name="presentation.detail.CategoryMultiSelectFragment"
+        android:label="CategoryMultiSelectFragment" />
 
 </navigation>
 

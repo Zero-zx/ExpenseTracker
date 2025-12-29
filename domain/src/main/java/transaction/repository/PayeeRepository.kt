@@ -11,7 +11,7 @@ interface PayeeRepository {
     suspend fun insertPayee(payee: Payee, userId: Long): Long
     suspend fun updatePayee(payee: Payee, userId: Long)
     suspend fun deletePayee(payee: Payee, userId: Long)
-    suspend fun getPayeeByName(name: String, accountId: Long): Payee?
+    suspend fun getPayeeByNameAndType(name: String, payeeType: PayeeType, accountId: Long): Payee?
     fun searchPayeesByType(
         userId: Long,
         searchQuery: String,

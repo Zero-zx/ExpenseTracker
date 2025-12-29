@@ -2,15 +2,16 @@ package presentation.detail
 
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
+import category.model.CategoryType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import navigation.Navigator
 import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
 import session.usecase.GetCurrentAccountIdUseCase
-import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
 import java.util.Calendar
@@ -18,6 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class IncomeAnalysisViewModel @Inject constructor(
+    private val navigator: Navigator,
     private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
     private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<AnalysisData>() {
@@ -186,5 +188,16 @@ class IncomeAnalysisViewModel @Inject constructor(
 
     fun getSelectedCategoryIds(): List<Long>? = selectedCategoryIds
     fun getSelectedAccountIds(): List<Long>? = selectedAccountIds
+
+    fun navigateToSelectCategory() {
+        navigator.navigateToSelectReportCategory(
+            CategoryType.INCOME.name,
+            selectedCategoryIds?.toTypedArray() ?: emptyArray()
+        )
+    }
+
+    fun navigateToSelectAccount() {
+        navigator.navigateToSelectReportAccount()
+    }
 }
 

@@ -80,39 +80,18 @@ class ExpenseAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
 
         // Category filter
         binding.layoutCategoryFilter.setOnClickListener {
-            openCategoryMultiSelect()
+            viewModel.navigateToSelectCategory()
         }
 
         // Account filter
         binding.layoutAccountFilter.setOnClickListener {
-            openAccountMultiSelect()
+            viewModel.navigateToSelectAccount()
         }
 
         setupFragmentResultListeners()
         updateDateRangeDisplay()
         updateCategoryDisplay()
         updateAccountDisplay()
-    }
-
-    private fun openCategoryMultiSelect() {
-        val selectedIds = viewModel.getSelectedCategoryIds()?.toLongArray()
-        val fragment = CategoryMultiSelectFragment.newInstance(
-            CategoryType.EXPENSE,
-            selectedIds
-        )
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(android.R.id.content, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    private fun openAccountMultiSelect() {
-        val selectedIds = viewModel.getSelectedAccountIds()?.toLongArray()
-        val fragment = AccountMultiSelectFragment.newInstance(selectedIds)
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(android.R.id.content, fragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     private fun setupFragmentResultListeners() {

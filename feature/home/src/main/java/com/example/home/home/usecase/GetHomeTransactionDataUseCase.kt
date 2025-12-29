@@ -20,7 +20,7 @@ class GetHomeReportDataUseCase @Inject constructor(
         startDate: Long,
         endDate: Long
     ): Flow<HomeReportData> {
-        return transactionRepository.getTransactionsByDateRange(accountId, startDate, endDate)
+        return transactionRepository.getTransactionsByDateRange(startDate, endDate)
             .map { transactions ->
                 processTransactions(transactions)
             }
@@ -35,11 +35,11 @@ class GetHomeReportDataUseCase @Inject constructor(
 
         transactions.forEach { transaction ->
             when (transaction.category.type) {
-                CategoryType.INCOME, CategoryType.LEND -> {
+                CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> {
                     totalIncome += transaction.amount
                 }
 
-                CategoryType.EXPENSE, CategoryType.BORROWING -> {
+                CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> {
                     totalExpense += transaction.amount
                     // Track category expenses (only for EXPENSE type)
                     if (transaction.category.type == CategoryType.EXPENSE) {

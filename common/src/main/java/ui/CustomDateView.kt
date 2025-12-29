@@ -36,7 +36,7 @@ class CustomDateView @JvmOverloads constructor(
                 binding.root.setBackgroundResource(R.drawable.rounded_ripple_image_button)
                 binding.textView.setBackgroundResource(R.drawable.rounded_ripple_image_button)
                 binding.textView.text = text
-                binding.textView.setTextColor(Color.RED)
+                binding.textView.setTextColor(context.getColor(R.color.gray_hint))
             }
         }
     }
@@ -47,6 +47,14 @@ class CustomDateView @JvmOverloads constructor(
 
     fun setText(text: String) {
         binding.textView.text = text
+    }
+
+    fun setTextError() {
+        binding.textView.setTextColor(Color.RED)
+    }
+
+    fun setTextNormal() {
+        binding.textView.setTextColor(context.getColor(R.color.black_text))
     }
 
     fun getText(): String {

@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.transaction.databinding.ItemTransactionBinding
 import helpers.formatAsCurrency
 import transaction.model.Transaction
-import java.text.NumberFormat
-import java.util.Locale
 
 class TransactionListAdapter(
     private val onItemClick: (Transaction) -> Unit,
@@ -73,7 +71,7 @@ class TransactionListAdapter(
             binding.apply {
                 textViewDate.text = header.date
                 textViewDayLabel.text = header.dayName
-                textViewDayAmount.text = header.totalAmount.formatAsCurrency("₫")
+                textViewDayAmount.text = header.totalAmount.formatAsCurrency()
 
                 textViewDayAmount.setTextColor(
                     if (header.totalAmount < 0) {
@@ -94,7 +92,8 @@ class TransactionListAdapter(
 
                 // detach listener before setting checked programmatically
                 checkboxSelection.setOnCheckedChangeListener(null)
-                checkboxSelection.isChecked = this@TransactionListAdapter.selectedTransactionIds.containsAll(groupIds)
+                checkboxSelection.isChecked =
+                    this@TransactionListAdapter.selectedTransactionIds.containsAll(groupIds)
 
                 // attach listener to toggle child selection by calling onItemSelect only for items that need toggling
                 checkboxSelection.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->

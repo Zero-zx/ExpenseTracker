@@ -405,12 +405,11 @@
                         style="@style/TextAppearance.App.Normal.Black"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:backgroundTint="@android:color/transparent"
                         android:gravity="center_vertical"
                         android:hint="@string/text_description"
                         android:inputType="text"
+                        android:background="@null"
                         android:paddingHorizontal="@dimen/margin_normal"
-                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/icon_note"
@@ -418,12 +417,21 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <View
+                    android:id="@+id/divider_date_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:alpha="0.1"
+                    android:background="@android:color/black"
+                    app:layout_constraintTop_toBottomOf="@id/icon_category" />
+
                 <ui.CustomDateView
                     android:id="@+id/date_view_borrow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:endSrc="@drawable/chip_delete_icon_20dp"
-                    app:src="@drawable/ic_date_tra_no" />
+                    app:src="@drawable/ic_date_tra_no"
+                    app:text="Repayment date" />
             </LinearLayout>
 
             <LinearLayout

@@ -21,7 +21,6 @@ import navigation.Navigator
 import payee.model.Payee
 import payee.model.PayeeType
 import payee.usecase.AddPayeeUseCase
-import payee.usecase.GetPayeeByIdUseCase
 import presentation.add.model.TransactionType
 import session.usecase.GetCurrentAccountIdUseCase
 import transaction.model.Event
@@ -51,7 +50,6 @@ class AddTransactionViewModel @Inject constructor(
     private val getAccountByIdUseCase: GetAccountByIdUseCase,
     private val getAccountsUseCase: GetAccountsUseCase,
     private val getLocationByIdUseCase: GetLocationByIdUseCase,
-    private val getPayeeByIdUseCase: GetPayeeByIdUseCase,
     private val saveTransactionImageUseCase: SaveTransactionImageUseCase,
     private val deleteTransactionImagesUseCase: DeleteTransactionImagesUseCase,
     private val addEventUseCase: AddEventUseCase,
@@ -100,7 +98,6 @@ class AddTransactionViewModel @Inject constructor(
     // UI state for more details section
     private val _isMoreDetailsExpanded = MutableStateFlow(false)
     val isMoreDetailsExpanded = _isMoreDetailsExpanded.asStateFlow()
-
 
     init {
         loadCategoriesByType(CategoryType.EXPENSE)
@@ -173,7 +170,8 @@ class AddTransactionViewModel @Inject constructor(
     fun addTransaction(
         amount: Double,
         description: String?,
-        createAt: Long
+        createAt: Long,
+        repaymentDate: Long? = null
     ) {
         viewModelScope.launch {
             val selectedCategory = _selectedCategory.value
@@ -210,13 +208,6 @@ class AddTransactionViewModel @Inject constructor(
                     )
                 }
 
-                // Step 2.6: Persist lender if it exists
-                val finalLender = _selectedLender.value?.let { lender ->
-                    addPayeeUseCase(
-                        lender
-                    )
-                }
-
                 val finalLocation = _selectedLocation.value
 
                 // Step 3: Save or update transaction with persisted entities
@@ -234,7 +225,7 @@ class AddTransactionViewModel @Inject constructor(
                         location = finalLocation,
                         payees = finalPayees,
                         borrower = finalBorrower,
-                        lender = finalLender
+                        repaymentDate = repaymentDate
                     )
                     currentTransactionId
                 } else {
@@ -249,7 +240,7 @@ class AddTransactionViewModel @Inject constructor(
                         location = finalLocation,
                         payees = finalPayees,
                         borrower = finalBorrower,
-                        lender = finalLender
+                        repaymentDate = repaymentDate
                     )
                 }
 
@@ -303,7 +294,6 @@ class AddTransactionViewModel @Inject constructor(
 
     fun selectEvent(eventName: String) {
         _selectedEvent.value = Event(
-            id = -1L,
             eventName = eventName,
             startDate = System.currentTimeMillis(),
             endDate = null,
@@ -315,7 +305,6 @@ class AddTransactionViewModel @Inject constructor(
     fun addPayee(payeeName: List<String>) {
         _selectedPayees.value = payeeName.map {
             Payee(
-                id = -1L,
                 name = it,
                 payeeType = PayeeType.PAYEE
             )
@@ -352,7 +341,11 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun toSelectBorrower() {
-        navigator.navigateToSelectBorrower(_selectedBorrower.value?.name ?: "")
+        navigator.navigateToSelectBorrower(
+            _selectedBorrower.value?.name ?: "",
+            if (_selectedCategory.value?.type == CategoryType.BORROWING) PayeeType.BORROWER.name
+            else PayeeType.LENDER.name
+        )
     }
 
     fun toSelectLocation() {
@@ -390,34 +383,8 @@ class AddTransactionViewModel @Inject constructor(
 
     fun selectBorrower(name: String) {
         _selectedBorrower.value = Payee(
-            id = -1L,
             name = name,
-            payeeType = PayeeType.BORROWER
-        )
-    }
-
-    fun selectBorrowerById(borrowerId: Long) {
-        viewModelScope.launch {
-            try {
-                if (borrowerId > 0) {
-                    val borrower = getPayeeByIdUseCase(borrowerId)
-                    if (borrower != null) {
-                        _selectedBorrower.value = borrower
-                    }
-                }
-            } catch (e: Exception) {
-                // Handle error if needed
-            }
-        }
-    }
-
-
-    fun selectLender(name: String) {
-        val currentAccountId = getCurrentAccountId() ?: 1L
-        _selectedLender.value = Payee(
-            id = -1L,
-            name = name,
-            payeeType = PayeeType.LENDER
+            payeeType = if (_selectedCategory.value?.type == CategoryType.BORROWING) PayeeType.BORROWER else PayeeType.LENDER
         )
     }
 
@@ -506,6 +473,7 @@ class AddTransactionViewModel @Inject constructor(
                 val transaction = getTransactionByIdUseCase(transactionId)
                 if (transaction != null) {
                     _transactionId.value = transaction.id
+                    _currentCategoryType.value = transaction.category.type
                     _selectedCategory.value = transaction.category
                     _selectedAccount.value = transaction.account
                     _selectedEvent.value = transaction.event
@@ -516,7 +484,6 @@ class AddTransactionViewModel @Inject constructor(
 
                     // Load borrower and lender
                     _selectedBorrower.value = transaction.borrower
-                    _selectedLender.value = transaction.lender
 
                     // Load image if exists
                     transaction.images?.let { image ->

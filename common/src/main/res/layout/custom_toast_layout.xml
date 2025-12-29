@@ -8,7 +8,8 @@
     android:background="@drawable/rounded_background"
     android:backgroundTint="@color/bg_warning"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_normal">
+    android:paddingHorizontal="@dimen/padding_medium"
+    android:paddingVertical="@dimen/margin_normal">
 
     <ImageView
         android:id="@+id/toast_icon"
@@ -24,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/margin_medium"
-        android:layout_marginEnd="@dimen/padding_edges"
         android:layout_weight="1"
+        android:maxWidth="250dp"
         android:textColor="@android:color/white"
         tools:text="Custom Toast Message" />
 

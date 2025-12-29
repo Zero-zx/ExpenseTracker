@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,9 +19,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:visibility="gone"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -32,9 +31,9 @@
 
             <TextView
                 android:id="@+id/textViewDate"
+                style="@style/TextAppearance.App.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="14/12/2025" />
 
@@ -57,18 +56,11 @@
             tools:text="0 đ" />
     </LinearLayout>
 
-    <!-- Divider -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="?android:attr/listDivider" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCategories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
         android:nestedScrollingEnabled="false"
         tools:itemCount="2" />
 </LinearLayout>
