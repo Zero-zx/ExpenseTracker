@@ -17,7 +17,7 @@ internal fun Transaction.toEntity(userId: Long): TransactionEntity {
         eventId = event?.id,
         locationId = location?.id,
         borrowerId = borrower?.id,
-        lenderId = lender?.id
+        repaymentDate = repaymentDate
     )
 }
 
@@ -33,7 +33,6 @@ internal fun TransactionWithDetails.toDomain(): Transaction {
         location = locationEntity?.toDomain(),
         payees = payees.map { it.toDomain() },
         borrower = borrowerEntity?.toDomain(),
-        lender = lenderEntity?.toDomain()
-
+        repaymentDate = transactionEntity.repaymentDate
     )
 }

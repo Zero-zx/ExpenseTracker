@@ -1,5 +1,6 @@
 package repository
 
+import category.model.CategoryType
 import dao.TransactionDao
 import dao.TransactionPayeeDao
 import kotlinx.coroutines.flow.Flow
@@ -60,15 +61,29 @@ internal class TransactionRepositoryImpl @Inject constructor(
     }
 
     override fun getTransactionsByDateRange(
-        userId: Long,
         startDate: Long,
         endDate: Long
     ): Flow<List<Transaction>> {
+        val userId = sessionManager.getCurrentUserId()
         return transactionDao.getTransactionsByDateRange(userId, startDate, endDate).map { it ->
             it.map {
                 it.toDomain()
             }
         }
+    }
+
+    override fun getTransactionsByTypeDateRange(
+        startDate: Long,
+        endDate: Long,
+        types: List<CategoryType>
+    ): Flow<List<Transaction>> {
+        val userId = sessionManager.getCurrentUserId()
+        return transactionDao.getTransactionsByTypeDateRange(userId, startDate, endDate, types)
+            .map { it ->
+                it.map {
+                    it.toDomain()
+                }
+            }
     }
 
     override suspend fun getCategoryUsageCount(accountId: Long): Map<Long, Int> {

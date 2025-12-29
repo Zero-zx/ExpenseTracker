@@ -5,12 +5,12 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import base.BaseFragment
 import base.UIState
+import category.model.CategoryType
 import com.example.statistics.databinding.FragmentCategoryMultiSelectBinding
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_IDS
 import constants.FragmentResultKeys.RESULT_CATEGORY_IDS
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.ExpandableCategoryMultiSelectAdapter
-import category.model.CategoryType
 import ui.navigateBack
 import ui.setSelectionResult
 
@@ -19,12 +19,17 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
     FragmentCategoryMultiSelectBinding::inflate
 ) {
     private val viewModel: CategoryMultiSelectViewModel by viewModels()
-    private val selectedCategoryIds: MutableSet<Long> = mutableSetOf()
-    
+    private val selectedCategoryIds: MutableSet<Long> by lazy {
+        arguments?.getLongArray(ARG_SELECTED_CATEGORY_IDS)?.toMutableSet() ?: mutableSetOf()
+    }
     private lateinit var adapter: ExpandableCategoryMultiSelectAdapter
     private var allCategoryIds: List<Long> = emptyList()
 
-    private var categoryType: CategoryType = CategoryType.EXPENSE
+    private val categoryType: CategoryType by lazy {
+        arguments?.getString(ARG_CATEGORY_TYPE)?.let { typeString ->
+            CategoryType.valueOf(typeString)
+        } ?: CategoryType.EXPENSE
+    }
 
     override fun initView() {
         // Get initially selected category IDs from arguments
@@ -33,9 +38,7 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
         }
 
         // Get category type from arguments
-        arguments?.getString("category_type")?.let { typeString ->
-            categoryType = CategoryType.valueOf(typeString)
-        }
+
 
         // Initialize adapter
         adapter = ExpandableCategoryMultiSelectAdapter(
@@ -66,8 +69,9 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
         )
 
         binding.recyclerViewCategories.adapter = adapter
-        binding.recyclerViewCategories.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
-        
+        binding.recyclerViewCategories.layoutManager =
+            androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+
         // Setup select all listener will be done in observeData after categories are loaded
 
         viewModel.loadCategories(categoryType)
@@ -102,6 +106,7 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
                 is UIState.Loading -> {
                     // Show loading if needed
                 }
+
                 is UIState.Success -> {
                     if (state.data.isNotEmpty()) {
                         adapter.submitCategories(state.data)
@@ -111,9 +116,14 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
                         android.util.Log.d("CategoryMultiSelect", "No categories found")
                     }
                 }
+
                 is UIState.Error -> {
-                    android.util.Log.e("CategoryMultiSelect", "Error loading categories: ${state.message}")
+                    android.util.Log.e(
+                        "CategoryMultiSelect",
+                        "Error loading categories: ${state.message}"
+                    )
                 }
+
                 else -> {}
             }
         }
@@ -150,7 +160,7 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
         binding.checkboxSelectAll.setOnCheckedChangeListener(null)
         binding.checkboxSelectAll.isChecked = allSelected
         setupSelectAllListener(allIds)
-        
+
         val selectedCount = selectedCategoryIds.size
         binding.textViewSelectedCount.text = "$selectedCount categories"
     }
@@ -167,19 +177,19 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
         const val ARG_SELECTED_CATEGORY_IDS = "selected_category_ids"
         const val ARG_CATEGORY_TYPE = "category_type"
 
-        fun newInstance(
-            categoryType: CategoryType,
-            selectedCategoryIds: LongArray? = null
-        ): CategoryMultiSelectFragment {
-            return CategoryMultiSelectFragment().apply {
-                arguments = android.os.Bundle().apply {
-                    putString(ARG_CATEGORY_TYPE, categoryType.name)
-                    selectedCategoryIds?.let {
-                        putLongArray(ARG_SELECTED_CATEGORY_IDS, it)
-                    }
-                }
-            }
-        }
+//        fun newInstance(
+//            categoryType: CategoryType,
+//            selectedCategoryIds: LongArray? = null
+//        ): CategoryMultiSelectFragment {
+//            return CategoryMultiSelectFragment().apply {
+//                arguments = android.os.Bundle().apply {
+//                    putString(ARG_CATEGORY_TYPE, categoryType.name)
+//                    selectedCategoryIds?.let {
+//                        putLongArray(ARG_SELECTED_CATEGORY_IDS, it)
+//                    }
+//                }
+//            }
+//        }
     }
 }
 

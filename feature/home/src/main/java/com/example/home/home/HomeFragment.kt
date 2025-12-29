@@ -4,21 +4,27 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.PopupWindow
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import base.BaseFragment
 import base.UIState
 import com.example.home.databinding.FragmentHomeBinding
 import com.example.home.home.model.HomeReportData
 import com.example.home.home.usecase.CategoryExpenseData
+import com.example.home.home.usecase.MonthlyExpenseData
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import ui.gone
 import ui.visible
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -39,6 +45,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
     override fun initView() {
         setupBarChart()
         setupPieChart()
+        setupExpenseAnalysisChart()
     }
 
     override fun initListener() {
@@ -73,6 +80,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
                 // Navigate to record history
                 viewModel.navigateToTransaction()
             }
+
+            buttonExpenseDateRange.setOnClickListener {
+                showMonthRangePicker()
+            }
         }
     }
 
@@ -92,6 +103,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
 
                 is UIState.Error -> {
                     // Handle error if needed
+                }
+            }
+        }
+
+        // Observe expense analysis data
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.monthlyExpenseData.collect { data ->
+                updateExpenseAnalysisChart(data)
+            }
+        }
+
+        // Observe expense analysis date range
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.expenseAnalysisDateRange.collect { range ->
+                range?.let {
+                    updateExpenseDateRangeLabel(it.first, it.second)
                 }
             }
         }
@@ -305,6 +332,90 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         selectedTimePeriod = timePeriods[nextIndex]
         binding.textTimePeriod.text = selectedTimePeriod.displayName
         viewModel.loadTransactionData(selectedTimePeriod)
+    }
+
+    private fun setupExpenseAnalysisChart() {
+        val chart = binding.expenseAnalysisChart
+
+        // Configure chart appearance
+        chart.description.isEnabled = false
+        chart.setDrawGridBackground(false)
+        chart.setTouchEnabled(true)
+        chart.setDragEnabled(true)
+        chart.setScaleEnabled(false)
+        chart.setPinchZoom(false)
+        chart.legend.isEnabled = false
+        chart.setDrawBarShadow(false)
+        chart.setDrawValueAboveBar(false)
+
+        // Configure X-axis
+        val xAxis = chart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false)
+        xAxis.granularity = 1f
+        xAxis.textColor = Color.parseColor("#6B7280")
+        xAxis.textSize = 10f
+
+        // Configure Y-axis (left)
+        val leftAxis = chart.axisLeft
+        leftAxis.setDrawGridLines(true)
+        leftAxis.gridColor = Color.parseColor("#F3F4F6")
+        leftAxis.textColor = Color.parseColor("#6B7280")
+        leftAxis.axisMinimum = 0f
+        leftAxis.textSize = 10f
+
+        // Configure Y-axis (right) - disable
+        val rightAxis = chart.axisRight
+        rightAxis.isEnabled = false
+    }
+
+    private fun updateExpenseAnalysisChart(data: List<MonthlyExpenseData>) {
+        val chart = binding.expenseAnalysisChart
+
+        if (data.isEmpty()) {
+            chart.clear()
+            chart.invalidate()
+            return
+        }
+
+        // Convert amounts to thousands
+        val entries = data.mapIndexed { index, monthData ->
+            BarEntry(index.toFloat(), (monthData.amount / 1000).toFloat())
+        }
+
+        // Get month labels
+        val labels = data.map { it.getMonthLabel() }
+
+        val dataSet = BarDataSet(entries, "").apply {
+            color = Color.parseColor("#3B82F6") // Blue color for expense bars
+            setDrawValues(false)
+            highLightAlpha = 0
+        }
+
+        val barData = BarData(dataSet).apply {
+            barWidth = 0.6f
+        }
+
+        chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
+        chart.xAxis.labelCount = labels.size
+        chart.data = barData
+        chart.animateY(800)
+        chart.invalidate()
+    }
+
+    private fun updateExpenseDateRangeLabel(startDate: Long, endDate: Long) {
+        val dateFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
+        val startStr = dateFormat.format(startDate)
+        val endStr = dateFormat.format(endDate)
+        binding.textExpenseDateRange.text = "$startStr - $endStr"
+    }
+
+    private fun showMonthRangePicker() {
+        val dialog = MonthRangePickerDialog.newInstance()
+        dialog.setOnRangeSelectedListener { startDate, endDate ->
+            viewModel.updateExpenseAnalysisDateRange(startDate, endDate)
+        }
+        dialog.show(childFragmentManager, "MonthRangePicker")
     }
 
     override fun onResume() {

@@ -9,6 +9,9 @@ import transaction.model.Event
 import transaction.model.Location
 import transaction.model.Transaction
 import transaction.repository.TransactionRepository
+import ui.toFormattedDate
+import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
 class AddTransactionUseCase @Inject constructor(
@@ -25,8 +28,25 @@ class AddTransactionUseCase @Inject constructor(
         location: Location? = null,
         payees: List<Payee> = emptyList(),
         borrower: Payee? = null,
-        lender: Payee? = null
+        lender: Payee? = null,
+        repaymentDate: Long? = null
     ): Long {
+        val dateType =
+            if (category.type == CategoryType.LEND) "Debt collection" else "Repayment"
+        val todayStartOfDay =
+            LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
+                .toEpochMilli()
+        if (repaymentDate != null) {
+            require(
+                repaymentDate >= todayStartOfDay,
+                {
+                    "$dateType must be greater or equal to ${
+                        System.currentTimeMillis().toFormattedDate()
+                    }"
+                }
+            )
+        }
+
         val transaction = Transaction(
             amount = amount,
             createAt = createAt,
@@ -37,7 +57,7 @@ class AddTransactionUseCase @Inject constructor(
             location = location,
             payees = payees,
             borrower = borrower,
-            lender = lender
+            repaymentDate = repaymentDate
         )
 
         val balanceChange = when (category.type) {

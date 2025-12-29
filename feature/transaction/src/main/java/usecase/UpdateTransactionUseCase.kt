@@ -2,9 +2,9 @@ package usecase
 
 import account.model.Account
 import category.model.Category
+import payee.model.Payee
 import transaction.model.Event
 import transaction.model.Location
-import payee.model.Payee
 import transaction.model.Transaction
 import transaction.repository.TransactionRepository
 import javax.inject.Inject
@@ -23,8 +23,11 @@ class UpdateTransactionUseCase @Inject constructor(
         location: Location? = null,
         payees: List<Payee> = emptyList(),
         borrower: Payee? = null,
-        lender: Payee? = null
+        repaymentDate: Long? = null
     ) {
+        if (repaymentDate != null) {
+            require(repaymentDate > System.currentTimeMillis())
+        }
         val transaction = Transaction(
             id = transactionId,
             amount = amount,
@@ -36,7 +39,7 @@ class UpdateTransactionUseCase @Inject constructor(
             location = location,
             payees = payees,
             borrower = borrower,
-            lender = lender
+            repaymentDate = repaymentDate
         )
         repository.updateTransaction(transaction)
     }

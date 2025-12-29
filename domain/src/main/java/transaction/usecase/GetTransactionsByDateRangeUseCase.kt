@@ -7,14 +7,12 @@ import transaction.repository.TransactionRepository
 import javax.inject.Inject
 
 class GetTransactionsByDateRangeUseCase @Inject constructor(
-    private val transactionRepository: TransactionRepository,
-    private val sessionRepository: SessionRepository
+    private val transactionRepository: TransactionRepository
 ) {
     operator fun invoke(startDate: Long, endDate: Long): Flow<List<Transaction>> {
         return transactionRepository.getTransactionsByDateRange(
-            sessionRepository.getCurrentUserId(),
             startDate,
-            endDate
+            endDate,
         )
     }
 }

@@ -17,7 +17,7 @@ data class Transaction(
     val payees: List<Payee> = emptyList(),
     val images: TransactionImage? = null,
     val borrower: Payee? = null,
-    val lender: Payee? = null
+    val repaymentDate: Long? = null
 )
 
 

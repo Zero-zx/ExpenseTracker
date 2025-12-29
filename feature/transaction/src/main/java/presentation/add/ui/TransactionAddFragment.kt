@@ -43,6 +43,7 @@ import presentation.add.viewModel.AddTransactionViewModel
 import storage.FileProvider
 import transaction.model.Event
 import transaction.model.Location
+import transaction.model.Transaction
 import ui.CalculatorManager
 import ui.CalculatorProvider
 import ui.GridSpacingItemDecoration
@@ -57,7 +58,10 @@ import ui.openTimePicker
 import ui.showNotImplementToast
 import ui.showSuccessToast
 import ui.showWarningToast
+import ui.toFormattedDate
 import ui.visible
+import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 import com.example.common.R as CommonR
 
@@ -91,6 +95,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
     // store selected date (start-of-day millis) and time (offset millis from midnight)
     private var selectedDateStartMillis: Long? = null
     private var selectedTimeOffsetMillis: Long? = null
+    private var repaymentDateOffsetMillis: Long? = null
 
     // Get transaction ID from arguments if editing
     private val transactionId: Long? by lazy {
@@ -298,8 +303,24 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             dateViewBorrow.apply {
                 setOnClickListener {
                     openDatePicker(dateViewBorrow.getTextView(), false) { startOfDayMillis ->
-                        selectedDateStartMillis = startOfDayMillis
+                        repaymentDateOffsetMillis = startOfDayMillis
                         showEndDrawable()
+                        val todayStartOfDay =
+                            LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()
+                                .toEpochMilli()
+
+                        if (startOfDayMillis < todayStartOfDay) {
+                            dateViewBorrow.setTextError()
+                            val dateType =
+                                if (viewModel.currentCategoryType.value == CategoryType.LEND) "Debt collection" else "Repayment"
+                            showWarningToast(
+                                "$dateType must be greater or equal to ${
+                                    System.currentTimeMillis().toFormattedDate()
+                                }"
+                            )
+                        } else {
+                            dateViewBorrow.setTextNormal()
+                        }
                     }
                 }
 
@@ -322,7 +343,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 }
 
                 is UIState.Error -> {
-                    context?.showWarningToast("Error loading categories: ${state.message}")
+                    context?.showWarningToast(state.message)
                 }
 
                 else -> {}
@@ -387,7 +408,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
                 is UIState.Error -> {
                     // Show error message
-                    context?.showWarningToast("Error: ${state.message}")
+                    context?.showWarningToast(state.message)
                     viewModel.clearImageUploadState()
                 }
 
@@ -412,12 +433,8 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 }
 
                 is UIState.Error -> {
-                    val message = if (transactionId != null) {
-                        "Error updating transaction: ${state.message}"
-                    } else {
-                        "Error adding transaction: ${state.message}"
-                    }
-                    context?.showWarningToast(message)
+                    context?.showWarningToast(state.message)
+                    viewModel.resetState()
                 }
 
                 else -> {}
@@ -454,15 +471,14 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             amount = amount,
             description = binding.editTextNote.text?.toString(),
             createAt = selectedDateStartMillis?.plus(selectedTimeOffsetMillis ?: 0)
-                ?: System.currentTimeMillis()
+                ?: System.currentTimeMillis(),
+            repaymentDate = repaymentDateOffsetMillis
         )
     }
 
     private fun updateSelectedCategory(category: Category) {
         binding.apply {
-            // Update icon
             iconCategory.setImageResource(category.iconRes)
-            // Update category name
             textViewCategory.text = category.title.standardize()
         }
     }
@@ -474,6 +490,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 CategoryType.EXPENSE -> {
                     divider.visible()
                     layoutMostUse.visible()
+                    dividerDateView.gone()
                 }
 
                 CategoryType.INCOME -> {
@@ -483,6 +500,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 CategoryType.LEND -> {
                     divider.visible()
                     dateViewBorrow.visible()
+                    dividerDateView.visible()
                     dateViewBorrow.setStartDrawable(CommonR.drawable.ic_date_thu_no)
                     buttonSelectBorrower.visible()
                     buttonSelectBorrower.getTextView().text = "Select borrower"
@@ -490,6 +508,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
                 CategoryType.BORROWING -> {
                     dateViewBorrow.visible()
+                    dividerDateView.visible()
                     dateViewBorrow.setStartDrawable(CommonR.drawable.ic_date_tra_no)
                     divider.visible()
                     buttonSelectBorrower.visible()
@@ -517,6 +536,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             divider.gone()
             layoutMostUse.gone()
             layoutMore.gone()
+            dividerDateView.gone()
             buttonSelectBorrower.gone()
             dateViewBorrow.apply {
                 gone()
@@ -682,7 +702,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
         }
     }
 
-    private fun populateTransactionFields(transaction: transaction.model.Transaction) {
+    private fun populateTransactionFields(transaction: Transaction) {
         binding.apply {
             // Populate amount
             editTextAmount.setText(transaction.amount.toString())
@@ -709,6 +729,11 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             val hour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
             val minute = calendar.get(java.util.Calendar.MINUTE)
             selectedTimeOffsetMillis = (hour * 3_600_000L + minute * 60_000L)
+
+            if (transaction.repaymentDate != null) {
+                calendar.timeInMillis = transaction.repaymentDate ?: 0L
+                dateViewBorrow.setText(dateFormat.format(calendar.time))
+            }
         }
     }
 

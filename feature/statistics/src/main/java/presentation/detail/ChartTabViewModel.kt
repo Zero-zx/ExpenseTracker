@@ -152,11 +152,11 @@ class ChartTabViewModel @Inject constructor(
 
             val (currentIncome, currentExpense) = map[key] ?: Pair(0.0, 0.0)
             when (transaction.category.type) {
-                CategoryType.INCOME, CategoryType.LEND -> {
+                CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> {
                     map[key] = Pair(currentIncome + transaction.amount, currentExpense)
                 }
 
-                CategoryType.EXPENSE, CategoryType.BORROWING -> {
+                CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> {
                     map[key] = Pair(currentIncome, currentExpense + transaction.amount)
                 }
 
@@ -179,11 +179,11 @@ class ChartTabViewModel @Inject constructor(
 
             val (currentIncome, currentExpense) = map[key] ?: Pair(0.0, 0.0)
             when (transaction.category.type) {
-                CategoryType.INCOME, CategoryType.LEND -> {
+                CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> {
                     map[key] = Pair(currentIncome + transaction.amount, currentExpense)
                 }
 
-                CategoryType.EXPENSE, CategoryType.BORROWING -> {
+                CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> {
                     map[key] = Pair(currentIncome, currentExpense + transaction.amount)
                 }
 
@@ -201,9 +201,8 @@ class ChartTabViewModel @Inject constructor(
 
         transactions.forEach { transaction ->
             when (transaction.category.type) {
-                CategoryType.INCOME, CategoryType.LEND -> income += transaction.amount
-                CategoryType.EXPENSE, CategoryType.BORROWING -> expense += transaction.amount
-                else -> {}
+                CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> income += transaction.amount
+                CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> expense += transaction.amount
             }
         }
 

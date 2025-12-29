@@ -36,7 +36,7 @@ class PayeeAdapter(
             binding.apply {
                 itemView.isSelected = isSelected
                 textViewName.text = payee.name
-
+                textViewIconEvent.text = payee.name.first().toString()
                 itemView.setOnClickListener {
                     val position = bindingAdapterPosition
                     if (position != RecyclerView.NO_POSITION) {

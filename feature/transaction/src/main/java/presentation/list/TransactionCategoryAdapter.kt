@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.transaction.databinding.ItemTransactionCategoryBinding
 import category.model.CategoryType
+import com.example.transaction.databinding.ItemTransactionCategoryBinding
 import helpers.formatAsCurrency
 import transaction.model.Transaction
-import java.text.NumberFormat
-import java.util.Locale
+import ui.visible
 
 class TransactionCategoryAdapter(
     private val onItemClick: (Transaction) -> Unit,
@@ -65,24 +64,29 @@ class TransactionCategoryAdapter(
                 imageIcon.setImageResource(transaction.category.iconRes)
                 textTitle.text = transaction.category.title
 
-                // Build amount text safely
-                val sign = when (transaction.category.type) {
-                    CategoryType.INCOME -> "+"
-                    CategoryType.EXPENSE -> "-"
-                    CategoryType.LEND -> "→"
-                    CategoryType.BORROWING -> "←"
-                    else -> ""
-                }
-                textAmount.text = "$sign${transaction.amount.formatAsCurrency("₫")}"
+                textAmount.text = transaction.amount.formatAsCurrency()
 
                 val amountColor = when (transaction.category.type) {
-                    CategoryType.INCOME -> binding.root.context.getColor(com.example.common.R.color.green_income)
-                    CategoryType.EXPENSE -> binding.root.context.getColor(com.example.common.R.color.red_expense)
-                    else -> binding.root.context.getColor(com.example.common.R.color.black_text)
+                    CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> binding.root.context.getColor(
+                        com.example.common.R.color.green_income
+                    )
+
+                    CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> binding.root.context.getColor(
+                        com.example.common.R.color.red_expense
+                    )
                 }
                 textAmount.setTextColor(amountColor)
 
                 textSource.text = transaction.account.username
+                imageSource.setImageResource(transaction.account.type.iconRes)
+
+                val borrower = transaction.borrower
+                if (borrower != null) {
+                    textSubTitle.visible()
+                    textSubTitle.text =
+                        if (transaction.category.type == CategoryType.BORROWING) "Borrowed money from ${borrower.name}"
+                        else "${borrower.name} took out a loan"
+                }
 
                 // Show/hide checkbox based on selection mode
                 if (isSelectionMode) {

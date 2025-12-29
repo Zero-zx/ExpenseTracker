@@ -4,11 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingStart="8dp"
-    android:paddingTop="12dp"
-    android:paddingEnd="8dp"
-    android:paddingBottom="12dp">
+    android:orientation="horizontal">
 
     <!-- Checkbox for selection mode -->
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -16,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="false"
-        android:visibility="visible"
         android:clickable="false"
-        android:focusable="false" />
+        android:focusable="false"
+        android:visibility="visible" />
 
     <!-- Left icon (rounded background can be provided by drawable if available) -->
     <ImageView
@@ -27,18 +23,31 @@
         android:layout_height="32dp"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_gallery" />
+        android:src="@drawable/chi_1_an_uong" />
 
     <!-- Title -->
-    <TextView
-        android:id="@+id/textTitle"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
         android:layout_weight="1"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="16sp"
-        tools:text="Gift" />
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/margin_medium">
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            tools:text="Gift" />
+
+        <TextView
+            android:id="@+id/textSubTitle"
+            style="@style/TextAppearance.App.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <!-- Right: amount and small source label -->
     <LinearLayout
@@ -68,6 +77,7 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:contentDescription="@null"
+                android:scaleType="centerInside"
                 android:src="@drawable/account_wallet" />
 
             <TextView

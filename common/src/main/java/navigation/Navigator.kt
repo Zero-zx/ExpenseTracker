@@ -11,7 +11,7 @@ interface Navigator {
     fun navigateToSelectAccount(selectedAccountId: Long = -1L)
     fun navigateToSelectEvent(selectedEventName: String = "")
     fun navigateToSelectPayee(selectedPayeeNames: Array<String> = emptyArray())
-    fun navigateToSelectBorrower(selectedBorrowerName: String = "")
+    fun navigateToSelectBorrower(selectedBorrowerName: String = "", selectedType: String = "PAYEE")
     fun navigateToSelectLocation(selectedLocationId: Long = -1L)
     fun navigateToEventList()
     fun navigateToAddEvent()
@@ -20,4 +20,6 @@ interface Navigator {
     fun navigateToReportDetailContainer(reportType: String = "FINANCIAL_STATEMENT")
     fun navigateToEditTransaction(transactionId: Long)
     fun navigateToDataSetting()
+    fun navigateToSelectReportCategory(categoryType: String = "EXPENSE",selectedIds: Array<Long> = emptyArray())
+    fun navigateToSelectReportAccount()
 }

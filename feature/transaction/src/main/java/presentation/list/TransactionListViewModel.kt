@@ -2,6 +2,7 @@ package presentation.list
 
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
+import category.model.CategoryType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import navigation.Navigator
-import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.DeleteTransactionUseCase
 import transaction.usecase.GetTransactionsByDateRangeUseCase
@@ -133,9 +133,8 @@ class TransactionListViewModel @Inject constructor(
             // Calculate total for the day
             val dayTotal = dayTransactions.sumOf { transaction ->
                 when (transaction.category.type) {
-                    CategoryType.EXPENSE, CategoryType.BORROWING -> -transaction.amount
-                    CategoryType.INCOME, CategoryType.LEND -> transaction.amount
-                    else -> 0.0
+                    CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> -transaction.amount
+                    CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> transaction.amount
                 }
             }
 
@@ -166,15 +165,13 @@ class TransactionListViewModel @Inject constructor(
 
         transactions.forEach { transaction ->
             when (transaction.category.type) {
-                CategoryType.INCOME, CategoryType.LEND -> {
+                CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> {
                     totalIncome += transaction.amount
                 }
 
-                CategoryType.EXPENSE, CategoryType.BORROWING -> {
+                CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> {
                     totalExpense += transaction.amount
                 }
-
-                else -> {}
             }
         }
 

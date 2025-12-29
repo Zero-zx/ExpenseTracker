@@ -14,6 +14,7 @@ import constants.FragmentResultKeys.RESULT_ACCOUNT_IDS
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.AccountMultiSelectAdapter
 import ui.navigateBack
+import ui.navigateBack
 import ui.setSelectionResult
 
 @AndroidEntryPoint

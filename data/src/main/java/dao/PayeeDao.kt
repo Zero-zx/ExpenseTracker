@@ -30,8 +30,8 @@ internal interface PayeeDao {
     @Delete
     suspend fun deletePayee(payee: PayeeEntity)
 
-    @Query("SELECT * FROM tb_payee WHERE name = :name AND userId = :accountId LIMIT 1")
-    suspend fun getPayeeByName(name: String, accountId: Long): PayeeEntity?
+    @Query("SELECT * FROM tb_payee WHERE name = :name AND payeeType = :payeeType AND userId = :accountId LIMIT 1")
+    suspend fun getPayeeByNameAndType(name: String, payeeType: PayeeType, accountId: Long): PayeeEntity?
 
     @Query("SELECT * FROM tb_payee WHERE userId = :userId AND payeeType = :payeeType AND name LIKE '%' || :searchQuery || '%' ORDER BY name ASC")
     fun searchPayeesByType(

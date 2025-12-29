@@ -2,23 +2,27 @@ package presentation.detail
 
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
+import category.model.CategoryType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import navigation.Navigator
 import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
 import session.usecase.GetCurrentAccountIdUseCase
-import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
+import transaction.usecase.GetTransactionsByTypeDateRangeUseCase
 import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class ExpenseAnalysisViewModel @Inject constructor(
+    private val navigator: Navigator,
     private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
+    private val getTransactionsByTypeDateRangeUseCase: GetTransactionsByTypeDateRangeUseCase,
     private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<AnalysisData>() {
 
@@ -106,7 +110,11 @@ class ExpenseAnalysisViewModel @Inject constructor(
             return
         }
 
-        getTransactionsByDateRangeUseCase(currentStartDate, currentEndDate)
+        getTransactionsByTypeDateRangeUseCase(
+            currentStartDate,
+            currentEndDate,
+            listOf(CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT)
+        )
             .onEach { transactions ->
                 val filteredTransactions = filterTransactions(transactions)
                 val analysisData = processTransactions(filteredTransactions)
@@ -120,9 +128,6 @@ class ExpenseAnalysisViewModel @Inject constructor(
 
     private fun filterTransactions(transactions: List<Transaction>): List<Transaction> {
         return transactions.filter { transaction ->
-            // Filter by category type (only EXPENSE)
-            val isExpense = transaction.category.type == CategoryType.EXPENSE
-
             // Filter by selected categories if any
             val matchesCategory = selectedCategoryIds?.isEmpty() != false ||
                     selectedCategoryIds?.contains(transaction.category.id) == true
@@ -131,7 +136,7 @@ class ExpenseAnalysisViewModel @Inject constructor(
             val matchesAccount = selectedAccountIds?.isEmpty() != false ||
                     selectedAccountIds?.contains(transaction.account.id) == true
 
-            isExpense && matchesCategory && matchesAccount
+            matchesCategory && matchesAccount
         }
     }
 
@@ -186,5 +191,16 @@ class ExpenseAnalysisViewModel @Inject constructor(
 
     fun getSelectedCategoryIds(): List<Long>? = selectedCategoryIds
     fun getSelectedAccountIds(): List<Long>? = selectedAccountIds
+
+    fun navigateToSelectCategory() {
+        navigator.navigateToSelectReportCategory(
+            CategoryType.EXPENSE.name,
+            selectedCategoryIds?.toTypedArray() ?: emptyArray()
+        )
+    }
+
+    fun navigateToSelectAccount() {
+        navigator.navigateToSelectReportAccount()
+    }
 }
 

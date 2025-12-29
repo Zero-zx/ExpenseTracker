@@ -3,12 +3,12 @@ package presentation
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
+import category.model.CategoryType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import session.usecase.GetCurrentAccountIdUseCase
-import category.model.CategoryType
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
 import java.util.Calendar
@@ -81,13 +81,13 @@ class ReportsViewModel @Inject constructor(
 
             // Calculate totals regardless of month (for all transactions in range)
             when (transaction.category.type) {
-                CategoryType.INCOME, CategoryType.LEND -> {
+                CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> {
                     totalIncome += transaction.amount
                 }
-                CategoryType.EXPENSE, CategoryType.BORROWING -> {
+
+                CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> {
                     totalExpense += transaction.amount
                 }
-                else -> {}
             }
 
             // Only process transactions from last 5 months for chart
@@ -95,7 +95,7 @@ class ReportsViewModel @Inject constructor(
                 val (currentIncome, currentExpense) = monthlyDataMap[monthKey] ?: Pair(0.0, 0.0)
 
                 when (transaction.category.type) {
-                    CategoryType.INCOME, CategoryType.LEND -> {
+                    CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT -> {
                         // Income: IN and LEND
                         monthlyDataMap[monthKey] = Pair(
                             currentIncome + transaction.amount,
@@ -103,15 +103,13 @@ class ReportsViewModel @Inject constructor(
                         )
                     }
 
-                    CategoryType.EXPENSE, CategoryType.BORROWING -> {
+                    CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT -> {
                         // Expense: OUT and LOAN
                         monthlyDataMap[monthKey] = Pair(
                             currentIncome,
                             currentExpense + transaction.amount
                         )
                     }
-
-                    else -> {}
                 }
             }
         }

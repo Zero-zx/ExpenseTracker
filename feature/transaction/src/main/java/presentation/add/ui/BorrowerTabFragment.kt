@@ -27,6 +27,9 @@ class BorrowerTabFragment : BaseFragment<FragmentBorrowerTabBinding>(
     private val selectedBorrowerName: String by lazy {
         parentFragment?.arguments?.getString(ARG_SELECTED_BORROWER_NAME, "") ?: ""
     }
+    private val selectedType: String by lazy {
+        parentFragment?.arguments?.getString(ARG_SELECTED_TYPE, "") ?: ""
+    }
 
     override fun initView() {
         adapter = PayeeAdapter(onItemClick = { borrower ->
@@ -40,7 +43,8 @@ class BorrowerTabFragment : BaseFragment<FragmentBorrowerTabBinding>(
         tabType = tabTypeArg ?: PayeeTabType.RECENT
 
         showAddBorrowerViewWithData(selectedBorrowerName)
-        viewModel.updatePayeeType(PayeeType.BORROWER)
+        viewModel.updatePayeeType(PayeeType.valueOf(selectedType))
+        viewModel.loadRecentPayees()
     }
 
     override fun initListener() {
@@ -147,6 +151,7 @@ class BorrowerTabFragment : BaseFragment<FragmentBorrowerTabBinding>(
     companion object {
         private const val ARG_TAB_TYPE = "borrower_tab_type"
         const val ARG_SELECTED_BORROWER_NAME = "selected_borrower_name"
+        const val ARG_SELECTED_TYPE = "selected_type"
 
         fun newInstance(tabType: PayeeTabType): BorrowerTabFragment {
             return BorrowerTabFragment().apply {

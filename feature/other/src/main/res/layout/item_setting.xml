@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="12dp"
-    android:paddingHorizontal="0dp">
+    android:background="@drawable/rounded_ripple_image_button"
+    android:paddingHorizontal="0dp"
+    android:paddingVertical="12dp">
 
     <ImageView
         android:id="@+id/icon_setting"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:contentDescription="Setting icon"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/gray_text"
+        app:tint="@color/blue_primary"
         tools:src="@drawable/custom_ic_setting_v2" />
 
     <LinearLayout

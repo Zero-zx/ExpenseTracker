@@ -38,6 +38,12 @@ fun Fragment.navigateBack() {
     findNavController().navigateUp()
 }
 
+fun Long.toFormattedDate(pattern: String = "dd/MM/YYYY"): String {
+    val date = Date(this)
+    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+    return formatter.format(date)
+}
+
 fun Fragment.showNotImplementToast() {
     context?.showWarningToast("This feature is not implemented yet")
 }
@@ -102,6 +108,11 @@ fun Context.showCustomToast(
     // Change background color using tint
     binding.toastCard.background = getDrawable(R.drawable.rounded_background)
     binding.toastCard.backgroundTintList = ColorStateList.valueOf(backgroundColor)
+    binding.root.alpha = 0f
+    binding.root.animate()
+        .alpha(1f)
+        .setDuration(500)
+        .start()
 
     // 3. Create and show the Toast
     Toast(applicationContext).apply {

@@ -70,10 +70,13 @@ class NavigatorImpl @Inject constructor() : Navigator {
         )
     }
 
-    override fun navigateToSelectBorrower(selectedBorrowerName: String) {
+    override fun navigateToSelectBorrower(selectedBorrowerName: String, selectedType: String) {
         navController?.navigateWithAnim(
             com.example.transaction.R.id.borrowerSelectFragment,
-            bundleOf("selected_borrower_name" to selectedBorrowerName)
+            bundleOf(
+                "selected_borrower_name" to selectedBorrowerName,
+                "selected_type" to selectedType
+            )
         )
     }
 
@@ -116,5 +119,16 @@ class NavigatorImpl @Inject constructor() : Navigator {
 
     override fun navigateToDataSetting() {
         navController?.navigateWithAnim(R.id.dataSettingFragment)
+    }
+
+    override fun navigateToSelectReportCategory(categoryType: String, selectedIds: Array<Long>) {
+        navController?.navigateWithAnim(
+            com.example.statistics.R.id.categoryMultiSelectFragment,
+            bundleOf("selected_category_ids" to selectedIds, "category_type" to categoryType)
+        )
+    }
+
+    override fun navigateToSelectReportAccount() {
+        navController?.navigateWithAnim(com.example.statistics.R.id.accountMultiSelectFragment)
     }
 }

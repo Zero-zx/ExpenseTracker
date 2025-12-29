@@ -9,6 +9,7 @@ import com.example.other.other.model.FeatureItem
 import com.example.other.other.model.SettingItem
 import com.example.other.other.model.UtilityItem
 import dagger.hilt.android.AndroidEntryPoint
+import ui.showNotImplementToast
 
 @AndroidEntryPoint
 class OtherFragment : BaseFragment<FragmentOtherBinding>(
@@ -28,27 +29,19 @@ class OtherFragment : BaseFragment<FragmentOtherBinding>(
     override fun initListener() {
         binding.apply {
             iconNotification.setOnClickListener {
-                // TODO: Navigate to notifications
+                showNotImplementToast()
             }
 
             buttonPremium.setOnClickListener {
-                viewModel.navigateToPremium()
+                showNotImplementToast()
             }
 
             buttonCoins.setOnClickListener {
-                // TODO: Navigate to coins screen
+                showNotImplementToast()
             }
 
             buttonReferral.setOnClickListener {
-                // TODO: Show referral code dialog or navigate
-            }
-
-            cardSync.setOnClickListener {
-                viewModel.sync()
-            }
-
-            buttonSupport.setOnClickListener {
-                // TODO: Open support/help
+                showNotImplementToast()
             }
         }
     }
@@ -63,12 +56,15 @@ class OtherFragment : BaseFragment<FragmentOtherBinding>(
                 is UIState.Loading -> {
                     // Show loading if needed
                 }
+
                 is UIState.Success -> {
                     // Handle success if needed
                 }
+
                 is UIState.Error -> {
                     // Handle error if needed
                 }
+
                 else -> {}
             }
         }
@@ -76,69 +72,64 @@ class OtherFragment : BaseFragment<FragmentOtherBinding>(
 
     private fun setupFeatureButtons() {
         val features = FeatureItem.getDefaultFeatures()
-        
+
         binding.apply {
             buttonFeatureTheme.setOnClickListener {
-                viewModel.navigateToFeature(features[0])
+                showNotImplementToast()
             }
 
             buttonFeatureBudget.setOnClickListener {
-                viewModel.navigateToFeature(features[1])
+                showNotImplementToast()
             }
 
             buttonFeatureCategories.setOnClickListener {
-                viewModel.navigateToFeature(features[2])
+                showNotImplementToast()
             }
-
-            buttonFeatureRecurring.setOnClickListener {
-                viewModel.navigateToFeature(features[3])
-            }
-
 
             buttonFeatureTemplate.setOnClickListener {
-                viewModel.navigateToFeature(features[5])
+                showNotImplementToast()
             }
 
             buttonFeatureTravel.setOnClickListener {
-                viewModel.navigateToFeature(features[6])
+                showNotImplementToast()
             }
 
             buttonFeatureIncomePlan.setOnClickListener {
-                viewModel.navigateToFeature(features[7])
+                showNotImplementToast()
             }
 
             buttonFeatureShoppingList.setOnClickListener {
-                viewModel.navigateToFeature(features[8])
+                showNotImplementToast()
             }
 
             buttonFeatureWebsite.setOnClickListener {
-                viewModel.navigateToFeature(features[9])
+                showNotImplementToast()
             }
         }
     }
 
     private fun setupUtilityButtons() {
         val utilities = UtilityItem.getDefaultUtilities()
-        
+
         binding.apply {
             buttonUtilityLoan.setOnClickListener {
-                viewModel.navigateToUtility(utilities[0])
+                showNotImplementToast()
             }
 
             buttonUtilityExchangeRates.setOnClickListener {
-                viewModel.navigateToUtility(utilities[2])
+                showNotImplementToast()
             }
 
             buttonUtilitySavings.setOnClickListener {
-                viewModel.navigateToUtility(utilities[3])
+                showNotImplementToast()
             }
 
             buttonUtilityWidget.setOnClickListener {
-                viewModel.navigateToUtility(utilities[5])
+                showNotImplementToast()
             }
 
             buttonUtilityExport.setOnClickListener {
-                viewModel.navigateToUtility(utilities[8])
+                showNotImplementToast()
             }
         }
     }
@@ -146,7 +137,7 @@ class OtherFragment : BaseFragment<FragmentOtherBinding>(
     private fun setupSettingsRecyclerView() {
         // Setup Settings RecyclerView
         settingAdapter = SettingAdapter { setting ->
-            viewModel.navigateToSetting(setting)
+            showNotImplementToast()
         }
         binding.recyclerViewSettings.apply {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
@@ -160,7 +151,7 @@ class OtherFragment : BaseFragment<FragmentOtherBinding>(
             textViewUsername.text = profile.username
             textViewEmail.text = profile.email
             textReferralCode.text = "Referral Code ${profile.referralCode} >"
-            
+
             // Update avatar initial
             val initial = profile.username.firstOrNull()?.uppercase() ?: "U"
             textViewAvatar.text = initial

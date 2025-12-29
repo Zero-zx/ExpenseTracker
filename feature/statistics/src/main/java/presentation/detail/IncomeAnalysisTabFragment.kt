@@ -5,6 +5,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.UIState
+import category.model.CategoryType
 import com.example.statistics.databinding.FragmentTabAnalysisBinding
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -19,7 +20,6 @@ import presentation.detail.adapter.MonthlyAnalysisAdapter
 import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
-import category.model.CategoryType
 import ui.listenForSelectionResult
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -80,30 +80,18 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
 
         // Category filter
         binding.layoutCategoryFilter.setOnClickListener {
-            openCategoryMultiSelect()
+            viewModel.navigateToSelectCategory()
         }
 
         // Account filter
         binding.layoutAccountFilter.setOnClickListener {
-            openAccountMultiSelect()
+            viewModel.navigateToSelectAccount()
         }
 
         setupFragmentResultListeners()
         updateDateRangeDisplay()
         updateCategoryDisplay()
         updateAccountDisplay()
-    }
-
-    private fun openCategoryMultiSelect() {
-        val selectedIds = viewModel.getSelectedCategoryIds()?.toLongArray()
-        val fragment = CategoryMultiSelectFragment.newInstance(
-            CategoryType.INCOME,
-            selectedIds
-        )
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(android.R.id.content, fragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     private fun openAccountMultiSelect() {
@@ -169,8 +157,10 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         val startDate = calendar.timeInMillis
 
-        val startText = dateFormatter.format(Calendar.getInstance().apply { timeInMillis = startDate }.time)
-        val endText = dateFormatter.format(Calendar.getInstance().apply { timeInMillis = endDate }.time)
+        val startText =
+            dateFormatter.format(Calendar.getInstance().apply { timeInMillis = startDate }.time)
+        val endText =
+            dateFormatter.format(Calendar.getInstance().apply { timeInMillis = endDate }.time)
 
         binding.textViewDateRange.text = "$startText - $endText"
     }
@@ -183,6 +173,7 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
                 is UIState.Success -> {
                     updateUI(state.data)
                 }
+
                 is UIState.Error -> {
                     // TODO: Handle error
                 }
