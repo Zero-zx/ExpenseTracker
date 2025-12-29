@@ -8,5 +8,7 @@ interface LocationRepository {
     fun searchLocationsByAccount(accountId: Long, query: String): Flow<List<Location>>
     suspend fun getLocationById(locationId: Long): Location?
     suspend fun insertLocation(location: Location): Long
+    suspend fun updateLocation(location: Location)
+    suspend fun deleteLocation(location: Location)
     suspend fun getLocationByName(name: String, accountId: Long): Location?
 }

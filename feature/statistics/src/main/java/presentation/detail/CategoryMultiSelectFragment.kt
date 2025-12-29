@@ -5,6 +5,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import base.BaseFragment
 import base.UIState
+import category.model.Category
 import category.model.CategoryType
 import com.example.statistics.databinding.FragmentCategoryMultiSelectBinding
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_IDS
@@ -19,11 +20,9 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
     FragmentCategoryMultiSelectBinding::inflate
 ) {
     private val viewModel: CategoryMultiSelectViewModel by viewModels()
-    private val selectedCategoryIds: MutableSet<Long> by lazy {
-        arguments?.getLongArray(ARG_SELECTED_CATEGORY_IDS)?.toMutableSet() ?: mutableSetOf()
-    }
+    private val selectedCategoryIds: MutableSet<Long> = mutableSetOf()
     private lateinit var adapter: ExpandableCategoryMultiSelectAdapter
-    private var allCategoryIds: List<Long> = emptyList()
+    private var allCategories: List<Category> = emptyList()
 
     private val categoryType: CategoryType by lazy {
         arguments?.getString(ARG_CATEGORY_TYPE)?.let { typeString ->
@@ -33,23 +32,75 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
 
     override fun initView() {
         // Get initially selected category IDs from arguments
-        arguments?.getLongArray("selected_category_ids")?.let {
-            selectedCategoryIds.addAll(it.toList())
+        // - null or not set: default to "select all" (will be set after categories are loaded)
+        // - empty array: deselect all (keep selectedCategoryIds empty)
+        // - array with -1L as first element: default/select all (will be set after categories are loaded)
+        // - array with IDs: use those IDs
+        val initialIds = arguments?.getLongArray(ARG_SELECTED_CATEGORY_IDS)
+        when {
+            initialIds == null -> {
+                // Not set = default = select all (will be set after categories are loaded)
+            }
+            initialIds.isEmpty() -> {
+                // Empty array = deselect all (keep selectedCategoryIds empty)
+                selectedCategoryIds.clear()
+            }
+            initialIds.size == 1 && initialIds[0] == -1L -> {
+                // Special marker for "default/select all" (will be set after categories are loaded)
+            }
+            else -> {
+                // Has IDs, use them
+                selectedCategoryIds.clear()
+                selectedCategoryIds.addAll(initialIds.toList())
+            }
         }
-
-        // Get category type from arguments
-
 
         // Initialize adapter
         adapter = ExpandableCategoryMultiSelectAdapter(
             onCategoryToggle = { categoryId ->
-                if (selectedCategoryIds.contains(categoryId)) {
-                    selectedCategoryIds.remove(categoryId)
+                val category = allCategories.find { it.id == categoryId }
+                val itemsToNotify = mutableListOf<Long>(categoryId)
+                
+                if (category != null && category.parentId != null) {
+                    // This is a child category
+                    if (selectedCategoryIds.contains(categoryId)) {
+                        selectedCategoryIds.remove(categoryId)
+                    } else {
+                        selectedCategoryIds.add(categoryId)
+                    }
+                    // Update parent state: if all children are selected, select parent; otherwise deselect parent
+                    val parentId = category.parentId
+                    if (parentId != null) {
+                        itemsToNotify.add(parentId)
+                        val childIds = allCategories.filter { it.parentId == parentId }.map { it.id }
+                        val allChildrenSelected = childIds.all { selectedCategoryIds.contains(it) }
+                        if (allChildrenSelected) {
+                            selectedCategoryIds.add(parentId)
+                        } else {
+                            selectedCategoryIds.remove(parentId)
+                        }
+                    }
                 } else {
-                    selectedCategoryIds.add(categoryId)
+                    // This is a parent category or orphan category
+                    val isParentSelected = selectedCategoryIds.contains(categoryId)
+                    val childIds = allCategories.filter { it.parentId == categoryId }.map { it.id }
+                    
+                    if (isParentSelected) {
+                        // Deselect parent and all children
+                        selectedCategoryIds.remove(categoryId)
+                        selectedCategoryIds.removeAll(childIds)
+                        itemsToNotify.addAll(childIds)
+                    } else {
+                        // Select parent and all children
+                        selectedCategoryIds.add(categoryId)
+                        selectedCategoryIds.addAll(childIds)
+                        itemsToNotify.addAll(childIds)
+                    }
                 }
-                refreshAdapter()
-                updateSelectAllState(allCategoryIds)
+                
+                // Only update checkbox state for affected items (most efficient)
+                adapter.updateCheckboxState(binding.recyclerViewCategories, itemsToNotify)
+                updateSelectAllState()
             },
             onParentCategoryToggle = { parentId, childIds ->
                 val isParentSelected = selectedCategoryIds.contains(parentId)
@@ -62,8 +113,12 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
                     selectedCategoryIds.add(parentId)
                     selectedCategoryIds.addAll(childIds)
                 }
-                refreshAdapter()
-                updateSelectAllState(allCategoryIds)
+                
+                // Only update checkbox state for affected items (most efficient)
+                val itemsToNotify = mutableListOf(parentId)
+                itemsToNotify.addAll(childIds)
+                adapter.updateCheckboxState(binding.recyclerViewCategories, itemsToNotify)
+                updateSelectAllState()
             },
             selectedCategoryIds = { selectedCategoryIds }
         )
@@ -72,18 +127,7 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
         binding.recyclerViewCategories.layoutManager =
             androidx.recyclerview.widget.LinearLayoutManager(requireContext())
 
-        // Setup select all listener will be done in observeData after categories are loaded
-
         viewModel.loadCategories(categoryType)
-    }
-
-    private fun refreshAdapter() {
-        // Refresh adapter by submitting categories again
-        viewModel.uiState.value?.let { state ->
-            if (state is UIState.Success) {
-                adapter.submitCategories(state.data)
-            }
-        }
     }
 
     override fun initListener() {
@@ -108,13 +152,14 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
                 }
 
                 is UIState.Success -> {
-                    if (state.data.isNotEmpty()) {
-                        adapter.submitCategories(state.data)
-                        // Update select all state will be handled by allCategoryIds observer
-                    } else {
-                        // Show empty state if needed
-                        android.util.Log.d("CategoryMultiSelect", "No categories found")
+                    allCategories = state.data
+                    // If no initial selection, default to "select all"
+                    if (selectedCategoryIds.isEmpty()) {
+                        val allCategoryIds = state.data.map { it.id }
+                        selectedCategoryIds.addAll(allCategoryIds)
                     }
+                    adapter.submitCategories(state.data)
+                    updateSelectAllState()
                 }
 
                 is UIState.Error -> {
@@ -128,68 +173,56 @@ class CategoryMultiSelectFragment : BaseFragment<FragmentCategoryMultiSelectBind
             }
         }
 
-        // Observe all category IDs for select all functionality
-        viewModel.allCategoryIds.observe(viewLifecycleOwner) { allIds ->
-            allCategoryIds = allIds
-            if (allIds.isNotEmpty()) {
-                setupSelectAllListener(allIds)
-                updateSelectAllState(allIds)
-            }
-        }
     }
 
-    private fun setupSelectAllListener(allIds: List<Long>) {
+    private fun setupSelectAllListener() {
         binding.checkboxSelectAll.setOnCheckedChangeListener { _, isChecked ->
+            val allCategoryIds = allCategories.map { it.id }
             if (isChecked) {
-                // Select all categories including parent and child
                 selectedCategoryIds.clear()
-                selectedCategoryIds.addAll(allIds)
-                refreshAdapter()
-                updateSelectAllState(allIds)
+                selectedCategoryIds.addAll(allCategoryIds)
+                adapter.refresh()
             } else {
-                // Deselect all
                 selectedCategoryIds.clear()
-                refreshAdapter()
-                updateSelectAllState(allIds)
+                adapter.refresh()
             }
+            updateSelectAllState()
         }
     }
 
-    private fun updateSelectAllState(allIds: List<Long>) {
-        val allSelected = allIds.isNotEmpty() && selectedCategoryIds.containsAll(allIds)
+    private fun updateSelectAllState() {
+        val allCategoryIds = allCategories.map { it.id }
+        val allSelected = allCategoryIds.isNotEmpty() && selectedCategoryIds.containsAll(allCategoryIds)
         binding.checkboxSelectAll.setOnCheckedChangeListener(null)
         binding.checkboxSelectAll.isChecked = allSelected
-        setupSelectAllListener(allIds)
+        setupSelectAllListener()
 
         val selectedCount = selectedCategoryIds.size
         binding.textViewSelectedCount.text = "$selectedCount categories"
     }
 
     private fun onConfirmSelection() {
-        setSelectionResult(
-            REQUEST_SELECT_CATEGORY_IDS,
+        // If all categories are selected, don't set the key (null = no filter, show all)
+        // Otherwise, return the selected IDs
+        val allCategoryIds = allCategories.map { it.id }
+        val allSelected = selectedCategoryIds.containsAll(allCategoryIds) && 
+                         allCategoryIds.isNotEmpty()
+        
+        val bundle = if (allSelected) {
+            // All selected = no filter = show all, don't set the key
+            bundleOf()
+        } else {
+            // Return selected IDs (can be empty array if deselect all)
             bundleOf(RESULT_CATEGORY_IDS to selectedCategoryIds.toLongArray())
-        )
+        }
+        
+        setSelectionResult(REQUEST_SELECT_CATEGORY_IDS, bundle)
         navigateBack()
     }
 
     companion object {
         const val ARG_SELECTED_CATEGORY_IDS = "selected_category_ids"
         const val ARG_CATEGORY_TYPE = "category_type"
-
-//        fun newInstance(
-//            categoryType: CategoryType,
-//            selectedCategoryIds: LongArray? = null
-//        ): CategoryMultiSelectFragment {
-//            return CategoryMultiSelectFragment().apply {
-//                arguments = android.os.Bundle().apply {
-//                    putString(ARG_CATEGORY_TYPE, categoryType.name)
-//                    selectedCategoryIds?.let {
-//                        putLongArray(ARG_SELECTED_CATEGORY_IDS, it)
-//                    }
-//                }
-//            }
-//        }
     }
 }
 

@@ -80,10 +80,10 @@ class NavigatorImpl @Inject constructor() : Navigator {
         )
     }
 
-    override fun navigateToSelectLocation(selectedLocationId: Long) {
+    override fun navigateToSelectLocation(selectedLocationName: String) {
         navController?.navigateWithAnim(
             R.id.locationSelectFragment,
-            bundleOf("selected_location_id" to selectedLocationId)
+            bundleOf("selected_location_name" to selectedLocationName)
         )
     }
 
@@ -124,7 +124,10 @@ class NavigatorImpl @Inject constructor() : Navigator {
     override fun navigateToSelectReportCategory(categoryType: String, selectedIds: Array<Long>) {
         navController?.navigateWithAnim(
             com.example.statistics.R.id.categoryMultiSelectFragment,
-            bundleOf("selected_category_ids" to selectedIds, "category_type" to categoryType)
+            bundleOf(
+                "selected_category_ids" to selectedIds, 
+                "category_type" to categoryType
+            )
         )
     }
 

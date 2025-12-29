@@ -1,9 +1,11 @@
 package dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import model.LocationEntity
 
@@ -20,6 +22,12 @@ internal interface LocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocation(location: LocationEntity): Long
+
+    @Update
+    suspend fun updateLocation(location: LocationEntity)
+
+    @Delete
+    suspend fun deleteLocation(location: LocationEntity)
 
     @Query("SELECT * FROM tb_location WHERE name = :name AND accountId = :accountId LIMIT 1")
     suspend fun getLocationByName(name: String, accountId: Long): LocationEntity?

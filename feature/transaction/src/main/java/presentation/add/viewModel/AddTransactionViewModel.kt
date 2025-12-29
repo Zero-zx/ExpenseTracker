@@ -208,7 +208,12 @@ class AddTransactionViewModel @Inject constructor(
                     )
                 }
 
-                val finalLocation = _selectedLocation.value
+                val finalLocation = _selectedLocation.value?.let { location ->
+                    addLocationUseCase(
+                        name = location.name,
+                        accountId = location.accountId
+                    )
+                }
 
                 // Step 3: Save or update transaction with persisted entities
                 val currentTransactionId = _transactionId.value
@@ -349,14 +354,20 @@ class AddTransactionViewModel @Inject constructor(
     }
 
     fun toSelectLocation() {
-        navigator.navigateToSelectLocation(_selectedLocation.value?.id ?: -1L)
+        navigator.navigateToSelectLocation(_selectedLocation.value?.name ?: "")
+    }
+
+    fun selectLocation(locationName: String) {
+        val accountId = getCurrentAccountIdUseCase() ?: _selectedAccount.value?.id ?: 1L
+        _selectedLocation.value = Location(
+            name = locationName,
+            accountId = accountId
+        )
     }
 
     fun selectLocationById(locationId: Long) {
         viewModelScope.launch {
             try {
-                // Only handle positive IDs (persisted locations)
-                // Temporary locations should be persisted via addTemporaryLocation
                 if (locationId > 0) {
                     val location = getLocationByIdUseCase(locationId)
                     if (location != null) {
@@ -447,21 +458,6 @@ class AddTransactionViewModel @Inject constructor(
         resetState()
     }
 
-    fun addTemporaryLocation(location: Location): Long {
-        viewModelScope.launch {
-            try {
-                // Persist location immediately when user creates it
-                val persistedLocation = addLocationUseCase(
-                    name = location.name,
-                    accountId = location.accountId
-                )
-                _selectedLocation.value = persistedLocation
-            } catch (e: Exception) {
-                setError(e.message ?: "Failed to create location")
-            }
-        }
-        return -1L
-    }
 
 
     private val _transactionLoaded = MutableStateFlow<Transaction?>(null)

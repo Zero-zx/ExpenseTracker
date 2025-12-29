@@ -25,12 +25,14 @@ import constants.FragmentResultKeys.REQUEST_SELECT_BORROWER_NAME
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_NAME
 import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
+import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_NAME
 import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_NAMES
 import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
 import constants.FragmentResultKeys.RESULT_BORROWER_NAME
 import constants.FragmentResultKeys.RESULT_CATEGORY_ID
 import constants.FragmentResultKeys.RESULT_EVENT_NAME
 import constants.FragmentResultKeys.RESULT_LOCATION_ID
+import constants.FragmentResultKeys.RESULT_LOCATION_NAME
 import constants.FragmentResultKeys.RESULT_PAYEE_NAMES
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.standardize
@@ -187,9 +189,11 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             viewModel.addPayee(payeeNames.toList())
         }
 
-        listenForSelectionResult(REQUEST_SELECT_LOCATION_ID) { bundle ->
-            val locationId = bundle.getLong(RESULT_LOCATION_ID)
-            viewModel.selectLocationById(locationId)
+        listenForSelectionResult(REQUEST_SELECT_LOCATION_NAME) { bundle ->
+            val locationName = bundle.getString(RESULT_LOCATION_NAME)
+            if (locationName != null) {
+                viewModel.selectLocation(locationName)
+            }
         }
 
         listenForSelectionResult(REQUEST_SELECT_BORROWER_NAME) { bundle ->
@@ -613,8 +617,9 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
     private fun updateSelectedLocation(location: Location?) {
         binding.apply {
-            customViewLocation.getTextView().isVisible = location == null
+            customViewLocation.getTextView().isVisible = true
             customViewLocation.getChipGroup().removeAllViews()
+            customViewLocation.hideText()
 
             location?.let { loc ->
                 val chip = Chip(requireContext())
@@ -623,6 +628,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 chip.setOnCloseIconClickListener {
                     viewModel.removeLocation()
                 }
+                // Insert before the "Add Location" chip
                 customViewLocation.getChipGroup()
                     .addView(chip, customViewLocation.getChipGroup().childCount - 1)
             }
