@@ -9,3 +9,4 @@ data class Location(
     val name: String,
     val accountId: Long
 )
+

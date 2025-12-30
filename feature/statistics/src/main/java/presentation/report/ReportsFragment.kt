@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.formatAsCurrency
+import ui.showNotImplementToast
 
 @AndroidEntryPoint
 class ReportsFragment : BaseFragment<FragmentReportsBinding>(
@@ -26,21 +27,41 @@ class ReportsFragment : BaseFragment<FragmentReportsBinding>(
     }
 
     override fun initListener() {
-        binding.constraintLayoutIncomeAndOutcome.setOnClickListener {
-            viewModel.navigateToExpenseVsIncome()
+
+        binding.apply {
+            constraintLayoutIncomeAndOutcome.setOnClickListener {
+                viewModel.navigateToExpenseVsIncome()
+            }
+
+            constraintLayoutCurrentFinance.setOnClickListener {
+                viewModel.navigateToReportDetailContainer()
+            }
+
+            buttonExpenseAnalysis.setOnClickListener {
+                viewModel.navigateToExpenseAnalysis()
+            }
+
+            buttonIncomeAnalysis.setOnClickListener {
+                viewModel.navigateToIncomeAnalysis()
+            }
+
+            buttonEventReport.setOnClickListener {
+                showNotImplementToast()
+            }
+
+            buttonPayeePayer.setOnClickListener {
+                showNotImplementToast()
+            }
+
+            buttonMoneyLentBorrowed.setOnClickListener {
+                showNotImplementToast()
+            }
+
+            buttonFinancialAnalysis.setOnClickListener {
+                showNotImplementToast()
+            }
         }
 
-        binding.constraintLayoutCurrentFinance.setOnClickListener {
-            viewModel.navigateToReportDetailContainer()
-        }
-
-        binding.buttonExpenseAnalysis.setOnClickListener {
-            viewModel.navigateToExpenseAnalysis()
-        }
-
-        binding.buttonIncomeAnalysis.setOnClickListener {
-            viewModel.navigateToIncomeAnalysis()
-        }
     }
 
     override fun observeData() {

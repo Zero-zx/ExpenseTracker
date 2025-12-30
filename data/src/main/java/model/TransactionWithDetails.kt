@@ -41,5 +41,10 @@ internal data class TransactionWithDetails(
         parentColumn = "borrowerId",
         entityColumn = "id",
     )
-    val borrowerEntity: PayeeEntity?
+    val borrowerEntity: PayeeEntity?,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "transactionId"
+    )
+    val images: List<TransactionImageEntity>
 )

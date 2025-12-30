@@ -31,8 +31,9 @@
             style="@style/TextAppearance.App.Normal.White"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_medium"
             android:gravity="center"
-            android:text="Finacial statement"
+            android:text="Financial statement"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -210,6 +211,7 @@
             app:text="Income analysis" />
 
         <ui.CustomCardView
+            android:id="@+id/button_money_lent_borrowed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -220,6 +222,7 @@
             app:text="Money lent/borrowed" />
 
         <ui.CustomCardView
+            android:id="@+id/button_payee_payer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -230,6 +233,7 @@
             app:text="Payee/Payer" />
 
         <ui.CustomCardView
+            android:id="@+id/button_event_report"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
@@ -240,6 +244,7 @@
             app:text="Event" />
 
         <ui.CustomCardView
+            android:id="@+id/button_financial_analysis"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"

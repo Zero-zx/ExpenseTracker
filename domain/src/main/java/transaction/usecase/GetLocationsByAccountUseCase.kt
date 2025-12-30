@@ -12,3 +12,4 @@ class GetLocationsByAccountUseCase @Inject constructor(
         return repository.getAllLocationsByAccount(accountId)
     }
 }
+

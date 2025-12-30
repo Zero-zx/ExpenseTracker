@@ -458,8 +458,15 @@ class AddTransactionViewModel @Inject constructor(
         resetState()
     }
 
-
-
+    fun clearData() {
+        _transactionId.value = null
+        _selectedCategory.value = null
+        _selectedEvent.value = null
+        _selectedPayees.value = emptyList()
+        _selectedBorrower.value = null
+        _selectedLocation.value = null
+        _transactionImage.value = null
+    }
     private val _transactionLoaded = MutableStateFlow<Transaction?>(null)
     val transactionLoaded = _transactionLoaded.asStateFlow()
 

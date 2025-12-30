@@ -31,6 +31,7 @@ class ExpenseAnalysisViewModel @Inject constructor(
     private var currentEndDate: Long = System.currentTimeMillis()
     private var selectedCategoryIds: List<Long>? = null
     private var selectedAccountIds: List<Long>? = null
+    private var currentTabType: TabType = TabType.MONTHLY
 
     init {
         // Default: Last 12 months
@@ -49,13 +50,14 @@ class ExpenseAnalysisViewModel @Inject constructor(
     }
 
     fun loadData(tabType: TabType) {
+        currentTabType = tabType
         // Adjust date range based on tab type
         val calendar = Calendar.getInstance()
         currentEndDate = calendar.timeInMillis
 
         when (tabType) {
             TabType.NOW -> {
-                // Current month
+                // Current month - all days
                 calendar.set(Calendar.DAY_OF_MONTH, 1)
                 calendar.set(Calendar.HOUR_OF_DAY, 0)
                 calendar.set(Calendar.MINUTE, 0)
@@ -65,9 +67,13 @@ class ExpenseAnalysisViewModel @Inject constructor(
             }
 
             TabType.MONTHLY -> {
-                // Last 12 months
-                calendar.add(Calendar.MONTH, -12)
+                // 12 months of current year
+                calendar.set(Calendar.MONTH, Calendar.JANUARY)
                 calendar.set(Calendar.DAY_OF_MONTH, 1)
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
                 currentStartDate = calendar.timeInMillis
             }
 
@@ -79,8 +85,13 @@ class ExpenseAnalysisViewModel @Inject constructor(
 
             TabType.YEAR -> {
                 // Last 5 years
-                calendar.add(Calendar.YEAR, -5)
+                calendar.add(Calendar.YEAR, -4) // -4 because we want 5 years total (current + 4 past)
+                calendar.set(Calendar.MONTH, Calendar.JANUARY)
                 calendar.set(Calendar.DAY_OF_YEAR, 1)
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
                 currentStartDate = calendar.timeInMillis
             }
 
@@ -152,49 +163,121 @@ class ExpenseAnalysisViewModel @Inject constructor(
 
     private fun processTransactions(transactions: List<Transaction>): AnalysisData {
         val calendar = Calendar.getInstance()
-        val monthlyDataMap = mutableMapOf<String, Double>()
+        val dataMap = mutableMapOf<String, Double>()
 
-        // Initialize 12 months with 0 values
-        val startCalendar = Calendar.getInstance().apply { timeInMillis = currentStartDate }
-        val endCalendar = Calendar.getInstance().apply { timeInMillis = currentEndDate }
+        when (currentTabType) {
+            TabType.NOW -> {
+                // Group by day of current month
+                val startCalendar = Calendar.getInstance().apply { timeInMillis = currentStartDate }
+                val endCalendar = Calendar.getInstance().apply { timeInMillis = currentEndDate }
+                val daysInMonth = endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-        val currentMonth = Calendar.getInstance().apply { timeInMillis = currentStartDate }
-        while (currentMonth.before(endCalendar) || currentMonth.get(Calendar.MONTH) == endCalendar.get(
-                Calendar.MONTH
-            )
-        ) {
-            val monthKey =
-                "${currentMonth.get(Calendar.MONTH) + 1}/${currentMonth.get(Calendar.YEAR)}"
-            monthlyDataMap[monthKey] = 0.0
-            currentMonth.add(Calendar.MONTH, 1)
+                // Initialize all days with 0
+                for (day in 1..daysInMonth) {
+                    dataMap[day.toString()] = 0.0
+                }
+
+                // Process transactions
+                transactions.forEach { transaction ->
+                    calendar.timeInMillis = transaction.createAt
+                    val day = calendar.get(Calendar.DAY_OF_MONTH)
+                    dataMap[day.toString()] = (dataMap[day.toString()] ?: 0.0) + transaction.amount
+                }
+            }
+
+            TabType.MONTHLY -> {
+                // Group by 12 months of current year
+                val startCalendar = Calendar.getInstance().apply { timeInMillis = currentStartDate }
+                val endCalendar = Calendar.getInstance().apply { timeInMillis = currentEndDate }
+
+                // Initialize 12 months with 0 values
+                val currentMonth = Calendar.getInstance().apply { timeInMillis = currentStartDate }
+                while (currentMonth.before(endCalendar) || 
+                       (currentMonth.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR) && 
+                        currentMonth.get(Calendar.MONTH) <= endCalendar.get(Calendar.MONTH))) {
+                    val monthKey = "${currentMonth.get(Calendar.MONTH) + 1}"
+                    dataMap[monthKey] = 0.0
+                    currentMonth.add(Calendar.MONTH, 1)
+                }
+
+                // Process transactions
+                transactions.forEach { transaction ->
+                    calendar.timeInMillis = transaction.createAt
+                    val month = calendar.get(Calendar.MONTH) + 1
+                    dataMap[month.toString()] = (dataMap[month.toString()] ?: 0.0) + transaction.amount
+                }
+            }
+
+            TabType.YEAR -> {
+                // Group by 5 latest years
+                val endCalendar = Calendar.getInstance().apply { timeInMillis = currentEndDate }
+                val startCalendar = Calendar.getInstance().apply { timeInMillis = currentStartDate }
+
+                // Initialize 5 years with 0 values
+                val currentYear = Calendar.getInstance().apply { timeInMillis = currentStartDate }
+                while (currentYear.get(Calendar.YEAR) <= endCalendar.get(Calendar.YEAR)) {
+                    val yearKey = currentYear.get(Calendar.YEAR).toString()
+                    dataMap[yearKey] = 0.0
+                    currentYear.add(Calendar.YEAR, 1)
+                }
+
+                // Process transactions
+                transactions.forEach { transaction ->
+                    calendar.timeInMillis = transaction.createAt
+                    val year = calendar.get(Calendar.YEAR).toString()
+                    dataMap[year] = (dataMap[year] ?: 0.0) + transaction.amount
+                }
+            }
+
+            else -> {
+                // Default: Group by month (MM/yyyy)
+                val startCalendar = Calendar.getInstance().apply { timeInMillis = currentStartDate }
+                val endCalendar = Calendar.getInstance().apply { timeInMillis = currentEndDate }
+
+                val currentMonth = Calendar.getInstance().apply { timeInMillis = currentStartDate }
+                while (currentMonth.before(endCalendar) || currentMonth.get(Calendar.MONTH) == endCalendar.get(
+                        Calendar.MONTH
+                    )
+                ) {
+                    val monthKey =
+                        "${currentMonth.get(Calendar.MONTH) + 1}/${currentMonth.get(Calendar.YEAR)}"
+                    dataMap[monthKey] = 0.0
+                    currentMonth.add(Calendar.MONTH, 1)
+                }
+
+                transactions.forEach { transaction ->
+                    calendar.timeInMillis = transaction.createAt
+                    val monthKey = "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
+                    dataMap[monthKey] = (dataMap[monthKey] ?: 0.0) + transaction.amount
+                }
+            }
         }
 
-        // Process transactions
-        transactions.forEach { transaction ->
-            calendar.timeInMillis = transaction.createAt
-            val monthKey = "${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}"
-
-            monthlyDataMap[monthKey] = (monthlyDataMap[monthKey] ?: 0.0) + transaction.amount
-        }
-
-        // Convert to list sorted by month (oldest first)
-        val monthlyData = monthlyDataMap.entries
+        // Convert to list sorted by key (oldest first)
+        val monthlyData = dataMap.entries
             .sortedBy { it.key }
-            .map { (monthKey, amount) ->
+            .map { (label, amount) ->
                 MonthlyAnalysisItem(
-                    monthLabel = monthKey,
+                    monthLabel = label,
                     amount = amount
                 )
             }
-            .filter { it.amount > 0 } // Only show months with expenses
 
         val totalAmount = transactions.sumOf { it.amount }
-        val monthCount = monthlyDataMap.values.count { it > 0 }
-        val averagePerMonth = if (monthCount > 0) totalAmount / monthCount else 0.0
+        val periodCount = when (currentTabType) {
+            TabType.NOW -> {
+                val endCalendar = Calendar.getInstance().apply { timeInMillis = currentEndDate }
+                endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH).toDouble()
+            }
+            TabType.MONTHLY -> 12.0
+            TabType.YEAR -> 5.0
+            else -> dataMap.values.count { it > 0 }.toDouble().coerceAtLeast(1.0)
+        }
+        val averagePerPeriod = if (periodCount > 0) totalAmount / periodCount else 0.0
 
         return AnalysisData(
             totalAmount = totalAmount,
-            averagePerMonth = averagePerMonth,
+            averagePerMonth = averagePerPeriod,
             monthlyData = monthlyData
         )
     }

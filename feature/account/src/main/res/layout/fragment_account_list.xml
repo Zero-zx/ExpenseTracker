@@ -37,7 +37,7 @@
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/ripple_image_button"
                 android:src="@drawable/ic_search_black_24"
-                android:tint="@color/gray_top_icon" />
+                app:tint="@color/gray_top_icon" />
 
             <ImageButton
                 android:id="@+id/button_sort"
@@ -45,7 +45,7 @@
                 android:layout_height="@dimen/top_icon_size"
                 android:background="@drawable/ripple_image_button"
                 android:src="@drawable/ic_setting_v2"
-                android:tint="@color/gray_top_icon" />
+                app:tint="@color/gray_top_icon" />
 
         </LinearLayout>
 

@@ -1,10 +1,8 @@
 package com.example.home.home
 
 import android.graphics.Color
-import android.view.LayoutInflater
-import android.widget.PopupWindow
+import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import base.BaseFragment
 import base.UIState
 import com.example.home.databinding.FragmentHomeBinding
@@ -19,12 +17,12 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import ui.gone
+import ui.showNotImplementToast
 import ui.visible
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -45,7 +43,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
     override fun initView() {
         setupBarChart()
         setupPieChart()
-        setupExpenseAnalysisChart()
     }
 
     override fun initListener() {
@@ -55,12 +52,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
             }
 
             iconRefresh.setOnClickListener {
-                // Refresh data
                 viewModel.loadTransactionData(selectedTimePeriod)
             }
 
             iconNotification.setOnClickListener {
-                // Open notifications
+                showNotImplementToast()
             }
 
             iconEye.setOnClickListener {
@@ -68,59 +64,52 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
             }
 
             buttonSettings.setOnClickListener {
-                // Open expense vs income settings
+                showNotImplementToast()
             }
 
             buttonTimePeriod.setOnClickListener {
-                // Show time period selection popup
                 showTimePeriodPopup()
             }
 
             buttonRecordHistory.setOnClickListener {
-                // Navigate to record history
                 viewModel.navigateToTransaction()
             }
 
-            buttonExpenseDateRange.setOnClickListener {
-                showMonthRangePicker()
+            layoutBudget.setOnClickListener {
+                showNotImplementToast()
+            }
+
+            layoutSavingAccount.setOnClickListener {
+                showNotImplementToast()
             }
         }
     }
 
     override fun observeData() {
+        // Observe total balance
+        collectState(viewModel.totalBalance) { totalBalance ->
+            binding.textViewBalance.text = formatCurrency(totalBalance)
+        }
+
+        // Observe HomeReportData và update charts
         collectFlow(viewModel.uiState) { state ->
             when (state) {
-                is UIState.Idle -> {
-                    showNoDataState()
-                }
+                is UIState.Idle -> {}
                 is UIState.Loading -> {
                     // Could show loading indicator if needed
                 }
-
                 is UIState.Success -> {
                     updateUI(state.data)
                 }
-
                 is UIState.Error -> {
                     // Handle error if needed
                 }
             }
         }
 
-        // Observe expense analysis data
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.monthlyExpenseData.collect { data ->
-                updateExpenseAnalysisChart(data)
-            }
-        }
-
-        // Observe expense analysis date range
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.expenseAnalysisDateRange.collect { range ->
-                range?.let {
-                    updateExpenseDateRangeLabel(it.first, it.second)
-                }
-            }
+        // Observe monthly expense data for expense analysis chart
+        collectState(viewModel.monthlyExpenseData) { monthlyData ->
+            setupExpenseAnalysisChart(monthlyData)
         }
     }
 
@@ -173,29 +162,26 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         val xAxis = barChart.xAxis
         xAxis.isEnabled = false
 
-        // Configure Y-axis (left) - completely remove
+        // Configure Y-axis (left) - hide labels
         val leftAxis = barChart.axisLeft
-        leftAxis.isEnabled = false
         leftAxis.setDrawGridLines(false)
         leftAxis.setDrawLabels(false)
-        leftAxis.setDrawAxisLine(false)
+        leftAxis.axisMinimum = 0f
 
-        // Configure Y-axis (right) - completely remove
+        // Configure Y-axis (right) - disabled
         val rightAxis = barChart.axisRight
         rightAxis.isEnabled = false
-        rightAxis.setDrawGridLines(false)
-        rightAxis.setDrawLabels(false)
-        rightAxis.setDrawAxisLine(false)
     }
 
     private fun updateBarChart(income: Double, expense: Double) {
         val barChart = binding.barChart
 
-        val incomeVal = if (income > 0) income.toFloat() else 0.1f
-        val expenseVal = if (expense > 0) expense.toFloat() else 0.1f
+        // Find max value for scaling
+        val maxValue = maxOf(income, expense, 1.0) // At least 1 to avoid division by zero
 
-        val incomeEntry = BarEntry(0f, incomeVal)
-        val expenseEntry = BarEntry(1f, expenseVal)
+        // Create entries - normalize to 0-1 range for display
+        val incomeEntry = BarEntry(0f, (income / maxValue).toFloat())
+        val expenseEntry = BarEntry(1f, (expense / maxValue).toFloat())
 
         // Create datasets
         val incomeDataSet = BarDataSet(listOf(incomeEntry), "").apply {
@@ -208,20 +194,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
             setDrawValues(false)
         }
 
-        barChart.axisLeft.apply {
-            axisMinimum = 0f
-        }
-
-        val barWidth = 0.9f
-        val barSpace = 0.2f
-        val groupSpace = 0f
-
+        // Create bar data
         val barData = BarData(incomeDataSet, expenseDataSet).apply {
-            this.barWidth = barWidth
+            barWidth = 0.8f
         }
+
+        //remove Y axis line
+        barChart.axisLeft.setDrawAxisLine(false)
 
         barChart.data = barData
-        barChart.groupBars(-0.6f, groupSpace, barSpace)
+        barChart.invalidate()
     }
 
     private fun setupPieChart() {
@@ -262,21 +244,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
 
     private fun updateCategoryList(categories: List<CategoryExpenseData>) {
         val categoryLayouts = listOf(
-            binding.layoutCategory1 to Triple(
-                binding.viewColor1,
-                binding.textCategory1,
-                binding.textPercentage1
-            ),
-            binding.layoutCategory2 to Triple(
-                binding.viewColor2,
-                binding.textCategory2,
-                binding.textPercentage2
-            ),
-            binding.layoutCategory3 to Triple(
-                binding.viewColor3,
-                binding.textCategory3,
-                binding.textPercentage3
-            )
+            binding.layoutCategory1 to Triple(binding.viewColor1, binding.textCategory1, binding.textPercentage1),
+            binding.layoutCategory2 to Triple(binding.viewColor2, binding.textCategory2, binding.textPercentage2),
+            binding.layoutCategory3 to Triple(binding.viewColor3, binding.textCategory3, binding.textPercentage3)
         )
 
         categories.forEachIndexed { index, categoryData ->
@@ -288,8 +258,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
                     layout.visible()
                     colorView.setBackgroundColor(categoryColors[index])
                     nameView.text = categoryData.category.title
-                    percentageView.text =
-                        String.format(Locale.getDefault(), "%.2f %%", categoryData.percentage)
+                    percentageView.text = String.format(Locale.getDefault(), "%.2f %%", categoryData.percentage)
                 } else {
                     // Show category with 0%
                     layout.visible()
@@ -310,23 +279,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
     private fun showTimePeriodPopup() {
         val timePeriods = TimePeriod.values()
 
-        val popupView = LayoutInflater.from(requireContext()).inflate(
-            android.R.layout.simple_list_item_1,
-            null
-        )
-
-        val popupWindow = PopupWindow(
-            popupView,
-            binding.buttonTimePeriod.width,
-            android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-            true
-        )
-
-        // Show popup below the button
-        popupWindow.showAsDropDown(binding.buttonTimePeriod, 0, 8)
-
-        // TODO: Implement proper popup with custom layout showing time periods
-        // For now, cycle through periods on click
+        // Cycle through periods on click
         val currentIndex = timePeriods.indexOf(selectedTimePeriod)
         val nextIndex = (currentIndex + 1) % timePeriods.size
         selectedTimePeriod = timePeriods[nextIndex]
@@ -334,92 +287,71 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         viewModel.loadTransactionData(selectedTimePeriod)
     }
 
-    private fun setupExpenseAnalysisChart() {
-        val chart = binding.expenseAnalysisChart
+    private fun setupExpenseAnalysisChart(monthlyData: List<MonthlyExpenseData>) {
+        val barChart = binding.expenseAnalysisChart
 
-        // Configure chart appearance
-        chart.description.isEnabled = false
-        chart.setDrawGridBackground(false)
-        chart.setTouchEnabled(true)
-        chart.setDragEnabled(true)
-        chart.setScaleEnabled(false)
-        chart.setPinchZoom(false)
-        chart.legend.isEnabled = false
-        chart.setDrawBarShadow(false)
-        chart.setDrawValueAboveBar(false)
-
-        // Configure X-axis
-        val xAxis = chart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawGridLines(false)
-        xAxis.granularity = 1f
-        xAxis.textColor = Color.parseColor("#6B7280")
-        xAxis.textSize = 10f
-
-        // Configure Y-axis (left)
-        val leftAxis = chart.axisLeft
-        leftAxis.setDrawGridLines(true)
-        leftAxis.gridColor = Color.parseColor("#F3F4F6")
-        leftAxis.textColor = Color.parseColor("#6B7280")
-        leftAxis.axisMinimum = 0f
-        leftAxis.textSize = 10f
-
-        // Configure Y-axis (right) - disable
-        val rightAxis = chart.axisRight
-        rightAxis.isEnabled = false
-    }
-
-    private fun updateExpenseAnalysisChart(data: List<MonthlyExpenseData>) {
-        val chart = binding.expenseAnalysisChart
-
-        if (data.isEmpty()) {
-            chart.clear()
-            chart.invalidate()
+        if (monthlyData.isEmpty()) {
+            barChart.data = null
+            barChart.invalidate()
             return
         }
 
-        // Convert amounts to thousands
-        val entries = data.mapIndexed { index, monthData ->
-            BarEntry(index.toFloat(), (monthData.amount / 1000).toFloat())
+        // Configure chart appearance
+        barChart.apply {
+            description.isEnabled = false
+            setDrawGridBackground(false)
+            setTouchEnabled(true)
+            setDragEnabled(true)
+            setScaleEnabled(true)
+            setPinchZoom(false)
+            setDrawBorders(false)
+            legend.isEnabled = false
         }
 
-        // Get month labels
-        val labels = data.map { it.getMonthLabel() }
+        // Configure X-axis
+        val xAxis = barChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawAxisLine(false)
+        xAxis.granularity = 1f
+        xAxis.labelCount = monthlyData.size
 
+        val monthLabels = monthlyData.map { it.getMonthLabel() }.toTypedArray()
+        xAxis.valueFormatter = IndexAxisValueFormatter(monthLabels)
+
+        // Create entries
+        val entries = monthlyData.mapIndexed { index, data ->
+            BarEntry(index.toFloat(), (data.amount / 1_000).toFloat()) // Convert to thousands
+        }
+
+        // Configure Y-axis
+        val maxValue = monthlyData.maxOfOrNull { it.amount } ?: 0.0
+        val leftAxis = barChart.axisLeft
+        leftAxis.setDrawGridLines(false)
+        leftAxis.setDrawAxisLine(false)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = ((maxValue / 1_000) * 1.1).toFloat() // Add 10% padding
+        leftAxis.valueFormatter = object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return "${value.toInt()}K"
+            }
+        }
+
+        val rightAxis = barChart.axisRight
+        rightAxis.isEnabled = false
+
+        // Create dataset
         val dataSet = BarDataSet(entries, "").apply {
-            color = Color.parseColor("#3B82F6") // Blue color for expense bars
+            color = Color.parseColor("#00BCD4")
             setDrawValues(false)
-            highLightAlpha = 0
         }
 
+        // Create bar data
         val barData = BarData(dataSet).apply {
-            barWidth = 0.6f
+            barWidth = 0.4f
         }
 
-        chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-        chart.xAxis.labelCount = labels.size
-        chart.data = barData
-        chart.animateY(800)
-        chart.invalidate()
-    }
-
-    private fun updateExpenseDateRangeLabel(startDate: Long, endDate: Long) {
-        val dateFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
-        val startStr = dateFormat.format(startDate)
-        val endStr = dateFormat.format(endDate)
-        binding.textExpenseDateRange.text = "$startStr - $endStr"
-    }
-
-    private fun showMonthRangePicker() {
-        val dialog = MonthRangePickerDialog.newInstance()
-        dialog.setOnRangeSelectedListener { startDate, endDate ->
-            viewModel.updateExpenseAnalysisDateRange(startDate, endDate)
-        }
-        dialog.show(childFragmentManager, "MonthRangePicker")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadTransactionData(selectedTimePeriod)
+        barChart.data = barData
+        barChart.invalidate()
     }
 }

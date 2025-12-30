@@ -29,7 +29,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
-            android:paddingTop="@dimen/padding_edges"
             android:paddingBottom="16dp">
 
             <com.google.android.material.card.MaterialCardView
@@ -157,6 +156,7 @@
                     android:layout_marginStart="12dp"
                     android:contentDescription="Toggle visibility"
                     android:src="@drawable/icon_search"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@id/text_view_balance"
                     app:layout_constraintStart_toEndOf="@id/text_view_balance"
                     app:layout_constraintTop_toTopOf="@id/text_view_balance"
@@ -519,9 +519,11 @@
                     app:backgroundTint="@null" />
 
                 <LinearLayout
+                    android:id="@+id/layout_budget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:background="@drawable/rounded_ripple_image_button"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -561,57 +563,17 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/layout_saving_account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:background="@drawable/rounded_ripple_image_button"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_saving" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/TextAppearance.App.Normal.Black"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Saving Account"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            style="@style/TextAppearance.App.Normal.Gray"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Savings books are managed here" />
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/background_image_cyan_circle"
-                        android:padding="8dp"
-                        android:src="@drawable/v2_ic_add_while"
-                        app:tint="@color/blue_bg" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_debt" />
 
                     <LinearLayout
                         android:layout_width="0dp"

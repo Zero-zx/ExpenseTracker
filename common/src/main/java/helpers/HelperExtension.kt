@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 import com.example.common.R
+import java.text.DecimalFormat
 
 fun String.standardize(): String {
     return this[0].uppercase() + this.substring(1)
@@ -46,16 +47,15 @@ fun Int.dpToPx(context: Context): Int {
 }
 
 /**
- * Formats a Double value as currency, showing only integer part if there's no decimal component.
+ * Formats a Double value as currency, showing 1 decimal place.
  * @param currencySymbol The currency symbol to append (default: "$")
  * @return Formatted currency string with symbol
  */
 fun Double.formatAsCurrency(currencySymbol: String = "$"): String {
-    val formattedAmount = if (this % 1.0 == 0.0) {
-        this.toInt().toString()
-    } else {
-        this.toString()
+    val formatter = DecimalFormat("#,##0.0").apply {
+        isGroupingUsed = true
     }
+    val formattedAmount = formatter.format(this)
     return "$formattedAmount $currencySymbol"
 }
 

@@ -7,10 +7,13 @@ import com.example.home.home.usecase.GetHomeReportDataUseCase
 import com.example.home.home.usecase.GetMonthlyExpenseAnalysisUseCase
 import com.example.home.home.usecase.MonthlyExpenseData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import account.usecase.GetUserAccountsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import navigation.Navigator
 import session.usecase.GetCurrentAccountIdUseCase
@@ -22,7 +25,8 @@ class HomeViewModel @Inject constructor(
     private val navigator: Navigator,
     private val getHomeTransactionDataUseCase: GetHomeReportDataUseCase,
     private val getMonthlyExpenseAnalysisUseCase: GetMonthlyExpenseAnalysisUseCase,
-    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
+    private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase,
+    private val getUserAccountsUseCase: GetUserAccountsUseCase
 ) : BaseViewModel<HomeReportData>() {
 
     private var currentTimePeriod: TimePeriod = TimePeriod.THIS_MONTH
@@ -33,9 +37,28 @@ class HomeViewModel @Inject constructor(
     private val _expenseAnalysisDateRange = MutableStateFlow<Pair<Long, Long>?>(null)
     val expenseAnalysisDateRange: StateFlow<Pair<Long, Long>?> = _expenseAnalysisDateRange
 
+    private val _totalBalance = MutableStateFlow<Double>(0.0)
+    val totalBalance: StateFlow<Double> = _totalBalance.asStateFlow()
+
     init {
         loadTransactionData()
         loadExpenseAnalysis()
+        loadTotalBalance()
+    }
+
+    private fun loadTotalBalance() {
+        getUserAccountsUseCase()
+            .map { accounts ->
+                // Tính tổng số dư từ tất cả các tài khoản của user
+                accounts.sumOf { it.balance }
+            }
+            .onEach { total ->
+                _totalBalance.value = total
+            }
+            .catch { _ ->
+                // Handle error silently, keep default value 0.0
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun loadExpenseAnalysis() {
