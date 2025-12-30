@@ -1,11 +1,13 @@
-package presentation.detail
+package presentation.detail.ui
 
+import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.UIState
 import com.example.statistics.databinding.FragmentAccountMultiSelectBinding
@@ -13,7 +15,7 @@ import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_IDS
 import constants.FragmentResultKeys.RESULT_ACCOUNT_IDS
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.AccountMultiSelectAdapter
-import ui.navigateBack
+import presentation.detail.viewmodel.AccountMultiSelectViewModel
 import ui.navigateBack
 import ui.setSelectionResult
 
@@ -47,7 +49,7 @@ class AccountMultiSelectFragment : BaseFragment<FragmentAccountMultiSelectBindin
         )
 
         binding.recyclerViewAccounts.adapter = adapter
-        binding.recyclerViewAccounts.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+        binding.recyclerViewAccounts.layoutManager = LinearLayoutManager(requireContext())
         
         binding.checkboxSelectAll.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -158,7 +160,7 @@ class AccountMultiSelectFragment : BaseFragment<FragmentAccountMultiSelectBindin
             selectedAccountIds: LongArray? = null
         ): AccountMultiSelectFragment {
             return AccountMultiSelectFragment().apply {
-                arguments = android.os.Bundle().apply {
+                arguments = Bundle().apply {
                     selectedAccountIds?.let {
                         putLongArray(ARG_SELECTED_ACCOUNT_IDS, it)
                     }

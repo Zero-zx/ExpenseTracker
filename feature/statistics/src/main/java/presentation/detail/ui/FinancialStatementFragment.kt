@@ -1,13 +1,16 @@
-package presentation.detail
+package presentation.detail.ui
 
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.UIState
+import com.example.common.R
 import com.example.statistics.databinding.FragmentFinancialStatementBinding
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.formatAsCurrency
 import presentation.detail.adapter.FinancialStatementAdapter
+import presentation.detail.model.FinancialStatementData
+import presentation.detail.viewmodel.FinancialStatementViewModel
 
 @AndroidEntryPoint
 class FinancialStatementFragment : BaseFragment<FragmentFinancialStatementBinding>(
@@ -54,7 +57,7 @@ class FinancialStatementFragment : BaseFragment<FragmentFinancialStatementBindin
         }
     }
 
-    private fun updateUI(data: presentation.detail.model.FinancialStatementData) {
+    private fun updateUI(data: FinancialStatementData) {
         binding.apply {
             // Update summary cards
             updateNetWorth(data.netWorth)
@@ -76,8 +79,8 @@ class FinancialStatementFragment : BaseFragment<FragmentFinancialStatementBindin
             text = netWorth.formatAsCurrency()
             setTextColor(
                 requireContext().getColor(
-                    if (netWorth < 0) com.example.common.R.color.red_expense
-                    else com.example.common.R.color.green_income
+                    if (netWorth < 0) R.color.red_expense
+                    else R.color.green_income
                 )
             )
         }
@@ -88,8 +91,8 @@ class FinancialStatementFragment : BaseFragment<FragmentFinancialStatementBindin
             text = totalAmount.formatAsCurrency()
             setTextColor(
                 requireContext().getColor(
-                    if (totalAmount < 0) com.example.common.R.color.red_expense
-                    else com.example.common.R.color.green_income
+                    if (totalAmount < 0) R.color.red_expense
+                    else R.color.green_income
                 )
             )
         }
@@ -99,7 +102,7 @@ class FinancialStatementFragment : BaseFragment<FragmentFinancialStatementBindin
     private fun updateLiabilities(totalLiabilities: Double, liabilityCount: Int) {
         binding.textViewLiabilitiesAmount.apply {
             text = totalLiabilities.formatAsCurrency()
-            setTextColor(requireContext().getColor(com.example.common.R.color.red_expense))
+            setTextColor(requireContext().getColor(R.color.red_expense))
         }
         binding.textViewLiabilitiesLabel.text = "Liabilities ($liabilityCount)"
     }

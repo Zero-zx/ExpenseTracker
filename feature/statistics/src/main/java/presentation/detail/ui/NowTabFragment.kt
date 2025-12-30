@@ -1,4 +1,4 @@
-package presentation.detail
+package presentation.detail.ui
 
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -7,6 +7,7 @@ import base.UIState
 import com.example.statistics.databinding.FragmentTabNowBinding
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.ReportItemAdapter
+import presentation.detail.viewmodel.NowTabViewModel
 import ui.showNotImplementToast
 
 @AndroidEntryPoint

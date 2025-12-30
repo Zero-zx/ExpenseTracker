@@ -1,5 +1,6 @@
 package ui
 
+import android.content.res.TypedArray
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -90,13 +91,16 @@ fun Fragment.setLocationNameSelectionResult(selectedName: String) {
 }
 
 fun Fragment.setCategoryIdsSelectionResult(selectedIds: LongArray) {
+    val bundle = Bundle().apply {
+        putLongArray(FragmentResultKeys.RESULT_CATEGORY_IDS, selectedIds)
+    }
     setSelectionResult(
         FragmentResultKeys.REQUEST_SELECT_CATEGORY_IDS,
-        bundleOf(FragmentResultKeys.RESULT_CATEGORY_IDS to selectedIds)
+        bundle
     )
 }
 
-fun Fragment.setAccountIdsSelectionResult(selectedIds: LongArray) {
+fun Fragment.setAccountIdsSelectionResult(selectedIds: TypedArray) {
     setSelectionResult(
         FragmentResultKeys.REQUEST_SELECT_ACCOUNT_IDS,
         bundleOf(FragmentResultKeys.RESULT_ACCOUNT_IDS to selectedIds)

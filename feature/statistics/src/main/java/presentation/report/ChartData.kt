@@ -1,4 +1,4 @@
-package presentation
+package presentation.report
 
 /**
  * Data class representing monthly income and expense for chart display

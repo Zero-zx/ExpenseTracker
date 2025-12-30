@@ -1,4 +1,4 @@
-package presentation.detail
+package presentation.detail.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
@@ -13,15 +13,13 @@ import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
 import session.usecase.GetCurrentAccountIdUseCase
 import transaction.model.Transaction
-import transaction.usecase.GetTransactionsByDateRangeUseCase
 import transaction.usecase.GetTransactionsByTypeDateRangeUseCase
 import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
-class ExpenseAnalysisViewModel @Inject constructor(
+class IncomeAnalysisViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
     private val getTransactionsByTypeDateRangeUseCase: GetTransactionsByTypeDateRangeUseCase,
     private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<AnalysisData>() {
@@ -45,7 +43,7 @@ class ExpenseAnalysisViewModel @Inject constructor(
         calendar.set(Calendar.MILLISECOND, 0)
         currentStartDate = calendar.timeInMillis
 
-        loadExpenseAnalysis()
+        loadIncomeAnalysis()
     }
 
     fun loadData(tabType: TabType) {
@@ -89,10 +87,10 @@ class ExpenseAnalysisViewModel @Inject constructor(
             }
         }
 
-        loadExpenseAnalysis()
+        loadIncomeAnalysis()
     }
 
-    fun loadExpenseAnalysis(
+    fun loadIncomeAnalysis(
         startDate: Long? = null,
         endDate: Long? = null,
         categoryIds: List<Long>? = null,
@@ -115,7 +113,7 @@ class ExpenseAnalysisViewModel @Inject constructor(
         getTransactionsByTypeDateRangeUseCase(
             currentStartDate,
             currentEndDate,
-            listOf(CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT)
+            listOf(CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT)
         )
             .onEach { transactions ->
                 val filteredTransactions = filterTransactions(transactions)
@@ -200,7 +198,7 @@ class ExpenseAnalysisViewModel @Inject constructor(
                     amount = amount
                 )
             }
-            .filter { it.amount > 0 } // Only show months with expenses
+            .filter { it.amount > 0 } // Only show months with income
 
         val totalAmount = transactions.sumOf { it.amount }
         val monthCount = monthlyDataMap.values.count { it > 0 }
@@ -227,7 +225,7 @@ class ExpenseAnalysisViewModel @Inject constructor(
             else -> categoryIds.toTypedArray() // Has IDs - convert List<Long> to Array<Long>
         }
         navigator.navigateToSelectReportCategory(
-            CategoryType.EXPENSE.name,
+            CategoryType.INCOME.name,
             idsToPass
         )
     }

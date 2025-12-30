@@ -1,4 +1,4 @@
-package presentation.detail
+package presentation.detail.viewmodel
 
 import account.model.Account
 import account.usecase.GetUserAccountsUseCase

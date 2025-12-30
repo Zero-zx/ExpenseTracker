@@ -5,4 +5,5 @@
     <string name="text_all_income_categories">All income categories</string>
     <string name="text_all_accounts">All accounts</string>
     <string name="text_unit_thousand">(Unit: Thousand)</string>
+    <string name="text_average_collection_day">Average collection/day</string>
 </resources>

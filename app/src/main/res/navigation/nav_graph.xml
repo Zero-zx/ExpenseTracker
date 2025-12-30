@@ -79,11 +79,11 @@
         android:label="PayeeSelectFragment" />
     <fragment
         android:id="@+id/incomeExpenseDetailFragment"
-        android:name="presentation.detail.IncomeExpenseDetailFragment"
+        android:name="presentation.detail.ui.IncomeExpenseDetailFragment"
         android:label="IncomeExpenseDetailFragment" />
     <fragment
         android:id="@+id/reportDetailContainerFragment"
-        android:name="presentation.detail.ReportDetailContainerFragment"
+        android:name="presentation.detail.ui.ReportDetailContainerFragment"
         android:label="ReportDetailContainerFragment" />
 <!--    <fragment-->
 <!--        android:id="@+id/editTransactionFragment"-->

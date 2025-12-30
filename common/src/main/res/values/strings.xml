@@ -87,4 +87,5 @@
         &lt;font color=red&gt;delete all transactions under this account. &lt;b&gt;
         Deleted data cannot be recovered.&lt;/b&gt;&lt;/font&gt;
         Are you sure you want to proceed?</string>
+    <string name="text_total_income">Total income</string>
 </resources>

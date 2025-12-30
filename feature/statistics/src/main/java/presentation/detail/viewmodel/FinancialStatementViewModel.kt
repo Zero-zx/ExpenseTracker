@@ -1,4 +1,4 @@
-package presentation.detail
+package presentation.detail.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
@@ -12,6 +12,7 @@ import presentation.detail.model.LiabilityItem
 import account.usecase.GetAccountsUseCase
 import account.model.Account
 import javax.inject.Inject
+import kotlin.math.abs
 
 @HiltViewModel
 class FinancialStatementViewModel @Inject constructor(
@@ -37,7 +38,6 @@ class FinancialStatementViewModel @Inject constructor(
     }
 
     private fun processAccounts(accounts: List<Account>): FinancialStatementData {
-        // Sử dụng partition để tách assets và liabilities một cách clean hơn
         val (assets, liabilities) = accounts.partition { it.balance >= 0 }
 
         val assetItems = assets.map { account ->
@@ -53,7 +53,7 @@ class FinancialStatementViewModel @Inject constructor(
             LiabilityItem(
                 id = account.id,
                 name = account.username,
-                amount = kotlin.math.abs(account.balance), // Store as positive for display
+                amount = abs(account.balance), // Store as positive for display
                 iconRes = account.type.iconRes
             )
         }

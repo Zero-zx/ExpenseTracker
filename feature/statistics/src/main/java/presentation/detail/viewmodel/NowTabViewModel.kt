@@ -1,4 +1,4 @@
-package presentation.detail
+package presentation.detail.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope

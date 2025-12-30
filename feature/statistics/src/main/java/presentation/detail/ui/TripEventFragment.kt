@@ -1,5 +1,7 @@
-package presentation.detail
+package presentation.detail.ui
 
+import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
@@ -7,9 +9,11 @@ import base.TabConfig
 import base.UIState
 import base.setupWithTabs
 import com.example.statistics.databinding.FragmentTripEventBinding
+import com.example.statistics.databinding.FragmentTripEventTabBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.adapter.TripEventAdapter
+import presentation.detail.viewmodel.TripEventViewModel
 
 @AndroidEntryPoint
 class TripEventFragment : BaseFragment<FragmentTripEventBinding>(
@@ -58,8 +62,8 @@ class TripEventFragment : BaseFragment<FragmentTripEventBinding>(
 
 @AndroidEntryPoint
 class TripEventTabFragment :
-    BaseFragment<com.example.statistics.databinding.FragmentTripEventTabBinding>(
-        com.example.statistics.databinding.FragmentTripEventTabBinding::inflate
+    BaseFragment<FragmentTripEventTabBinding>(
+        FragmentTripEventTabBinding::inflate
     ) {
     private val viewModel: TripEventViewModel by viewModels()
     private val adapter = TripEventAdapter { tripEventData ->
@@ -105,13 +109,13 @@ class TripEventTabFragment :
     }
 
     private fun showEmptyView() {
-        binding.layoutEmpty.visibility = android.view.View.VISIBLE
-        binding.recyclerViewEvents.visibility = android.view.View.GONE
+        binding.layoutEmpty.visibility = View.VISIBLE
+        binding.recyclerViewEvents.visibility = View.GONE
     }
 
     private fun showEventList() {
-        binding.layoutEmpty.visibility = android.view.View.GONE
-        binding.recyclerViewEvents.visibility = android.view.View.VISIBLE
+        binding.layoutEmpty.visibility = View.GONE
+        binding.recyclerViewEvents.visibility = View.VISIBLE
     }
 
     companion object {
@@ -119,7 +123,7 @@ class TripEventTabFragment :
 
         fun newInstance(isActive: Boolean): TripEventTabFragment {
             return TripEventTabFragment().apply {
-                arguments = android.os.Bundle().apply {
+                arguments = Bundle().apply {
                     putBoolean(ARG_IS_ACTIVE, isActive)
                 }
             }

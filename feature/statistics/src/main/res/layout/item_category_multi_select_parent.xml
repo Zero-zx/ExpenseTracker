@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:background="@drawable/category_selector"
     android:clickable="true"
     android:focusable="true"
     android:paddingVertical="4dp"
@@ -14,31 +14,32 @@
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="@id/image_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image_icon" />
+
+    <ImageView
+        android:id="@+id/icon_chevron"
+        android:layout_width="@dimen/big_icon_size"
+        android:layout_height="@dimen/big_icon_size"
+        android:rotation="-90"
+        android:scaleType="fitXY"
+        android:src="@drawable/icon_chevron"
+        android:tint="@color/gray_icon"
         app:layout_constraintBottom_toBottomOf="@id/image_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/image_icon" />
 
     <ImageView
-        android:id="@+id/icon_chevron"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/icon_chevron"
-        android:tint="@color/gray_icon"
-        app:layout_constraintBottom_toBottomOf="@id/image_icon"
-        app:layout_constraintStart_toEndOf="@id/checkbox"
-        app:layout_constraintTop_toTopOf="@id/image_icon" />
-
-    <ImageView
         android:id="@+id/image_icon"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/big_icon_size"
+        android:layout_height="@dimen/big_icon_size"
         android:layout_marginStart="8dp"
-        android:scaleType="centerCrop"
+        android:scaleType="centerInside"
         android:src="@drawable/chi_1_an_uong"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/icon_chevron"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.12" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_view_category_name"
@@ -50,6 +51,7 @@
         android:textColor="@android:color/black"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/image_icon"
+        app:layout_constraintEnd_toStartOf="@id/checkbox"
         app:layout_constraintStart_toEndOf="@id/image_icon"
         app:layout_constraintTop_toTopOf="@id/image_icon" />
 
@@ -57,7 +59,6 @@
         android:id="@+id/recycler_view_child_categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/image_icon"
