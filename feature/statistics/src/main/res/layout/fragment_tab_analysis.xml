@@ -157,7 +157,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.github.mikephil.charting.charts.BarChart
+        <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/bar_chart"
             android:layout_width="match_parent"
             android:layout_height="300dp"
@@ -177,7 +177,7 @@
                 style="@style/TextAppearance.App.Normal.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total expense"
+                android:text="@string/text_total_income"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -187,7 +187,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0 ₫"
-                android:textColor="@color/red_expense"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -198,7 +197,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Average spending/month"
+                android:text="@string/text_average_collection_day"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/label_total_expense" />
 
@@ -208,7 +207,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0 ₫"
-                android:textColor="@color/red_expense"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_view_total_expense" />

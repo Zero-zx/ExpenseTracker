@@ -2,15 +2,15 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/statistics_nav_graph"
-    app:startDestination="@id/ReportsFragment"
     app:enterAnim="@anim/slide_in_right"
     app:exitAnim="@anim/slide_out_left"
     app:popEnterAnim="@android:anim/slide_in_left"
-    app:popExitAnim="@android:anim/slide_out_right">
+    app:popExitAnim="@android:anim/slide_out_right"
+    app:startDestination="@id/ReportsFragment">
 
     <fragment
         android:id="@+id/ReportsFragment"
-        android:name="presentation.ReportsFragment"
+        android:name="presentation.report.ReportsFragment"
         android:label="Statistics">
         <action
             android:id="@+id/action_statisticsFragment_to_incomeExpenseDetailFragment"
@@ -22,26 +22,46 @@
 
     <fragment
         android:id="@+id/incomeExpenseDetailFragment"
-        android:name="presentation.detail.IncomeExpenseDetailFragment"
+        android:name="presentation.detail.ui.IncomeExpenseDetailFragment"
         android:label="Income vs Expense Detail" />
 
     <fragment
         android:id="@+id/reportDetailContainerFragment"
-        android:name="presentation.detail.ReportDetailContainerFragment"
+        android:name="presentation.detail.ui.ReportDetailContainerFragment"
         android:label="Report Detail">
         <argument
             android:name="report_type"
-            app:argType="string"
-            android:defaultValue="FINANCIAL_STATEMENT" />
+            android:defaultValue="FINANCIAL_STATEMENT"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/accountMultiSelectFragment"
-        android:name="presentation.detail.AccountMultiSelectFragment"
+        android:name="presentation.detail.ui.AccountMultiSelectFragment"
         android:label="AccountMultiSelectFragment" />
     <fragment
         android:id="@+id/categoryMultiSelectFragment"
-        android:name="presentation.detail.CategoryMultiSelectFragment"
+        android:name="presentation.detail.ui.CategoryMultiSelectFragment"
         android:label="CategoryMultiSelectFragment" />
+    <fragment
+        android:id="@+id/expenseAnalysisFragment"
+        android:name="presentation.detail.ui.ExpenseAnalysisFragment"
+        android:label="ExpenseAnalysisFragment" />
+    <fragment
+        android:id="@+id/incomeAnalysisFragment"
+        android:name="presentation.detail.ui.IncomeAnalysisFragment"
+        android:label="IncomeAnalysisFragment" />
+    <fragment
+        android:id="@+id/expenseAnalysisTabFragment"
+        android:name="presentation.detail.ui.ExpenseAnalysisTabFragment"
+        android:label="ExpenseAnalysisTabFragment" />
+    <fragment
+        android:id="@+id/incomeAnalysisTabFragment"
+        android:name="presentation.detail.ui.IncomeAnalysisTabFragment"
+        android:label="IncomeAnalysisTabFragment" />
+    <fragment
+        android:id="@+id/placeholderReportFragment"
+        android:name="presentation.detail.ui.PlaceholderReportFragment"
+        android:label="PlaceholderReportFragment" />
 
 </navigation>
 

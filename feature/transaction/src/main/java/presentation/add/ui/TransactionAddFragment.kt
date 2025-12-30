@@ -257,6 +257,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
             buttonSubmit.setOnClickListener {
                 saveTransaction()
+                calculatorManager.clear()
             }
 
             buttonSave.setOnClickListener {

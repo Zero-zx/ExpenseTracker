@@ -1,4 +1,4 @@
-package presentation
+package presentation.report
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import navigation.Navigator
 import session.usecase.GetCurrentAccountIdUseCase
 import transaction.model.Transaction
 import transaction.usecase.GetTransactionsByDateRangeUseCase
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class ReportsViewModel @Inject constructor(
     private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
     private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase,
-    private val navigator: navigation.Navigator
+    private val navigator: Navigator
 ) : BaseViewModel<IncomeExpenseChartData>() {
 
     companion object {

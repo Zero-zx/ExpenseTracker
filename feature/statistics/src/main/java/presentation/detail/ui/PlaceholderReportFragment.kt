@@ -1,4 +1,4 @@
-package presentation.detail
+package presentation.detail.ui
 
 import android.os.Bundle
 import android.view.View

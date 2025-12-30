@@ -1,16 +1,16 @@
-package presentation.detail
+package presentation.detail.ui
 
 import base.BaseFragment
 import base.TabConfig
 import base.setupWithTabs
-import com.example.statistics.databinding.FragmentIncomeAnalysisBinding
+import com.example.statistics.databinding.FragmentIncomeExpenseDetailBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.model.TabType
 
 @AndroidEntryPoint
-class IncomeAnalysisFragment : BaseFragment<FragmentIncomeAnalysisBinding>(
-    FragmentIncomeAnalysisBinding::inflate
+class IncomeExpenseDetailFragment : BaseFragment<FragmentIncomeExpenseDetailBinding>(
+    FragmentIncomeExpenseDetailBinding::inflate
 ) {
     private var tabMediator: TabLayoutMediator? = null
 
@@ -20,9 +20,11 @@ class IncomeAnalysisFragment : BaseFragment<FragmentIncomeAnalysisBinding>(
 
     private fun setupViewPager() {
         val tabs = listOf(
-            TabConfig("Date") { IncomeAnalysisTabFragment.newInstance(TabType.NOW) },
-            TabConfig("Month") { IncomeAnalysisTabFragment.newInstance(TabType.MONTHLY) },
-            TabConfig("Year") { IncomeAnalysisTabFragment.newInstance(TabType.YEAR) }
+            TabConfig("Current") { NowTabFragment() },
+            TabConfig("Monthly") { ChartTabFragment.newInstance(TabType.MONTHLY) },
+            TabConfig("Quarter") { ChartTabFragment.newInstance(TabType.QUARTER) },
+            TabConfig("Year") { ChartTabFragment.newInstance(TabType.YEAR) },
+            TabConfig("Custom") { ChartTabFragment.newInstance(TabType.CUSTOM) }
         )
 
         val (_, mediator) = binding.viewPager.setupWithTabs(
@@ -39,5 +41,4 @@ class IncomeAnalysisFragment : BaseFragment<FragmentIncomeAnalysisBinding>(
         super.onDestroyView()
     }
 }
-
 

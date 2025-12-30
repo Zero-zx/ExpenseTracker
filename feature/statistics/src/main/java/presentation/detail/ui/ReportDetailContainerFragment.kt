@@ -1,13 +1,17 @@
-package presentation.detail
+package presentation.detail.ui
 
+import android.R
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import base.BaseFragment
 import com.example.statistics.databinding.FragmentReportDetailContainerBinding
-import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_IDS
+import constants.FragmentResultKeys.RESULT_CATEGORY_IDS
 import dagger.hilt.android.AndroidEntryPoint
 import presentation.detail.model.ReportType
+import ui.listenForSelectionResult
 import ui.navigateBack
 
 @AndroidEntryPoint
@@ -42,6 +46,13 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
         setupDropdownMenu()
         setupBackButton()
         loadInitialFragment()
+        listenForResults()
+    }
+
+    fun listenForResults() {
+        listenForSelectionResult(REQUEST_SELECT_CATEGORY_IDS) { bundle ->
+            val categoryIds = bundle.getLongArray(RESULT_CATEGORY_IDS)
+        }
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -50,11 +61,6 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
         if (savedInstanceState != null && childFragmentManager.fragments.isEmpty()) {
             switchFragment(currentReportType)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // No need to recreate adapter on resume
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -70,7 +76,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
 
             dropdownAdapter = ArrayAdapter(
                 requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
+                R.layout.simple_dropdown_item_1line,
                 reportTypeNames
             )
 
@@ -125,7 +131,7 @@ class ReportDetailContainerFragment : BaseFragment<FragmentReportDetailContainer
         }
     }
 
-    private fun createFragmentForType(reportType: ReportType): androidx.fragment.app.Fragment {
+    private fun createFragmentForType(reportType: ReportType): Fragment {
         return when (reportType) {
             ReportType.FINANCIAL_STATEMENT -> FinancialStatementFragment()
             ReportType.EXPENSE_VS_INCOME -> IncomeExpenseDetailFragment()

@@ -1,5 +1,7 @@
-package presentation.detail
+package presentation.detail.ui
 
+import android.os.Bundle
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.viewModels
@@ -23,6 +25,7 @@ import presentation.detail.adapter.ChartHeaderAdapter
 import presentation.detail.adapter.ReportItemAdapter
 import presentation.detail.model.ChartDataWithReportItems
 import presentation.detail.model.TabType
+import presentation.detail.viewmodel.ChartTabViewModel
 import ui.showNotImplementToast
 
 @AndroidEntryPoint
@@ -38,8 +41,8 @@ class ChartTabFragment : BaseFragment<FragmentTabWithChartBinding>(
     override fun initView() {
         // Create BarChart programmatically
         barChart = BarChart(requireContext())
-        barChart.layoutParams = android.view.ViewGroup.LayoutParams(
-            android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+        barChart.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
             (300 * resources.displayMetrics.density).toInt()
         )
 
@@ -270,7 +273,7 @@ class ChartTabFragment : BaseFragment<FragmentTabWithChartBinding>(
 
         fun newInstance(tabType: TabType): ChartTabFragment {
             return ChartTabFragment().apply {
-                arguments = android.os.Bundle().apply {
+                arguments = Bundle().apply {
                     putSerializable(ARG_TAB_TYPE, tabType)
                 }
             }

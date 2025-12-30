@@ -1,4 +1,4 @@
-package presentation.detail
+package presentation.detail.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
@@ -13,13 +13,16 @@ import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
 import session.usecase.GetCurrentAccountIdUseCase
 import transaction.model.Transaction
+import transaction.usecase.GetTransactionsByDateRangeUseCase
+import transaction.usecase.GetTransactionsByTypeDateRangeUseCase
 import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
-class IncomeAnalysisViewModel @Inject constructor(
+class ExpenseAnalysisViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val getTransactionsByTypeDateRangeUseCase: transaction.usecase.GetTransactionsByTypeDateRangeUseCase,
+    private val getTransactionsByDateRangeUseCase: GetTransactionsByDateRangeUseCase,
+    private val getTransactionsByTypeDateRangeUseCase: GetTransactionsByTypeDateRangeUseCase,
     private val getCurrentAccountIdUseCase: GetCurrentAccountIdUseCase
 ) : BaseViewModel<AnalysisData>() {
 
@@ -42,7 +45,7 @@ class IncomeAnalysisViewModel @Inject constructor(
         calendar.set(Calendar.MILLISECOND, 0)
         currentStartDate = calendar.timeInMillis
 
-        loadIncomeAnalysis()
+        loadExpenseAnalysis()
     }
 
     fun loadData(tabType: TabType) {
@@ -86,10 +89,10 @@ class IncomeAnalysisViewModel @Inject constructor(
             }
         }
 
-        loadIncomeAnalysis()
+        loadExpenseAnalysis()
     }
 
-    fun loadIncomeAnalysis(
+    fun loadExpenseAnalysis(
         startDate: Long? = null,
         endDate: Long? = null,
         categoryIds: List<Long>? = null,
@@ -112,7 +115,7 @@ class IncomeAnalysisViewModel @Inject constructor(
         getTransactionsByTypeDateRangeUseCase(
             currentStartDate,
             currentEndDate,
-            listOf(CategoryType.INCOME, CategoryType.BORROWING, CategoryType.COLLECT_DEBT)
+            listOf(CategoryType.EXPENSE, CategoryType.LEND, CategoryType.REPAYMENT)
         )
             .onEach { transactions ->
                 val filteredTransactions = filterTransactions(transactions)
@@ -130,31 +133,17 @@ class IncomeAnalysisViewModel @Inject constructor(
         val accountIds = selectedAccountIds
         
         return transactions.filter { transaction ->
-            // Filter by selected categories:
-            // - null: show all (default state)
-            // - emptyList(): show nothing (deselect all)
-            // - non-empty: filter by selected
-            // Note: When parent category is selected, both parent ID and child IDs are in selectedCategoryIds
-            // So we check if transaction.category.id is in the list (which includes child IDs)
             val matchesCategory = when {
-                categoryIds == null -> true // Default: show all
-                categoryIds.isEmpty() -> false // Deselect all: show nothing
+                categoryIds.isNullOrEmpty() -> true
                 else -> {
-                    // Check if transaction's category ID is in selected list
-                    // Note: When parent category is selected, both parent ID and child IDs are already in selectedCategoryIds
-                    // So we only need to check if transaction.category.id is in the list
                     categoryIds.contains(transaction.category.id)
                 }
             }
 
-            // Filter by selected accounts:
-            // - null: show all (default state)
-            // - emptyList(): show nothing (deselect all)
-            // - non-empty: filter by selected
             val matchesAccount = when {
-                accountIds == null -> true // Default: show all
-                accountIds.isEmpty() -> false // Deselect all: show nothing
-                else -> accountIds.contains(transaction.account.id) // Filter by selected
+                accountIds == null -> true
+                accountIds.isEmpty() -> false
+                else -> accountIds.contains(transaction.account.id)
             }
 
             matchesCategory && matchesAccount
@@ -197,7 +186,7 @@ class IncomeAnalysisViewModel @Inject constructor(
                     amount = amount
                 )
             }
-            .filter { it.amount > 0 } // Only show months with income
+            .filter { it.amount > 0 } // Only show months with expenses
 
         val totalAmount = transactions.sumOf { it.amount }
         val monthCount = monthlyDataMap.values.count { it > 0 }
@@ -214,17 +203,14 @@ class IncomeAnalysisViewModel @Inject constructor(
     fun getSelectedAccountIds(): List<Long>? = selectedAccountIds
 
     fun navigateToSelectCategory() {
-        // If selectedCategoryIds is null (default), pass special marker - màn B will understand as "select all"
-        // If selectedCategoryIds is emptyList() (deselect all), pass emptyArray() - màn B will understand as "deselect all" 
-        // If selectedCategoryIds has values, pass the array
         val categoryIds = selectedCategoryIds
         val idsToPass: Array<Long> = when {
-            categoryIds == null -> arrayOf(-1L) // Special marker for "default/select all"
-            categoryIds.isEmpty() -> emptyArray() // Empty = deselect all
-            else -> categoryIds.toTypedArray() // Has IDs - convert List<Long> to Array<Long>
+            categoryIds == null -> arrayOf(-1L)
+            categoryIds.isEmpty() -> emptyArray()
+            else -> categoryIds.toTypedArray()
         }
         navigator.navigateToSelectReportCategory(
-            CategoryType.INCOME.name,
+            CategoryType.EXPENSE.name,
             idsToPass
         )
     }

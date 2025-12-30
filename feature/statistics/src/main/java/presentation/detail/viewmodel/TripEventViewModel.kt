@@ -1,4 +1,4 @@
-package presentation.detail
+package presentation.detail.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import base.BaseViewModel
@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import presentation.detail.model.TripEventData
 import category.model.CategoryType
+import kotlinx.coroutines.flow.Flow
 import transaction.model.Transaction
 import transaction.usecase.GetEventsByAccountUseCase
 import transaction.usecase.GetTransactionsByDateRangeUseCase
@@ -67,7 +68,7 @@ class TripEventViewModel @Inject constructor(
         .launchIn(viewModelScope)
     }
 
-    private fun getAllTransactions(accountId: Long): kotlinx.coroutines.flow.Flow<List<Transaction>> {
+    private fun getAllTransactions(accountId: Long): Flow<List<Transaction>> {
         // Get transactions from a wide date range (last 2 years)
         val calendar = Calendar.getInstance()
         val endDate = calendar.timeInMillis

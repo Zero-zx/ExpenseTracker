@@ -1,26 +1,29 @@
-package presentation.detail
+package presentation.detail.ui
 
 import android.graphics.Color
+import android.os.Bundle
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import base.BaseFragment
 import base.UIState
-import category.model.CategoryType
+import com.example.statistics.R
 import com.example.statistics.databinding.FragmentTabAnalysisBinding
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import constants.FragmentResultKeys.RESULT_ACCOUNT_IDS
-import constants.FragmentResultKeys.RESULT_CATEGORY_IDS
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
 import dagger.hilt.android.AndroidEntryPoint
 import helpers.formatAsCurrency
 import presentation.detail.adapter.MonthlyAnalysisAdapter
 import presentation.detail.model.AnalysisData
 import presentation.detail.model.MonthlyAnalysisItem
 import presentation.detail.model.TabType
-import ui.listenForSelectionResult
+import presentation.detail.viewmodel.IncomeAnalysisViewModel
+import presentation.detail.viewmodel.SharedViewModel
+import ui.showWarningToast
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -30,6 +33,7 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
     FragmentTabAnalysisBinding::inflate
 ) {
     private val viewModel: IncomeAnalysisViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by hiltNavGraphViewModels(R.id.statistics_nav_graph)
     private val dateFormatter = SimpleDateFormat("MM/yyyy", Locale.getDefault())
 
     private val monthlyAdapter = MonthlyAnalysisAdapter(
@@ -47,7 +51,7 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
 
         fun newInstance(tabType: TabType): IncomeAnalysisTabFragment {
             return IncomeAnalysisTabFragment().apply {
-                arguments = android.os.Bundle().apply {
+                arguments = Bundle().apply {
                     putSerializable(ARG_TAB_TYPE, tabType)
                 }
             }
@@ -88,60 +92,15 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
             viewModel.navigateToSelectAccount()
         }
 
-        setupFragmentResultListeners()
         updateDateRangeDisplay()
         updateCategoryDisplay()
         updateAccountDisplay()
     }
 
-    private fun openAccountMultiSelect() {
-        val selectedIds = viewModel.getSelectedAccountIds()?.toLongArray()
-        val fragment = AccountMultiSelectFragment.newInstance(selectedIds)
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(android.R.id.content, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    private fun setupFragmentResultListeners() {
-        listenForSelectionResult(
-            constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_IDS
-        ) { bundle ->
-            val categoryIds = bundle.getLongArray(RESULT_CATEGORY_IDS)
-            // Convert to list: 
-            // - null means no filter (show all) - default state
-            // - empty array means deselect all (show nothing)
-            // - non-empty array means filter by selected categories
-            val categoryIdsList = when {
-                categoryIds == null -> null // No filter, show all
-                categoryIds.isEmpty() -> emptyList() // Deselect all, show nothing
-                else -> categoryIds.toList() // Filter by selected
-            }
-            viewModel.loadIncomeAnalysis(
-                categoryIds = categoryIdsList,
-                accountIds = viewModel.getSelectedAccountIds()
-            )
-            updateCategoryDisplay()
-        }
-
-        listenForSelectionResult(
-            constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_IDS
-        ) { bundle ->
-            val accountIds = bundle.getLongArray(RESULT_ACCOUNT_IDS)
-            accountIds?.let {
-                viewModel.loadIncomeAnalysis(
-                    categoryIds = viewModel.getSelectedCategoryIds(),
-                    accountIds = it.toList()
-                )
-                updateAccountDisplay()
-            }
-        }
-    }
-
     private fun updateCategoryDisplay() {
         val selectedIds = viewModel.getSelectedCategoryIds()
         binding.textViewCategory.text = if (selectedIds.isNullOrEmpty()) {
-            getString(com.example.statistics.R.string.text_all_income_categories)
+            getString(R.string.text_all_income_categories)
         } else {
             "${selectedIds.size} categories"
         }
@@ -150,7 +109,7 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
     private fun updateAccountDisplay() {
         val selectedIds = viewModel.getSelectedAccountIds()
         binding.textViewAccount.text = if (selectedIds.isNullOrEmpty()) {
-            getString(com.example.statistics.R.string.text_all_accounts)
+            getString(R.string.text_all_accounts)
         } else {
             "${selectedIds.size} accounts"
         }
@@ -182,10 +141,22 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
                 }
 
                 is UIState.Error -> {
-                    // TODO: Handle error
+                    showWarningToast(state.message)
                 }
             }
         }
+
+        collectState(sharedViewModel.selectedIds) { selectedIds ->
+            handleCategorySelection(selectedIds)
+        }
+    }
+
+    fun handleCategorySelection(categoryIds: List<Long>? = null) {
+        viewModel.loadIncomeAnalysis(
+            categoryIds = categoryIds,
+            accountIds = viewModel.getSelectedAccountIds()
+        )
+        updateCategoryDisplay()
     }
 
     private fun updateUI(data: AnalysisData) {
@@ -203,7 +174,7 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
     }
 
     private fun updateChart(monthlyData: List<MonthlyAnalysisItem>) {
-        val barChart = binding.barChart
+        val lineChart = binding.barChart
 
         // Only setup config once
         if (!isChartInitialized) {
@@ -212,83 +183,141 @@ class IncomeAnalysisTabFragment : BaseFragment<FragmentTabAnalysisBinding>(
         }
 
         // Update data
-        val barData = prepareBarData(monthlyData)
-        barChart.data = barData
-        barChart.animateY(500) // Animate when data changes
-        barChart.invalidate()
+        val lineData = prepareLineData(monthlyData)
+        lineChart.data = lineData
+        lineChart.notifyDataSetChanged()
+        lineChart.invalidate()
     }
 
+    // 3. Configure chart appearance
     private fun configureChart() {
-        val barChart = binding.barChart
+        val lineChart = binding.barChart
 
-        // Configure chart appearance - only once
-        barChart.description.isEnabled = false
-        barChart.setDrawGridBackground(false)
-        barChart.setTouchEnabled(true)
-        barChart.setDragEnabled(true)
-        barChart.setScaleEnabled(true)
-        barChart.setPinchZoom(false)
-        barChart.legend.isEnabled = false
+        lineChart.apply {
+            description.isEnabled = false
+            legend.isEnabled = false
 
-        // Configure X-axis - show month numbers (1-12)
-        val xAxis = barChart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawGridLines(false)
-        xAxis.granularity = 1f
+            // Disable all interactions to match the clean look
+            setTouchEnabled(false)
+            isDragEnabled = false
+            setScaleEnabled(false)
+            setPinchZoom(false)
 
-        // Create labels for 12 months
-        val monthLabels = (1..12).map { it.toString() }.toTypedArray()
-        xAxis.valueFormatter = IndexAxisValueFormatter(monthLabels)
-        xAxis.labelCount = 12
+            // Remove all extra spacing
+            setDrawGridBackground(false)
+            extraTopOffset = 0f
+            extraBottomOffset = 0f
+            extraLeftOffset = 0f
+            extraRightOffset = 0f
 
-        // Configure Y-axis (left) - in millions
-        val leftAxis = barChart.axisLeft
-        leftAxis.setDrawGridLines(true)
-        leftAxis.gridColor = Color.parseColor("#E0E0E0")
-        leftAxis.axisMinimum = 0f
-        leftAxis.setDrawLabels(true)
-        leftAxis.valueFormatter = MillionValueFormatter()
-
-        // Configure Y-axis (right)
-        val rightAxis = barChart.axisRight
-        rightAxis.isEnabled = false
-    }
-
-    private fun prepareBarData(monthlyData: List<MonthlyAnalysisItem>): BarData {
-        val barChart = binding.barChart
-
-        // Show "No Data" message if no data
-        if (monthlyData.isEmpty()) {
-            barChart.setNoDataText("No Data")
-            barChart.setNoDataTextColor(Color.GRAY)
+            // Disable highlighting
+            isHighlightPerTapEnabled = false
         }
 
-        // Prepare data entries - convert to millions and map to month indices
-        val entries = mutableListOf<BarEntry>()
+        // Configure X-axis
+        lineChart.xAxis.apply {
+            position = XAxis.XAxisPosition.BOTTOM
+            setDrawGridLines(false)
+            setDrawAxisLine(true)
+            axisLineColor = Color.LTGRAY
+            axisLineWidth = 1f
+            textColor = Color.GRAY
+            textSize = 10f
+            granularity = 1f
+
+            // Set labels for 12 months
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    val month = value.toInt() + 1
+                    return if (month in 1..12) month.toString() else ""
+                }
+            }
+
+            // Position axis at the bottom (y=0)
+            setLabelCount(12, false)
+            axisMinimum = 0f
+            axisMaximum = 11f
+        }
+
+        // Configure Y-axis (left)
+        lineChart.axisLeft.apply {
+            setDrawGridLines(true)
+            gridColor = "#E5E5E5".toColorInt()
+            gridLineWidth = 0.5f
+            setDrawAxisLine(false)
+            textColor = Color.GRAY
+            textSize = 10f
+
+            // Start from 0 with no extra space
+            axisMinimum = 0f
+            setDrawZeroLine(false)
+
+            // Format values in millions
+            valueFormatter = MillionValueFormatter()
+
+            // Remove spacing
+            spaceTop = 10f // Small space at top for visibility
+            spaceBottom = 0f
+        }
+
+        // Disable right Y-axis
+        lineChart.axisRight.isEnabled = false
+
+        // Set viewport to start from bottom
+        lineChart.setViewPortOffsets(
+            40f, // left padding for y-axis labels
+            10f, // top padding
+            10f, // right padding
+            0f  // bottom padding for x-axis labels
+        )
+    }
+
+    // 4. Prepare line data
+    private fun prepareLineData(monthlyData: List<MonthlyAnalysisItem>): LineData {
+        val lineChart = binding.barChart
+
+        if (monthlyData.isEmpty()) {
+            lineChart.setNoDataText("No Data")
+            lineChart.setNoDataTextColor(Color.GRAY)
+            return LineData()
+        }
+
         val monthDataMap = monthlyData.associate {
             val parts = it.monthLabel.split("/")
-            val month = parts.getOrNull(0)?.toIntOrNull() ?: run {
-                android.util.Log.w("IncomeAnalysis", "Invalid monthLabel format: ${it.monthLabel}")
-                0
-            }
+            val month = parts.getOrNull(0)?.toIntOrNull() ?: 0
             month to it.amount
         }
 
-        // Create entries for all 12 months
+        val entries = mutableListOf<Entry>()
+        var maxValue = 0f
+
         (1..12).forEach { month ->
             val amount = monthDataMap[month] ?: 0.0
-            entries.add(BarEntry((month - 1).toFloat(), (amount / 1_000_000).toFloat()))
+            val value = (amount / 1_000_000).toFloat()
+            entries.add(Entry((month - 1).toFloat(), value))
+            if (value > maxValue) maxValue = value
         }
 
-        // Create dataset with color constant
-        val dataSet = BarDataSet(entries, "").apply {
-            color = Color.parseColor("#4CAF50") // Green color for income bars
+        lineChart.axisLeft.axisMaximum = maxValue * 1.1f
+
+        val dataSet = LineDataSet(entries, "").apply {
+            color = "#00BCD4".toColorInt()
+            lineWidth = 2f
+            mode = LineDataSet.Mode.LINEAR
             setDrawValues(false)
+
+            // Fill without circles for ultra-clean look
+            setDrawFilled(true)
+            fillColor = "#00BCD4".toColorInt()
+            fillAlpha = 150
+
+            // No circles at all
+            setDrawCircles(false)
+
+            isHighlightEnabled = false
         }
 
-        return BarData(dataSet).apply {
-            barWidth = 0.6f
-        }
+        return LineData(dataSet)
     }
 
     override fun onDestroyView() {

@@ -50,6 +50,10 @@ internal class CategoryRepositoryImpl @Inject constructor(
         return categoryDao.getCategoryByType(type).toDomain()
     }
 
+    override suspend fun getCategoriesUsedByType(types: List<CategoryType>): List<Category> {
+        return categoryDao.getCategoriesUsedByType(types).map { it.toDomain() }
+    }
+
     override suspend fun getCategoryById(id: Long): Category {
         return categoryDao.getCategoryById(id).toDomain()
     }
