@@ -7,3 +7,4 @@ enum class LocationTabType : Serializable {
     IN_COMPLETE
 }
 
+

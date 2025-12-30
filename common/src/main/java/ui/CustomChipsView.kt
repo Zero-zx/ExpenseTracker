@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.example.common.R
 import com.example.common.databinding.CustomChipsViewBinding
 import com.google.android.material.chip.Chip
@@ -57,11 +56,11 @@ class CustomChipsView @JvmOverloads constructor(
         chip.setOnCloseIconClickListener {
             onRemove?.invoke()
         }
-        chip.chipBackgroundColor = ContextCompat.getColorStateList(context, R.color.bg_chip)
         chip.shapeAppearanceModel = chip.shapeAppearanceModel.toBuilder()
             .setAllCornerSizes(16f)
             .build()
 
+        chip.setChipBackgroundColorResource(R.color.bg_chip)
         binding.chipGroup.addView(chip)
 
         if (hasAvatar == true) {

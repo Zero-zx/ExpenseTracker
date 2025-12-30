@@ -10,6 +10,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import model.AccountTabType
 import ui.gone
+import ui.showNotImplementToast
 import ui.visible
 
 @AndroidEntryPoint
@@ -24,8 +25,17 @@ class AccountListFragment : BaseFragment<FragmentAccountListBinding>(
     }
 
     override fun initListener() {
-        binding.fabAddAccount.setOnClickListener {
-            viewModel.navigateToAddAccount()
+        binding.apply {
+            fabAddAccount.setOnClickListener {
+                viewModel.navigateToAddAccount()
+            }
+            buttonSort.setOnClickListener {
+                showNotImplementToast()
+            }
+
+            buttonSearch.setOnClickListener {
+                showNotImplementToast()
+            }
         }
     }
 

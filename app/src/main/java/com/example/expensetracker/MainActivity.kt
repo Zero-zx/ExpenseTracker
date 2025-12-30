@@ -1,6 +1,8 @@
 package com.example.expensetracker
 
+import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +40,14 @@ class MainActivity : AppCompatActivity(), CalculatorProvider {
 
         setupNavigation()
         setupBackPress()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+            getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            );
+        }
+
     }
 
     private fun setupNavigation() {
@@ -54,7 +64,8 @@ class MainActivity : AppCompatActivity(), CalculatorProvider {
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             if (item.itemId != binding.bottomNavigationView.selectedItemId) {
                 val options = NavOptions.Builder()
-                    .setPopUpTo(navController.graph.startDestinationId,
+                    .setPopUpTo(
+                        navController.graph.startDestinationId,
                         inclusive = false,
                         saveState = true
                     )

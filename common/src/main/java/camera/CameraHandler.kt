@@ -32,9 +32,10 @@ class CameraHandler(
         ) { success ->
             if (success && cameraImageUri != null) {
                 // Sử dụng FileProvider URI đã lưu, không dùng Uri.fromFile()
+                // KHÔNG xóa file ngay lập tức vì ViewModel sẽ đọc file bất đồng bộ
+                // File sẽ được cleanup sau khi đã đọc thành công hoặc bị xóa tự động bởi hệ thống
                 onImageCaptured(cameraImageUri!!)
-                // Cleanup temp file sau khi đã sử dụng
-                tempImageFile?.delete()
+                // Reset references để có thể tạo file mới cho lần chụp tiếp theo
                 tempImageFile = null
                 cameraImageUri = null
             } else {

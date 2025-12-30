@@ -1,6 +1,5 @@
 package presentation.add.ui
 
-//import com.bumptech.glide.Glide
 import account.model.Account
 import android.content.Context
 import android.graphics.PorterDuff
@@ -17,6 +16,7 @@ import base.UIState
 import camera.CameraHandler
 import category.model.Category
 import category.model.CategoryType
+import com.bumptech.glide.Glide
 import com.example.transaction.databinding.FragmentTransactionAddBinding
 import com.google.android.material.chip.Chip
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -24,14 +24,12 @@ import constants.FragmentResultKeys.REQUEST_SELECT_ACCOUNT_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_BORROWER_NAME
 import constants.FragmentResultKeys.REQUEST_SELECT_CATEGORY_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_EVENT_NAME
-import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_ID
 import constants.FragmentResultKeys.REQUEST_SELECT_LOCATION_NAME
 import constants.FragmentResultKeys.REQUEST_SELECT_PAYEE_NAMES
 import constants.FragmentResultKeys.RESULT_ACCOUNT_ID
 import constants.FragmentResultKeys.RESULT_BORROWER_NAME
 import constants.FragmentResultKeys.RESULT_CATEGORY_ID
 import constants.FragmentResultKeys.RESULT_EVENT_NAME
-import constants.FragmentResultKeys.RESULT_LOCATION_ID
 import constants.FragmentResultKeys.RESULT_LOCATION_NAME
 import constants.FragmentResultKeys.RESULT_PAYEE_NAMES
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,8 +60,10 @@ import ui.showSuccessToast
 import ui.showWarningToast
 import ui.toFormattedDate
 import ui.visible
+import java.text.DecimalFormatSymbols
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.Locale
 import javax.inject.Inject
 import com.example.common.R as CommonR
 
@@ -257,7 +257,6 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
 
             buttonSubmit.setOnClickListener {
                 saveTransaction()
-                calculatorManager.clear()
             }
 
             buttonSave.setOnClickListener {
@@ -395,7 +394,7 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 // Show image in your UI
                 binding.layoutImage.visible()
                 binding.imageView.visible()
-//                Glide.with(this).load(image.getFullPath(requireContext())).into(binding.imageView)
+                Glide.with(this).load(image.getFullPath(requireContext())).into(binding.imageView)
             } else {
                 // Hide image
                 binding.layoutImage.gone()
@@ -435,6 +434,9 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                         "Transaction added successfully"
                     }
                     showSuccessToast(message)
+                    viewModel.resetState()
+                    calculatorManager.clear()
+                    viewModel.clearData()
                 }
 
                 is UIState.Error -> {
@@ -466,8 +468,11 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             return
         }
 
-        // Parse amount by removing thousand separators (commas, spaces, etc.)
-        val amountText = binding.editTextAmount.text.toString().replace(",", "")  // Remove commas
+        // Parse amount: comma (,) for thousands, dot (.) for decimal
+        // Remove grouping separators (commas), keep decimal separator (dot)
+        val amountText = binding.editTextAmount.text.toString()
+            .replace(",", "")  // Remove grouping separators (commas for thousands)
+            // Decimal separator is already dot (.), no need to replace
             .replace(" ", "")  // Remove spaces
             .trim()
         val amount = amountText.toDoubleOrNull() ?: 0.0
@@ -520,7 +525,9 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                     buttonSelectBorrower.getTextView().text = "Select lender"
                 }
 
-                else -> {}
+                else -> {
+                    showNotImplementToast()
+                }
             }
 
             binding.iconCategory.setImageResource(CommonR.drawable.ic_add_category_light)
@@ -582,17 +589,11 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             customViewEvent.getTextView().isVisible = true
             customViewEvent.getChipGroup().removeAllViews()
             customViewEvent.hideText()
-
-            // Add chips for each selected event (filter out nulls for safety)
-            val chip = Chip(requireContext())
-            chip.text = event.eventName
-            chip.isCloseIconVisible = true
-            chip.setOnCloseIconClickListener {
+            customViewEvent.addChip(
+                event.eventName, false,
+            ) {
                 viewModel.removeEvent(event)
             }
-            // Insert before the "Add Event" chip
-            customViewEvent.getChipGroup()
-                .addView(chip, customViewEvent.getChipGroup().childCount - 1)
 
         }
     }
@@ -623,15 +624,11 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
             customViewLocation.hideText()
 
             location?.let { loc ->
-                val chip = Chip(requireContext())
-                chip.text = loc.name.standardize()
-                chip.isCloseIconVisible = true
-                chip.setOnCloseIconClickListener {
+                customViewEvent.addChip(
+                    loc.name, false,
+                ) {
                     viewModel.removeLocation()
                 }
-                // Insert before the "Add Location" chip
-                customViewLocation.getChipGroup()
-                    .addView(chip, customViewLocation.getChipGroup().childCount - 1)
             }
         }
     }
@@ -699,14 +696,6 @@ class TransactionAddFragment : BaseFragment<FragmentTransactionAddBinding>(
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             })
         cameraHandler.setup()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Only reset state if not editing
-        if (transactionId == null) {
-            viewModel.resetTransactionState()
-        }
     }
 
     private fun populateTransactionFields(transaction: Transaction) {

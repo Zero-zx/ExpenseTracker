@@ -44,7 +44,7 @@ class ChipInputView @JvmOverloads constructor(
         chip.chipIconSize = 24.dpToPx(context).toFloat()
         chip.chipStrokeWidth = 0f
         // Style the chip to match the image
-        chip.chipBackgroundColor = ContextCompat.getColorStateList(context, R.color.bg_chip)
+        chip.setChipBackgroundColorResource(R.color.bg_chip)
         chip.shapeAppearanceModel = chip.shapeAppearanceModel.toBuilder()
             .setAllCornerSizes(8f)
             .build()

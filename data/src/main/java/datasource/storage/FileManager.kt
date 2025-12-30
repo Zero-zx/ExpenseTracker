@@ -88,6 +88,29 @@ class FileManager @Inject constructor(
             bitmap.recycle()
             compressedBitmap.recycle()
 
+            // Cleanup temp file trong cache directory sau khi đã copy thành công
+            // Tìm và xóa file tạm mới nhất (file có timestamp gần nhất với thời điểm hiện tại)
+            try {
+                val cacheDir = context.cacheDir
+                if (cacheDir.exists() && cacheDir.isDirectory) {
+                    val tempFiles = cacheDir.listFiles()?.filter { file ->
+                        file.isFile && file.name.startsWith("temp_") && file.name.endsWith(".jpg")
+                    } ?: emptyList()
+                    
+                    // Xóa file tạm mới nhất (file có timestamp lớn nhất trong tên file)
+                    tempFiles.maxByOrNull { file ->
+                        try {
+                            // Extract timestamp from filename: temp_<timestamp>.jpg
+                            file.name.removePrefix("temp_").removeSuffix(".jpg").toLongOrNull() ?: 0L
+                        } catch (e: Exception) {
+                            0L
+                        }
+                    }?.delete()
+                }
+            } catch (e: Exception) {
+                // Ignore cleanup errors
+            }
+
             Result.success(image)
 
         } catch (e: Exception) {

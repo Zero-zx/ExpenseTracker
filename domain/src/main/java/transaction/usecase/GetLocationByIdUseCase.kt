@@ -11,3 +11,4 @@ class GetLocationByIdUseCase @Inject constructor(
         return repository.getLocationById(locationId)
     }
 }
+

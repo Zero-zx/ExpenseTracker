@@ -33,6 +33,19 @@ internal fun TransactionWithDetails.toDomain(): Transaction {
         location = locationEntity?.toDomain(),
         payees = payees.map { it.toDomain() },
         borrower = borrowerEntity?.toDomain(),
-        repaymentDate = transactionEntity.repaymentDate
+        repaymentDate = transactionEntity.repaymentDate,
+        images = images.firstOrNull()?.toDomain()
+    )
+}
+
+internal fun model.TransactionImageEntity.toDomain(): transaction.model.TransactionImage {
+    return transaction.model.TransactionImage(
+        id = id,
+        transactionId = transactionId,
+        filePath = filePath,
+        fileName = fileName,
+        mimeType = mimeType,
+        fileSize = fileSize,
+        createdAt = createdAt
     )
 }

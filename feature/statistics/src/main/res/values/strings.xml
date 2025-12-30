@@ -6,4 +6,9 @@
     <string name="text_all_accounts">All accounts</string>
     <string name="text_unit_thousand">(Unit: Thousand)</string>
     <string name="text_average_collection_day">Average collection/day</string>
+    <string name="text_average_spending_day">Average spending/day</string>
+    <string name="text_average_spending_month">Average spending/month</string>
+    <string name="text_average_spending_year">Average spending/year</string>
+    <string name="text_average_collection_month">Average collection/month</string>
+    <string name="text_average_collection_year">Average collection/year</string>
 </resources>

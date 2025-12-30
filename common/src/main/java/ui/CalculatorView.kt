@@ -32,8 +32,11 @@ class CalculatorView @JvmOverloads constructor(
     private var onAmountChangeListener: ((String) -> Unit)? = null
     private var onDoneListener: (() -> Unit)? = null
 
-    // Formatting
-    private val symbol: DecimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.getDefault())
+    // Formatting - Always use comma for thousands and dot for decimal
+    private val symbol: DecimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.getDefault()).apply {
+        groupingSeparator = ','
+        decimalSeparator = '.'
+    }
     private val maxLengthAmount = 50 // Maximum length for expressions
     private val maxSingleNumberLength = 13 // Maximum length for individual numbers
 
@@ -62,9 +65,12 @@ class CalculatorView @JvmOverloads constructor(
                 }
             }
 
-            // Decimal point
-            btnKeyDot.text = symbol.decimalSeparator.toString()
-            btnKeyDot.setOnClickListener { addText(symbol.decimalSeparator.toString(), false) }
+            // Decimal point - always use dot for decimal separator
+            btnKeyDot.text = "."
+            btnKeyDot.setOnClickListener { 
+                // Always use dot for decimal separator
+                addText(".", false) 
+            }
 
             // Operators
             btnKeyAdd.setOnClickListener { addText("+", true) }
@@ -107,7 +113,16 @@ class CalculatorView @JvmOverloads constructor(
         try {
             // Initialize calc if empty
             if (calc.isEmpty() || calc == "0") {
-                if (str != symbol.decimalSeparator.toString() && !isOperator) {
+                // Only dot (.) is allowed as decimal separator
+                val isDecimalSeparator = str == "."
+                if (isDecimalSeparator) {
+                    // Allow decimal separator even when calc is empty or "0"
+                    calc = "0."
+                    updateDisplay()
+                    updateButtonState()
+                    return
+                }
+                if (!isOperator) {
                     calc = str
                     updateDisplay()
                     updateButtonState()
@@ -116,12 +131,14 @@ class CalculatorView @JvmOverloads constructor(
             }
 
             // Get the cleaned version (without formatting)
+            // Remove grouping separators (commas) and keep decimal separator (dot)
             val cleaned = calc
-                .replace(symbol.groupingSeparator.toString(), "")
-                .replace(symbol.decimalSeparator.toString(), ".")
+                .replace(",", "") // Remove grouping separators (commas)
+                // Decimal separator is already dot, no need to replace
 
-            // Handle decimal separator
-            if (str == symbol.decimalSeparator.toString()) {
+            // Handle decimal separator - only dot (.) is allowed for decimal
+            val isDecimalSeparator = str == "."
+            if (isDecimalSeparator) {
                 // Find the last number segment
                 var lastNumberStart = cleaned.length
                 for (i in cleaned.length - 1 downTo 0) {
@@ -137,8 +154,17 @@ class CalculatorView @JvmOverloads constructor(
 
                 // Only add decimal if the last number doesn't already have one
                 if (!lastNumber.contains(".")) {
-                    val newCleaned = cleaned + "."
-                    calc = reFormatValue(newCleaned)
+                    // If there are operators, format the expression properly
+                    if (cleaned.contains("+") || cleaned.contains("-") || 
+                        cleaned.contains("x") || cleaned.contains("÷")) {
+                        val newCleaned = cleaned + "."
+                        calc = reFormatValue(newCleaned)
+                    } else {
+                        // For single number, format it and append decimal separator (dot)
+                        val numberValue = cleaned.toDoubleOrNull() ?: 0.0
+                        val formattedNumber = formatCurrency(numberValue, symbol)
+                        calc = formattedNumber + "."
+                    }
                     updateDisplay()
                     updateButtonState()
                 }
@@ -187,9 +213,10 @@ class CalculatorView @JvmOverloads constructor(
             }
 
             // Remove the last character from the unformatted string
+            // Remove grouping separators (commas), keep decimal separator (dot)
             val cleaned = calc
-                .replace(symbol.groupingSeparator.toString(), "")
-                .replace(symbol.decimalSeparator.toString(), ".")
+                .replace(",", "") // Remove grouping separators (commas)
+                // Decimal separator is already dot, no need to replace
 
             if (cleaned.isEmpty() || cleaned == "0") {
                 calc = "0"
@@ -222,9 +249,10 @@ class CalculatorView @JvmOverloads constructor(
         if (value.isEmpty()) return ""
 
         try {
+            // Remove grouping separators (commas), keep decimal separator (dot)
             val cleaned = value
-                .replace(symbol.groupingSeparator.toString(), "")
-                .replace(symbol.decimalSeparator.toString(), ".")
+                .replace(",", "") // Remove grouping separators (commas)
+                // Decimal separator is already dot, no need to replace
 
             // If no operators, just format the number
             if (!cleaned.contains("+") && !cleaned.contains("-") &&
@@ -290,9 +318,10 @@ class CalculatorView @JvmOverloads constructor(
             }
 
             // Clean and prepare expression
+            // Remove grouping separators (commas), keep decimal separator (dot)
             expr = expr
-                .replace(symbol.groupingSeparator.toString(), "")
-                .replace(symbol.decimalSeparator.toString(), ".")
+                .replace(",", "") // Remove grouping separators (commas)
+                // Decimal separator is already dot, no need to replace
                 .replace("x", "*")
                 .replace("÷", "/")
 
